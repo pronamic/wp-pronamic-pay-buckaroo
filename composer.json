@@ -1,0 +1,21 @@
+{
+	"name": "wp-pay-gateways/buckaroo",
+	"description": "Buckaroo driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "buckaroo", "gateway", "pronamic"],
+	"homepage": "https://github.com/wp-pay-gateways/buckaroo",
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/wp-pay/core"
+		}
+	],
+	"require": {
+		"wp-pay/core": "dev-develop"
+	},
+	"require-dev": {
+		"satooshi/php-coveralls": "dev-master"
+	}
+}
