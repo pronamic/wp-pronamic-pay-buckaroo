@@ -36,6 +36,8 @@ class Pronamic_WP_Pay_Buckaroo_StatusesTest extends PHPUnit_Framework_TestCase {
 			// Cancelled
 			array( Pronamic_WP_Pay_Buckaroo_Statuses::CANCELLED_BY_CONSUMER, Pronamic_WP_Pay_Statuses::CANCELLED ),
 			array( Pronamic_WP_Pay_Buckaroo_Statuses::CANCELLED_BY_MERCHANT, Pronamic_WP_Pay_Statuses::CANCELLED ),
+			// Other
+			array( 'not existing status', null ),
 		);
     }
 }
