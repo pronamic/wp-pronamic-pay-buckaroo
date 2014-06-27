@@ -99,6 +99,8 @@ class Pronamic_WP_Pay_Buckaroo_Statuses {
 			case self::CANCELLED_BY_CONSUMER:
 			case self::CANCELLED_BY_MERCHANT:
 				return Pronamic_WP_Pay_Statuses::CANCELLED;
+			default:
+				return null;
 		}
 	}
 }
