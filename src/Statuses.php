@@ -84,20 +84,20 @@ class Pronamic_WP_Pay_Buckaroo_Statuses {
 	 */
 	public static function transform( $status_code ) {
 		switch ( $status_code ) {
-			case self::PAYMENT_SUCCESS:
+			case self::PAYMENT_SUCCESS :
 				return Pronamic_WP_Pay_Statuses::SUCCESS;
-			case self::PAYMENT_FAILURE:
-			case self::VALIDATION_FAILURE:
-			case self::TECHNICAL_ERROR:
-			case self::PAYMENT_REJECTED:
+			case self::PAYMENT_FAILURE :
+			case self::VALIDATION_FAILURE :
+			case self::TECHNICAL_ERROR :
+			case self::PAYMENT_REJECTED :
 				return Pronamic_WP_Pay_Statuses::FAILURE;
-			case self::WAITING_FOR_USER_INPUT:
-			case self::WAITING_FOR_PROCESSOR:
-			case self::WAITING_ON_CONSUMER_ACTION:
-			case self::PAYMENT_ON_HOLD:
+			case self::WAITING_FOR_USER_INPUT :
+			case self::WAITING_FOR_PROCESSOR :
+			case self::WAITING_ON_CONSUMER_ACTION :
+			case self::PAYMENT_ON_HOLD :
 				return Pronamic_WP_Pay_Statuses::OPEN;
-			case self::CANCELLED_BY_CONSUMER:
-			case self::CANCELLED_BY_MERCHANT:
+			case self::CANCELLED_BY_CONSUMER :
+			case self::CANCELLED_BY_MERCHANT :
 				return Pronamic_WP_Pay_Statuses::CANCELLED;
 			default:
 				return null;
