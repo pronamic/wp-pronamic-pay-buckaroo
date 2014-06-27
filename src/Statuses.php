@@ -11,69 +11,69 @@
 class Pronamic_WP_Pay_Buckaroo_Statuses {
 	/**
 	 * Payment success
-	 * @var int
+	 * @var string
 	 */
-	const PAYMENT_SUCCESS = 190;
+	const PAYMENT_SUCCESS = '190';
 
 	/**
 	 * Payment failure
-	 * @var int
+	 * @var string
 	 */
-	const PAYMENT_FAILURE = 490;
+	const PAYMENT_FAILURE = '490';
 
 	/**
 	 * Validation error
-	 * @var int
+	 * @var string
 	 */
-	const VALIDATION_FAILURE = 491;
+	const VALIDATION_FAILURE = '491';
 
 	/**
 	 * Technical error
-	 * @var int
+	 * @var string
 	 */
-	const TECHNICAL_ERROR = 492;
+	const TECHNICAL_ERROR = '492';
 
 	/**
 	 * Payment rejected
-	 * @var int
+	 * @var string
 	 */
-	const PAYMENT_REJECTED = 690;
+	const PAYMENT_REJECTED = '690';
 
 	/**
 	 * Waiting for user input
-	 * @var int
+	 * @var string
 	 */
-	const WAITING_FOR_USER_INPUT = 790;
+	const WAITING_FOR_USER_INPUT = '790';
 
 	/**
 	 * Waiting for processor
-	 * @var int
+	 * @var string
 	 */
-	const WAITING_FOR_PROCESSOR = 791;
+	const WAITING_FOR_PROCESSOR = '791';
 
 	/**
 	 * Waiting on consumer action (e.g.: initiate money transfer)
-	 * @var int
+	 * @var string
 	 */
-	const WAITING_ON_CONSUMER_ACTION = 792;
+	const WAITING_ON_CONSUMER_ACTION = '792';
 
 	/**
 	 * Payment on hold (e.g. waiting for sufficient balance)
-	 * @var int
+	 * @var string
 	 */
-	const PAYMENT_ON_HOLD = 793;
+	const PAYMENT_ON_HOLD = '793';
 
 	/**
 	 * Cancelled by consumer
-	 * @var int
+	 * @var string
 	 */
-	const CANCELLED_BY_CONSUMER = 890;
+	const CANCELLED_BY_CONSUMER = '890';
 
 	/**
 	 * Cancelled by merchant
-	 * @var int
+	 * @var string
 	 */
-	const CANCELLED_BY_MERCHANT = 891;
+	const CANCELLED_BY_MERCHANT = '891';
 
 	/////////////////////////////////////////////////
 
