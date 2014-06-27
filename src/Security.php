@@ -20,7 +20,9 @@ class Pronamic_WP_Pay_Buckaroo_Security {
 
 		foreach ( $data as $key => $value ) {
 			if ( Pronamic_WP_Pay_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Buckaroo_Parameters::SIGNATURE ) ) {
-				return $value;
+				$result = $value;
+
+				break;
 			}
 		}
 
