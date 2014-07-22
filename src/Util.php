@@ -42,7 +42,7 @@ class Pronamic_WP_Pay_Buckaroo_Util {
 	 * @return array
 	 */
 	public static function urldecode( array $data ) {
-		foreach ( $data as $key => &$value ) {
+		foreach ( $data as &$value ) {
 			$value = urldecode( $value );
 		}
 
