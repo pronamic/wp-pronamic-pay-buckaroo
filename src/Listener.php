@@ -10,7 +10,7 @@
  */
 class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_ListenerInterface {
 	public static function listen() {
-		if ( $filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
+		if ( filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
 			$method = filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
 			$data = array();
