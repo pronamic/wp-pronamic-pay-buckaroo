@@ -30,7 +30,7 @@ class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_Listene
 
 			if ( isset(
 				$data[ Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER ],
-				$data[ Pronamic_WP_Pay_Buckaroo_Parameters::STATUS_CODE ],
+				$data[ Pronamic_WP_Pay_Buckaroo_Parameters::STATUS_CODE ]
 			) ) {
 				$payment_id = $data[ Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER ];
 
