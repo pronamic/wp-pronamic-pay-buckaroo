@@ -56,6 +56,21 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
 		$culture = str_replace( '_', '-', $data->get_language_and_country() );
 
+		switch ( $payment_method ) {
+			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
+				$this->client->set_payment_method( Pronamic_WP_Pay_Buckaroo_PaymentMethods::IDEAL );
+
+				break;
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
+				$this->client->set_payment_method( Pronamic_WP_Pay_Buckaroo_PaymentMethods::VISA );
+
+				break;
+			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
+				$this->client->set_payment_method( Pronamic_WP_Pay_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH );
+
+				break;
+		}
+
 		$this->client->set_culture( $culture );
 		$this->client->set_currency( $data->get_currency() );
 		$this->client->set_description( $data->get_description() );
