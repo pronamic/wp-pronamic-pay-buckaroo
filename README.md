@@ -18,3 +18,4 @@
 
 *	[Buckaroo Payment Engine 3.0 - Implementation Manual - HTML gateway](http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf)
 *	[Buckaroo Payment Engine 3.0 - iDEAL](http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Service-iDEAL.2.01.pdf)
+*	[GitHub linkorb/buckaroo](https://github.com/linkorb/buckaroo)
