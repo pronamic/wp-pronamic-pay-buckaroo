@@ -152,10 +152,21 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * Requested services
+	 *
+	 * @var array
+	 */
+	private $requested_services;
+
+	//////////////////////////////////////////////////
+
+	/**
 	 * Constructs and initialize a iDEAL kassa object
 	 */
 	public function __construct() {
 		$this->set_payment_server_url( self::GATEWAY_URL );
+
+		$this->requested_services = array();
 	}
 
 	//////////////////////////////////////////////////
@@ -206,6 +217,16 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 
 	public function set_payment_method( $payment_method ) {
 		$this->payment_method = $payment_method;
+	}
+
+	//////////////////////////////////////////////////
+
+	public function get_requested_services() {
+		return $this->requested_services;
+	}
+
+	public function add_requested_service( $service ) {
+		$this->requested_services[] = $service;
 	}
 
 	//////////////////////////////////////////////////
@@ -351,17 +372,18 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 	 */
 	public function get_html_fields() {
 		$data = array(
-			Pronamic_WP_Pay_Buckaroo_Parameters::WEBSITE_KEY       => $this->get_website_key(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER    => $this->get_invoice_number(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::AMOUNT            => number_format( $this->get_amount(), 2, '.', '' ),
-			Pronamic_WP_Pay_Buckaroo_Parameters::CURRENCY          => $this->get_currency(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::CULTURE           => $this->get_culture(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::DESCRIPTION       => $this->get_description(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::PAYMENT_METHOD    => $this->get_payment_method(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_URL        => $this->get_return_url(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_REJECT_URL => $this->get_return_reject_url(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_ERROR_URL  => $this->get_return_error_url(),
-			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_CANCEL_URL => $this->get_return_cancel_url(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::WEBSITE_KEY        => $this->get_website_key(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER     => $this->get_invoice_number(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::AMOUNT             => number_format( $this->get_amount(), 2, '.', '' ),
+			Pronamic_WP_Pay_Buckaroo_Parameters::CURRENCY           => $this->get_currency(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::CULTURE            => $this->get_culture(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::DESCRIPTION        => $this->get_description(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::PAYMENT_METHOD     => $this->get_payment_method(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_URL         => $this->get_return_url(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_REJECT_URL  => $this->get_return_reject_url(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_ERROR_URL   => $this->get_return_error_url(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::RETURN_CANCEL_URL  => $this->get_return_cancel_url(),
+			Pronamic_WP_Pay_Buckaroo_Parameters::REQUESTED_SERVICES => implode( ',', $this->get_requested_services() ),
 		);
 
 		$signature = Pronamic_WP_Pay_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );

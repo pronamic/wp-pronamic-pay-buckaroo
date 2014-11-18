@@ -62,7 +62,10 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
-				$this->client->set_payment_method( Pronamic_WP_Pay_Buckaroo_PaymentMethods::VISA );
+				$this->client->add_requested_service( Pronamic_WP_Pay_Buckaroo_PaymentMethods::AMERICAN_EXPRESS );
+				$this->client->add_requested_service( Pronamic_WP_Pay_Buckaroo_PaymentMethods::MAESTRO );
+				$this->client->add_requested_service( Pronamic_WP_Pay_Buckaroo_PaymentMethods::MASTERCARD );
+				$this->client->add_requested_service( Pronamic_WP_Pay_Buckaroo_PaymentMethods::VISA );
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :

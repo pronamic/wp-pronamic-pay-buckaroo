@@ -94,6 +94,16 @@ class Pronamic_WP_Pay_Buckaroo_Parameters {
 	 */
 	const PAYMENT_METHOD = 'brq_payment_method';
 
+	/**
+	 * Indicator for the 'brq_requestedservices' parameter
+	 *
+	 * The service code for the payment method. Ex.: visa, mastercard, paypal
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const REQUESTED_SERVICES = 'brq_requestedservices';
+
 	//////////////////////////////////////////////////
 
 	/**
