@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<ruleset name="WordPress Pay Gateway: Buckaroo rules">
+	<rule ref="WordPress">
+		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
+		<exclude name="WordPress.VIP.ValidatedSanitizedInput" />
+	</rule>
+</ruleset>
