@@ -107,7 +107,7 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 	 * @param Pronamic_Pay_Payment $payment
 	 */
 	public function update_status( Pronamic_Pay_Payment $payment ) {
-		$method = filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
 
 		$data = array();
 
