@@ -405,7 +405,7 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 
 		$signature_check = Pronamic_WP_Pay_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
 
-		if ( strcasecmp( $signature, $signature_check ) === 0 ) {
+		if ( 0 === strcasecmp( $signature, $signature_check ) ) {
 			$data = array_change_key_case( $data, CASE_LOWER );
 
 			$result = filter_var_array( $data, array(
