@@ -6,12 +6,13 @@
  * Copyright: Copyright (c) 2005 - 2014
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.1.0
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_ListenerInterface {
 	public static function listen() {
 		if ( filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
-			$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
+			$method = Pronamic_WP_Pay_Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
 			$data = array();
 
