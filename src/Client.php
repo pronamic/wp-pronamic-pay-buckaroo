@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Title: Buckaroo gateway
+ * Title: Buckaroo client
  * Description:
- * Copyright: Copyright (c) 2005 - 2011
+ * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0
+ * @version 1.1.1
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Buckaroo_Client {
 	/**
@@ -368,9 +369,10 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 	/**
 	 * Get HTML fields
 	 *
+	 * @since 1.1.1
 	 * @return string
 	 */
-	public function get_html_fields() {
+	public function get_fields() {
 		$data = array(
 			Pronamic_WP_Pay_Buckaroo_Parameters::WEBSITE_KEY        => $this->get_website_key(),
 			Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER     => $this->get_invoice_number(),
@@ -390,7 +392,7 @@ class Pronamic_WP_Pay_Buckaroo_Client {
 
 		$data[ Pronamic_WP_Pay_Buckaroo_Parameters::SIGNATURE ] = $signature;
 
-		return Pronamic_IDeal_IDeal::htmlHiddenFields( $data );
+		return $data;
 	}
 
 	//////////////////////////////////////////////////
