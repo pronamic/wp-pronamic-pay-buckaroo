@@ -126,6 +126,8 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		$data = Pronamic_WP_Pay_Buckaroo_Util::urldecode( $data );
 
+		$data = stripslashes_deep( $data );
+
 		$data = $this->client->verify_request( $data );
 
 		if ( $data ) {
