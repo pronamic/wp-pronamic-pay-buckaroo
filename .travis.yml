@@ -11,6 +11,8 @@ php:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - php: hhvm
 
 env:
   - WP_VERSION=latest WP_MULTISITE=0
