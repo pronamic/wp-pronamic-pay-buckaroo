@@ -11,6 +11,8 @@
  */
 class Pronamic_WP_Pay_Buckaroo_StatusesTest extends PHPUnit_Framework_TestCase {
 	/**
+	 * Test transform.
+	 *
 	 * @dataProvider statusMatrixProvider
 	 */
 	public function testTransform( $buckarooStatus, $expected ) {

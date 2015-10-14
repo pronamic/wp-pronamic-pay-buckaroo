@@ -22,7 +22,7 @@ class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_Listene
 
 					break;
 				case 'POST':
-					$data = $_POST;
+					$data = $_POST; // WPCS: CSRF OK
 
 					break;
 			}
