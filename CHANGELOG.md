@@ -1,12 +1,27 @@
-# Changelog
+# Change Log
 
-## 1.1.1
-*	Updated WordPress pay core library to version 1.2.0.
-*	Return array with output fields instead of HTML.
+All notable changes to this project will be documented in this file.
 
-## 1.1.0
-*	Updated WordPress pay core library to version 1.1.0.
-*	Fixed isues with filter_input INPUT_SERVER (https://bugs.php.net/bug.php?id=49184).
+This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
-## 1.0.0
-*	First release.
+## [Unreleased][unreleased]
+-
+
+## [1.1.2] - 2015-10-14
+- Fix incorrect signature due to slashes in data.
+
+## [1.1.1] - 2015-03-26
+- Updated WordPress pay core library to version 1.2.0.
+- Return array with output fields instead of HTML.
+
+## [1.1.0] - 2015-02-27
+- Updated WordPress pay core library to version 1.1.0.
+- Fixed isues with filter_input INPUT_SERVER (https://bugs.php.net/bug.php?id=49184).
+
+## [1.0.0] - 2015-01-19
+- First release.
+
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.2...HEAD
+[1.1.2]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/wp-pay-gateways/buckaroo/compare/1.0.0...1.1.0

@@ -1,12 +1,18 @@
 <?php
 
 /**
+ * Title: Buckaroo signature test.
+ * Description:
+ * Copyright: Copyright (c) 2005 - 2015
+ * Company: Pronamic
  * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
- * @author remco
- *
+ * @author Remco Tolsma
+ * @version 1.0.0
  */
 class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase {
 	/**
+	 * Test get signature.
+	 *
 	 * @dataProvider provider_case_mix
 	 */
 	function test_get_signature( $data ) {
@@ -16,6 +22,8 @@ class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase 
 	}
 
 	/**
+	 * Test signature filter.
+	 *
 	 * @dataProvider provider_case_mix
 	 */
 	function test_signature_filter( $data ) {
@@ -27,6 +35,8 @@ class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase 
 	/////////////////////////////////////////////////
 
 	/**
+	 * Test create signature.
+	 *
 	 * @dataProvider provider
 	 */
 	function test_create_signature( $data ) {

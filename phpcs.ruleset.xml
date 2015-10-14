@@ -2,6 +2,10 @@
 
 <ruleset name="WordPress Pay Gateway: Buckaroo rules">
 	<rule ref="WordPress">
+		<exclude name="Generic.Files.LowercasedFilename.NotFound" />
+
+		<exclude name="Squiz.Commenting" />
+
 		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
 		<exclude name="WordPress.VIP.ValidatedSanitizedInput" />
 	</rule>

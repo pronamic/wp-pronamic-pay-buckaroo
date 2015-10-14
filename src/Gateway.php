@@ -36,7 +36,7 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 		$this->client->set_website_key( $config->website_key );
 		$this->client->set_secret_key( $config->secret_key );
 
-		if ( $config->mode == Pronamic_IDeal_IDeal::MODE_TEST ) {
+		if ( Pronamic_IDeal_IDeal::MODE_TEST === $config->mode ) {
 			$this->client->set_payment_server_url( Pronamic_WP_Pay_Buckaroo_Client::GATEWAY_TEST_URL );
 		}
 	}
@@ -119,7 +119,7 @@ class Pronamic_WP_Pay_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
 
 				break;
 			case 'POST':
-				$data = $_POST;
+				$data = $_POST; // WPCS: CSRF OK
 
 				break;
 		}

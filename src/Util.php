@@ -17,7 +17,7 @@ class Pronamic_WP_Pay_Buckaroo_Util {
 	 * @return boolean true if match, false otherwise
 	 */
 	public static function string_equals( $string, $value ) {
-		return strcasecmp( $string, $value ) == 0;
+		return 0 === strcasecmp( $string, $value );
 	}
 
 	/**
@@ -30,7 +30,7 @@ class Pronamic_WP_Pay_Buckaroo_Util {
 	public static function string_starts_with( $string, $prefix ) {
 		$string = substr( $string, 0, strlen( $prefix ) );
 
-		return strcasecmp( $string, $prefix ) == 0;
+		return 0 === strcasecmp( $string, $prefix );
 	}
 
 	//////////////////////////////////////////////////
