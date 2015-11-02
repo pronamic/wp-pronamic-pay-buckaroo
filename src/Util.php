@@ -42,10 +42,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 * @return array
 	 */
 	public static function urldecode( array $data ) {
-		foreach ( $data as &$value ) {
-			$value = urldecode( $value );
-		}
-
-		return $data;
+		return array_map( 'urldecode', $data );
 	}
 }
