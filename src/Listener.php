@@ -6,10 +6,10 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.1.0
+ * @version 1.2.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_ListenerInterface {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateways_ListenerInterface {
 	public static function listen() {
 		if ( filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
 			$method = Pronamic_WP_Pay_Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
@@ -30,10 +30,10 @@ class Pronamic_WP_Pay_Buckaroo_Listener implements Pronamic_Pay_Gateways_Listene
 			$data = array_change_key_case( $data, CASE_LOWER );
 
 			if ( isset(
-				$data[ Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER ],
-				$data[ Pronamic_WP_Pay_Buckaroo_Parameters::STATUS_CODE ]
+				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ],
+				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE ]
 			) ) {
-				$payment_id = $data[ Pronamic_WP_Pay_Buckaroo_Parameters::INVOICE_NUMBER ];
+				$payment_id = $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ];
 
 				$payment = get_pronamic_payment( $payment_id );
 

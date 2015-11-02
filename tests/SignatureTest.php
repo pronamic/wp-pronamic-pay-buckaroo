@@ -9,14 +9,14 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase {
+class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test get signature.
 	 *
 	 * @dataProvider provider_case_mix
 	 */
 	function test_get_signature( $data ) {
-		$signature = Pronamic_WP_Pay_Buckaroo_Security::get_signature( $data );
+		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
 
 		$this->assertEquals( '84e9802d60d727ade4a845c43033051d5758ce25', $signature );
 	}
@@ -27,7 +27,7 @@ class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase 
 	 * @dataProvider provider_case_mix
 	 */
 	function test_signature_filter( $data ) {
-		$data = Pronamic_WP_Pay_Buckaroo_Security::filter_data( $data );
+		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::filter_data( $data );
 
 		$this->assertArrayNotHasKey( 'random_1234567890', $data );
 	}
@@ -42,11 +42,11 @@ class Pronamic_WP_Pay_Buckaroo_SignatureTest extends PHPUnit_Framework_TestCase 
 	function test_create_signature( $data ) {
 		$secret_key = '29E9BEB3F3428B2BCAA678DEC489A86A';
 
-		$data = Pronamic_WP_Pay_Buckaroo_Util::urldecode( $data );
+		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::urldecode( $data );
 
-		$signature = Pronamic_WP_Pay_Buckaroo_Security::get_signature( $data );
+		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
 
-		$signature_check = Pronamic_WP_Pay_Buckaroo_Security::create_signature( $data, $secret_key, true );
+		$signature_check = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $secret_key, true );
 
 		$this->assertEquals( $signature, $signature_check );
 	}

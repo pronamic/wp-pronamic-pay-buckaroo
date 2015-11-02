@@ -6,9 +6,10 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.2.0
+ * @since 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_Security {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Security {
 	/**
 	 * Find the signature from an data array
 	 *
@@ -19,7 +20,7 @@ class Pronamic_WP_Pay_Buckaroo_Security {
 		$result = null;
 
 		foreach ( $data as $key => $value ) {
-			if ( Pronamic_WP_Pay_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Buckaroo_Parameters::SIGNATURE ) ) {
+			if ( Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ) ) {
 				$result = $value;
 
 				break;
@@ -43,9 +44,17 @@ class Pronamic_WP_Pay_Buckaroo_Security {
 		// List all parameters prefixed with brq_, add_ or cust_, except brq_signature
 		foreach ( $data as $key => $value ) {
 			if (
-				( Pronamic_WP_Pay_Buckaroo_Util::string_starts_with( $key, 'brq_' ) || Pronamic_WP_Pay_Buckaroo_Util::string_starts_with( $key, 'add_' ) || Pronamic_WP_Pay_Buckaroo_Util::string_starts_with( $key, 'cust_' ) )
+				(
+					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'brq_' )
+						||
+					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'add_' )
+						||
+					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'cust_' )
+				)
 					&&
-				( ! Pronamic_WP_Pay_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Buckaroo_Parameters::SIGNATURE ) )
+				(
+					! Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE )
+				)
 			) {
 				$filter[ $key ] = $value;
 			}

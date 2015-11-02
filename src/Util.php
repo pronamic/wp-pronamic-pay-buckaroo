@@ -6,9 +6,10 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.2.0
+ * @since 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_Util {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	/**
 	 * Buckaroo check if the specified string is the specified key
 	 *
@@ -42,10 +43,6 @@ class Pronamic_WP_Pay_Buckaroo_Util {
 	 * @return array
 	 */
 	public static function urldecode( array $data ) {
-		foreach ( $data as &$value ) {
-			$value = urldecode( $value );
-		}
-
-		return $data;
+		return array_map( 'urldecode', $data );
 	}
 }
