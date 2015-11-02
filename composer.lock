@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "62751a0bf53d40ee3dcae7cf27ab9004",
-    "content-hash": "22cbb87ded4acc2e5ee3490f2168cb08",
+    "hash": "44ef3677164803c22c4d41f53f1bd072",
+    "content-hash": "1b6b2c609d78beae80953b4f5d633e03",
     "packages": [
         {
             "name": "wp-pay/core",
-            "version": "1.2.3",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "a389f2c3910a3e71632a0e8fd53f0d5f0fae8bf5"
+                "reference": "575e40f2b441bb0565125492fe4248a13813f43b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/a389f2c3910a3e71632a0e8fd53f0d5f0fae8bf5",
-                "reference": "a389f2c3910a3e71632a0e8fd53f0d5f0fae8bf5",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/575e40f2b441bb0565125492fe4248a13813f43b",
+                "reference": "575e40f2b441bb0565125492fe4248a13813f43b",
                 "shasum": ""
             },
             "require": {
@@ -58,7 +58,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2015-10-19 10:18:32"
+            "time": "2015-11-02 14:30:13"
         }
     ],
     "packages-dev": [
@@ -572,6 +572,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "wp-pay/core": 20,
         "satooshi/php-coveralls": 20
     },
     "prefer-stable": false,
