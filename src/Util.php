@@ -8,7 +8,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_Util {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	/**
 	 * Buckaroo check if the specified string is the specified key
 	 *

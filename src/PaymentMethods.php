@@ -8,7 +8,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_PaymentMethods {
+class Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods {
 	/**
 	 * Indicator for the 'Achteraf Betalen' payment method
 	 *

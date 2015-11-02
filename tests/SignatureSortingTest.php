@@ -9,7 +9,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Buckaroo_SignatureSortingTest extends PHPUnit_Framework_TestCase {
+class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test signature sorting.
 	 */
@@ -34,7 +34,7 @@ class Pronamic_WP_Pay_Buckaroo_SignatureSortingTest extends PHPUnit_Framework_Te
 		);
 
 		// Sort
-		$data = Pronamic_WP_Pay_Buckaroo_Security::sort( $data );
+		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::sort( $data );
 
 		// Keys
 		$keys_data     = implode( "\n", array_keys( $data ) );
