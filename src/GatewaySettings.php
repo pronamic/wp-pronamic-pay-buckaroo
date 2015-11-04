@@ -29,22 +29,30 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_GatewaySettings extends Pronamic_WP_Pay_
 	public function fields( array $fields ) {
 		// Website Key
 		$fields[] = array(
+			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'buckaroo',
 			'meta_key'    => '_pronamic_gateway_buckaroo_website_key',
 			'title'       => __( 'Website Key', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'code' ),
-			'description' => sprintf( __( 'You can find your Buckaroo website keys in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Profile" » "Website".', 'pronamic_ideal' ), 'https://payment.buckaroo.nl/' ),
+			'description' => sprintf(
+				__( 'You can find your Buckaroo website keys in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Profile" » "Website".', 'pronamic_ideal' ),
+				'https://payment.buckaroo.nl/'
+			),
 		);
 
 		// Secret Key
 		$fields[] = array(
+			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'buckaroo',
 			'meta_key'    => '_pronamic_gateway_buckaroo_secret_key',
 			'title'       => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
-			'description' => sprintf( __( 'You can find your Buckaroo secret key in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Configuration" » "Secret Key for Digital Signature".', 'pronamic_ideal' ), 'https://payment.buckaroo.nl/' ),
+			'description' => sprintf(
+				__( 'You can find your Buckaroo secret key in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Configuration" » "Secret Key for Digital Signature".', 'pronamic_ideal' ),
+				'https://payment.buckaroo.nl/'
+			),
 		);
 
 		// Push URI
