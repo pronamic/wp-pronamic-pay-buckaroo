@@ -80,13 +80,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_description( $data->get_description() );
 		$this->client->set_amount( $data->get_amount() );
 		$this->client->set_invoice_number( $payment->get_id() );
-
-		$return_url = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-
-		$this->client->set_return_url( $return_url );
-		$this->client->set_return_cancel_url( $return_url );
-		$this->client->set_return_error_url( $return_url );
-		$this->client->set_return_reject_url( $return_url );
+		$this->client->set_return_url( $payment->get_return_url() );
+		$this->client->set_return_cancel_url( $payment->get_return_url() );
+		$this->client->set_return_error_url( $payment->get_return_url() );
+		$this->client->set_return_reject_url( $payment->get_return_url() );
 	}
 
 	/////////////////////////////////////////////////
