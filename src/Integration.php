@@ -1,8 +1,11 @@
 <?php
 
-class Pronamic_WP_Pay_Gateways_Buckaroo_GatewayIntegration {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Integration {
 	public function __construct() {
-		$this->id = 'buckaroo';
+		$this->id       = 'buckaroo';
+		$this->name     = 'Buckaroo - HTML';
+		$this->url      = 'https://payment.buckaroo.nl/';
+		$this->provider = 'buckaroo';
 	}
 
 	public function get_config_factory_class() {
