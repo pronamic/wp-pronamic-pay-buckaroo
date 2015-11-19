@@ -6,6 +6,13 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration {
 		$this->name     = 'Buckaroo - HTML';
 		$this->url      = 'https://payment.buckaroo.nl/';
 		$this->provider = 'buckaroo';
+
+		// Actions
+		$action = array( 'Pronamic_WP_Pay_Gateways_Buckaroo_Listener', 'listen' );
+
+		if ( ! has_action( 'wp_loaded', $action ) ) {
+			add_action( 'wp_loaded', $action );	
+		}		
 	}
 
 	public function get_config_factory_class() {
@@ -17,7 +24,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration {
 	}
 
 	public function get_settings_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_GatewaySettings';
+		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Settings';
 	}
 
 	public function get_gateway_class() {
