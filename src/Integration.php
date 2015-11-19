@@ -1,6 +1,6 @@
 <?php
 
-class Pronamic_WP_Pay_Gateways_Buckaroo_Integration {
+class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gateways_AbstractIntegration {
 	public function __construct() {
 		$this->id       = 'buckaroo';
 		$this->name     = 'Buckaroo - HTML';
