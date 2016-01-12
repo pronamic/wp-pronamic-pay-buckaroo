@@ -9,7 +9,7 @@
  * @version 1.0.0
  * @see https://www.mollie.nl/support/documentatie/betaaldiensten/ideal/en/
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_StatusesTest extends PHPUnit_Framework_TestCase {
+class Pronamic_WP_Pay_Gateways_Buckaroo_StatusesTest extends WP_UnitTestCase {
 	/**
 	 * Test transform.
 	 *

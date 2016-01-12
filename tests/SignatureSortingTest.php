@@ -9,7 +9,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends PHPUnit_Framework_TestCase {
+class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTestCase {
 	/**
 	 * Test signature sorting.
 	 */
