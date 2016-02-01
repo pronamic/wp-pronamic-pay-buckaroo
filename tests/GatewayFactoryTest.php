@@ -1,6 +1,6 @@
 <?php
 
-class Pronamic_WP_Pay_Gateways_Buckaroo_GatewayFactoryTest extends PHPUnit_Framework_TestCase {
+class Pronamic_WP_Pay_Gateways_Buckaroo_GatewayFactoryTest extends WP_UnitTestCase {
 	function test_gateway_factory() {
 		Pronamic_WP_Pay_GatewayFactory::register( 'Pronamic_WP_Pay_Gateways_Buckaroo_Config', 'Pronamic_WP_Pay_Gateways_Buckaroo_Gateway' );
 

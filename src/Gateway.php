@@ -3,8 +3,9 @@
 /**
  * Title: Buckaroo gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
  * @version 1.2.0
  * @since 1.0.0
@@ -39,6 +40,21 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		if ( 'test' === $config->mode ) {
 			$this->client->set_payment_server_url( Pronamic_WP_Pay_Gateways_Buckaroo_Client::GATEWAY_TEST_URL );
 		}
+	}
+
+	/////////////////////////////////////////////////
+
+	/**
+	 * Get supported payment methods
+	 *
+	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
+	 */
+	public function get_supported_payment_methods() {
+		return array(
+			Pronamic_WP_Pay_PaymentMethods::IDEAL        => Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD  => Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::VISA,
+			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH  => Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH,
+		);
 	}
 
 	/////////////////////////////////////////////////
@@ -80,13 +96,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_description( $data->get_description() );
 		$this->client->set_amount( $data->get_amount() );
 		$this->client->set_invoice_number( $payment->get_id() );
-
-		$return_url = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-
-		$this->client->set_return_url( $return_url );
-		$this->client->set_return_cancel_url( $return_url );
-		$this->client->set_return_error_url( $return_url );
-		$this->client->set_return_reject_url( $return_url );
+		$this->client->set_return_url( $payment->get_return_url() );
+		$this->client->set_return_cancel_url( $payment->get_return_url() );
+		$this->client->set_return_error_url( $payment->get_return_url() );
+		$this->client->set_return_reject_url( $payment->get_return_url() );
 	}
 
 	/////////////////////////////////////////////////

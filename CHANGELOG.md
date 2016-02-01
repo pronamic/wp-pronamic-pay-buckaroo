@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.2.1] - 2016-02-01
+- Added an gateway settings class.
+
 ## [1.2.0] - 2015-11-02
 - Renamed namespace prefix from 'class Pronamic_WP_Pay_Buckaroo_' to 'Pronamic_WP_Pay_Gateways_Buckaroo_'.
 
@@ -24,7 +27,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.2...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.1...HEAD
+[1.2.1]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/wp-pay-gateways/buckaroo/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/wp-pay-gateways/buckaroo/compare/1.0.0...1.1.0
