@@ -6,6 +6,7 @@
 
 		<exclude name="Squiz.Commenting" />
 
+		<exclude name="WordPress.VIP.SlowDBQuery.slow_db_query" />
 		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
 		<exclude name="WordPress.VIP.ValidatedSanitizedInput" />
 	</rule>

@@ -11,8 +11,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 		$function = array( 'Pronamic_WP_Pay_Gateways_Buckaroo_Listener', 'listen' );
 
 		if ( ! has_action( 'wp_loaded', $function ) ) {
-			add_action( 'wp_loaded', $function );	
-		}		
+			add_action( 'wp_loaded', $function );
+		}
 	}
 
 	public function get_config_factory_class() {
