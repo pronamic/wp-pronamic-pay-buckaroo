@@ -37,10 +37,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Settings';
 	}
 
-	public function get_gateway_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Gateway';
-	}
-
 	/**
 	 * Get required settings for this integration.
 	 *

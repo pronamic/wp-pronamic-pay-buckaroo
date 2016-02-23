@@ -14,4 +14,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Config extends Pronamic_WP_Pay_GatewayCo
 	public $website_key;
 
 	public $secret_key;
+
+	public function get_gateway_class() {
+		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Gateway';
+	}
 }
