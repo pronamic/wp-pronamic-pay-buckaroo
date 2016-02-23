@@ -29,10 +29,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 		return 'Pronamic_WP_Pay_Gateways_Buckaroo_ConfigFactory';
 	}
 
-	public function get_config_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Config';
-	}
-
 	public function get_settings_class() {
 		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Settings';
 	}
