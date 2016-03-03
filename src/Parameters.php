@@ -106,6 +106,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 */
 	const REQUESTED_SERVICES = 'brq_requestedservices';
 
+	/**
+	 * Indicator for the 'brq_excludedservices' parameter
+	 *
+	 * The service code for the payment method. Ex.: visa, mastercard, paypal
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const EXCLUDED_SERVICES = 'brq_excludedservices';
+
 	//////////////////////////////////////////////////
 
 	/**

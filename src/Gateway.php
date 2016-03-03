@@ -36,6 +36,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client = new Pronamic_WP_Pay_Gateways_Buckaroo_Client();
 		$this->client->set_website_key( $config->website_key );
 		$this->client->set_secret_key( $config->secret_key );
+		$this->client->set_excluded_services( $config->excluded_services );
 
 		if ( 'test' === $config->mode ) {
 			$this->client->set_payment_server_url( Pronamic_WP_Pay_Gateways_Buckaroo_Client::GATEWAY_TEST_URL );
