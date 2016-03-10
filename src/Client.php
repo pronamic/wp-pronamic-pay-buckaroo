@@ -388,6 +388,44 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * Get issuers
+	 *
+	 * @see http://support.buckaroo.nl/index.php/Service_iDEAL#iDEAL_banken_lijst_opvragen
+	 * @return array
+	 */
+	public function get_issuers() {
+		$url = 'https://checkout.buckaroo.nl/nvp/';
+		$url = add_query_arg( 'op', 'TransactionRequestSpecification', $url );
+
+		$data = array(
+			'brq_websitekey'        => $this->get_website_key(),
+			'brq_services'          => 'ideal',
+			'brq_latestversiononly' => 'True',
+			'brq_culture'           => 'nl-NL',
+			'brq_channel'           => 'web',
+		);
+
+		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
+
+		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
+
+		$result = wp_remote_post( $url, array(
+			'body' => http_build_query( $data )
+		) );
+
+		if ( 200 == wp_remote_retrieve_response_code( $result ) ) {
+			$body = wp_remote_retrieve_body( $result );
+
+			wp_parse_str( $body, $data );
+
+			echo $url;
+			var_dump( $data );
+		}
+	}
+
+	//////////////////////////////////////////////////
+
+	/**
 	 * Get HTML fields
 	 *
 	 * @since 1.1.1
