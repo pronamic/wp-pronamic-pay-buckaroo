@@ -83,6 +83,25 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			),
 		);
 
+		// Invoice number
+		$fields[] = array(
+			'filter'      => FILTER_SANITIZE_STRING,
+			'section'     => 'buckaroo_advanced',
+			'meta_key'    => '_pronamic_gateway_buckaroo_invoice_number',
+			'title'       => __( 'Invoice number', 'pronamic_ideal' ),
+			'type'        => 'text',
+			'classes'     => array( 'regular-text', 'code' ),
+			'tooltip'     => sprintf(
+				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
+				sprintf( '<code>%s</code>', 'brq_invoicenumber' )
+			),
+			'description' => sprintf(
+				'%s<br />%s',
+				sprintf( __( 'Available tags: %s', 'pronamic_ideal' ), sprintf( '<code>%s</code> <code>%s</code>', '{order_id}', '{payment_id}' ) ),
+				sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), '{payment_id}' )
+			),
+		);
+
 		// Push URL
 		$fields[] = array(
 			'section'     => 'buckaroo_feedback',

@@ -19,6 +19,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_ConfigFactory extends Pronamic_WP_Pay_Ga
 
 		$config->excluded_services = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_excluded_services', true );
 
+		$config->invoice_number    = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_invoice_number', true );
+
 		$config->mode              = get_post_meta( $post_id, '_pronamic_gateway_mode', true );
 
 		return $config;
