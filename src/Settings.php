@@ -19,8 +19,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 	public function sections( array $sections ) {
 		// Buckaroo
 		$sections['buckaroo'] = array(
-			'title'   => __( 'Buckaroo', 'pronamic_ideal' ),
-			'methods' => array( 'buckaroo' ),
+			'title'       => __( 'Buckaroo', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
 			'description' => sprintf(
 				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Buckaroo', 'pronamic_ideal' )
@@ -28,15 +28,15 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 		);
 
 		$sections['buckaroo_advanced'] = array(
-			'title'   => __( 'Advanced', 'pronamic_ideal' ),
-			'methods' => array( 'buckaroo' ),
+			'title'       => __( 'Advanced', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
 			'description' => __( 'Optional settings for advanced usage only.', 'pronamic_ideal' ),
 		);
 
 		// Transaction feedback
 		$sections['buckaroo_feedback'] = array(
-			'title'   => __( 'Transaction feedback', 'pronamic_ideal' ),
-			'methods' => array( 'buckaroo' ),
+			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
 			'description' => sprintf(
 				__( 'Set the Push URL in the %s dashboard to receive automatic transaction status updates.', 'pronamic_ideal' ),
 				__( 'Buckaroo', 'pronamic_ideal' )
