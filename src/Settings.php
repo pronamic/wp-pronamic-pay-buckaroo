@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.1
+ * @version 1.2.3
  * @since 1.2.1
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_GatewaySettings {
@@ -19,8 +19,28 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 	public function sections( array $sections ) {
 		// Buckaroo
 		$sections['buckaroo'] = array(
-			'title'   => __( 'Buckaroo', 'pronamic_ideal' ),
-			'methods' => array( 'buckaroo' ),
+			'title'       => __( 'Buckaroo', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
+			'description' => sprintf(
+				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
+				__( 'Buckaroo', 'pronamic_ideal' )
+			),
+		);
+
+		$sections['buckaroo_advanced'] = array(
+			'title'       => __( 'Advanced', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
+			'description' => __( 'Optional settings for advanced usage only.', 'pronamic_ideal' ),
+		);
+
+		// Transaction feedback
+		$sections['buckaroo_feedback'] = array(
+			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'methods'     => array( 'buckaroo' ),
+			'description' => sprintf(
+				__( 'Set the Push URL in the %s dashboard to receive automatic transaction status updates.', 'pronamic_ideal' ),
+				__( 'Buckaroo', 'pronamic_ideal' )
+			),
 		);
 
 		return $sections;
@@ -35,10 +55,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			'title'       => __( 'Website Key', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'code' ),
-			'description' => sprintf(
-				__( 'You can find your Buckaroo website keys in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Profile" » "Website".', 'pronamic_ideal' ),
-				'https://payment.buckaroo.nl/'
-			),
+			'tooltip'     => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
 		);
 
 		// Secret Key
@@ -49,20 +66,65 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			'title'       => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
-			'description' => sprintf(
-				__( 'You can find your Buckaroo secret key in the <a href="%s" target="_blank">Buckaroo Payment Plaza</a> under "Configuration" » "Secret Key for Digital Signature".', 'pronamic_ideal' ),
-				'https://payment.buckaroo.nl/'
+			'tooltip'     => __( 'Secret key as mentioned in the Buckaroo dashboardb on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+		);
+
+		// Excluded services
+		$fields[] = array(
+			'filter'      => FILTER_SANITIZE_STRING,
+			'section'     => 'buckaroo_advanced',
+			'meta_key'    => '_pronamic_gateway_buckaroo_excluded_services',
+			'title'       => __( 'Excluded services', 'pronamic_ideal' ),
+			'type'        => 'text',
+			'classes'     => array( 'regular-text', 'code' ),
+			'tooltip'     => sprintf(
+				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
+				sprintf( '<code>%s</code>', 'brq_exludedservices' )
 			),
 		);
 
-		// Push URI
+		// Invoice number
 		$fields[] = array(
-			'section'     => 'buckaroo',
-			'title'       => __( 'Push URI', 'pronamic_ideal' ),
+			'filter'      => FILTER_SANITIZE_STRING,
+			'section'     => 'buckaroo_advanced',
+			'meta_key'    => '_pronamic_gateway_buckaroo_invoice_number',
+			'title'       => __( 'Invoice number', 'pronamic_ideal' ),
+			'type'        => 'text',
+			'classes'     => array( 'regular-text', 'code' ),
+			'tooltip'     => sprintf(
+				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
+				sprintf( '<code>%s</code>', 'brq_invoicenumber' )
+			),
+			'description' => sprintf(
+				'%s<br />%s',
+				sprintf( __( 'Available tags: %s', 'pronamic_ideal' ), sprintf( '<code>%s</code> <code>%s</code>', '{order_id}', '{payment_id}' ) ),
+				sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), '{payment_id}' )
+			),
+		);
+
+		// Push URL
+		$fields[] = array(
+			'section'     => 'buckaroo_feedback',
+			'title'       => __( 'Push URL', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'large-text', 'code' ),
 			'value'       => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
 			'readonly'    => true,
+			'tooltip'     => sprintf(
+				__( 'Copy the Push URL to the %s dashboard to receive automatic transaction status updates.', 'pronamic_ideal' ),
+				__( 'Buckaroo', 'pronamic_ideal' )
+			),
+		);
+
+		// Transaction feedback
+		$fields[] = array(
+			'section'     => 'buckaroo',
+			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'type'        => 'description',
+			'html'        => sprintf(
+				'<span class="dashicons dashicons-warning"></span> %s',
+				__( 'Receiving payment status updates needs additional configuration, if not yet completed.', 'pronamic_ideal' )
+			),
 		);
 
 		return $fields;

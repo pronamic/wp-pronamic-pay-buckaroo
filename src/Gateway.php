@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 1.2.3
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -36,6 +36,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client = new Pronamic_WP_Pay_Gateways_Buckaroo_Client();
 		$this->client->set_website_key( $config->website_key );
 		$this->client->set_secret_key( $config->secret_key );
+		$this->client->set_excluded_services( $config->excluded_services );
+		$this->client->set_invoice_number( $config->invoice_number );
 
 		if ( 'test' === $config->mode ) {
 			$this->client->set_payment_server_url( Pronamic_WP_Pay_Gateways_Buckaroo_Client::GATEWAY_TEST_URL );
@@ -95,7 +97,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_currency( $data->get_currency() );
 		$this->client->set_description( $data->get_description() );
 		$this->client->set_amount( $data->get_amount() );
-		$this->client->set_invoice_number( $payment->get_id() );
+		$this->client->set_invoice_number( Pronamic_WP_Pay_Gateways_Buckaroo_Util::get_invoice_number( $this->client->get_invoice_number(), $data, $payment ) );
 		$this->client->set_return_url( $payment->get_return_url() );
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
 		$this->client->set_return_error_url( $payment->get_return_url() );

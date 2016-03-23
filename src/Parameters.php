@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 1.2.3
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
@@ -105,6 +105,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 * @var string
 	 */
 	const REQUESTED_SERVICES = 'brq_requestedservices';
+
+	/**
+	 * Indicator for the 'brq_excludedservices' parameter
+	 *
+	 * The service code for the payment method. Ex.: visa, mastercard, paypal
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const EXCLUDED_SERVICES = 'brq_excludedservices';
 
 	//////////////////////////////////////////////////
 

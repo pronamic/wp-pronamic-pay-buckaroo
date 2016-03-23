@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 1.2.3
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
@@ -163,6 +163,15 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * Excluded services
+	 *
+	 * @var array
+	 */
+	private $excluded_services;
+
+	//////////////////////////////////////////////////
+
+	/**
 	 * Constructs and initialize a iDEAL kassa object
 	 */
 	public function __construct() {
@@ -229,6 +238,17 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 	public function add_requested_service( $service ) {
 		$this->requested_services[] = $service;
+	}
+
+	//////////////////////////////////////////////////
+
+
+	public function get_excluded_services() {
+		return $this->excluded_services;
+	}
+
+	public function set_excluded_services( $service ) {
+		$this->excluded_services = $service;
 	}
 
 	//////////////////////////////////////////////////
@@ -387,6 +407,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_ERROR_URL   => $this->get_return_error_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_CANCEL_URL  => $this->get_return_cancel_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::REQUESTED_SERVICES => implode( ',', $this->get_requested_services() ),
+			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::EXCLUDED_SERVICES  => $this->get_excluded_services(),
 		);
 
 		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
