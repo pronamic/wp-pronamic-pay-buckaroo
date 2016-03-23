@@ -394,21 +394,24 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * @return array
 	 */
 	public function get_issuers() {
-		$url = 'https://checkout.buckaroo.nl/nvp/';
+		$url = 'https://testcheckout.buckaroo.nl/nvp/';
 		$url = add_query_arg( 'op', 'TransactionRequestSpecification', $url );
 
 		$data = array(
 			'brq_websitekey'        => $this->get_website_key(),
 			'brq_services'          => 'ideal',
-			'brq_latestversiononly' => 'True',
-			'brq_culture'           => 'nl-NL',
-			'brq_channel'           => 'web',
+			// 'brq_latestversiononly' => 'True',
+			// 'brq_culture'           => 'nl-NL',
+			// 'brq_channel'           => 'web',
 		);
 
 		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
 
 		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
 
+		echo http_build_query( $data );
+var_dump( $url );
+var_dump( $data );
 		$result = wp_remote_post( $url, array(
 			'body' => http_build_query( $data )
 		) );
@@ -417,9 +420,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			$body = wp_remote_retrieve_body( $result );
 
 			wp_parse_str( $body, $data );
-
+print_r( $data );
+/*
 			echo $url;
 			var_dump( $data );
+*/
 		}
 	}
 
