@@ -115,6 +115,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL );
+				$this->client->set_ideal_issuer( $data->get_issuer_id() );
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :

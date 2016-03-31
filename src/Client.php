@@ -96,6 +96,15 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * The iDEAL issuer
+	 *
+	 * @var string
+	 */
+	private $ideal_issuer;
+
+	//////////////////////////////////////////////////
+
+	/**
 	 * The country code (culture)
 	 *
 	 * @var string
@@ -242,6 +251,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 	public function set_payment_method( $payment_method ) {
 		$this->payment_method = $payment_method;
+	}
+
+	//////////////////////////////////////////////////
+
+	public function get_ideal_issuer() {
+		return $this->ideal_issuer;
+	}
+
+	public function set_ideal_issuer( $issuer ) {
+		$this->ideal_issuer = $issuer;
 	}
 
 	//////////////////////////////////////////////////
