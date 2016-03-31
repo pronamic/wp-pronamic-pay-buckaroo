@@ -415,7 +415,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$data = array(
 			'brq_websitekey'        => $this->get_website_key(),
 			'brq_services'          => 'ideal',
-			// 'brq_latestversiononly' => 'True',
+			'brq_latestversiononly' => 'True',
 			// 'brq_culture'           => 'nl-NL',
 			// 'brq_channel'           => 'web',
 		);
@@ -444,7 +444,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 					return $issuers;
 				}
 
-				if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] || '2' !== $service['VERSION'] ) {
+				if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
 					continue;
 				}
 
