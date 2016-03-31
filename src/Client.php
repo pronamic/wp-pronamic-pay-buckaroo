@@ -25,6 +25,20 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	const GATEWAY_TEST_URL = 'https://testcheckout.buckaroo.nl/html/';
 
+	/**
+	 * Gateway Name-Value-Pair URL
+	 *
+	 * @var string
+	 */
+	const GATEWAY_NVP_URL = 'https://checkout.buckaroo.nl/nvp/';
+
+	/**
+	 * Gateway Name-Value-Pair test URL
+	 *
+	 * @var string
+	 */
+	const GATEWAY_NVP_TEST_URL = 'https://testcheckout.buckaroo.nl/nvp/';
+
 	//////////////////////////////////////////////////
 
 	/**
@@ -394,8 +408,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * @return array
 	 */
 	public function get_issuers() {
-		$url = 'https://testcheckout.buckaroo.nl/nvp/';
-		$url = add_query_arg( 'op', 'TransactionRequestSpecification', $url );
+		$issuers = array();
+
+		$url = add_query_arg( 'op', 'TransactionRequestSpecification', self::GATEWAY_NVP_TEST_URL );
 
 		$data = array(
 			'brq_websitekey'        => $this->get_website_key(),
@@ -409,23 +424,60 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
 
-		echo http_build_query( $data );
-var_dump( $url );
-var_dump( $data );
 		$result = wp_remote_post( $url, array(
-			'body' => http_build_query( $data )
+			'body' => http_build_query( $data ),
 		) );
 
-		if ( 200 == wp_remote_retrieve_response_code( $result ) ) {
+		if ( 200 === wp_remote_retrieve_response_code( $result ) ) {
 			$body = wp_remote_retrieve_body( $result );
 
 			wp_parse_str( $body, $data );
-print_r( $data );
-/*
-			echo $url;
-			var_dump( $data );
-*/
+
+			$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::transform_flat_response( $data );
+
+			if ( ! isset( $data['BRQ_SERVICES'] ) ) {
+				return $issuers;
+			}
+
+			foreach ( $data['BRQ_SERVICES'] as $service ) {
+				if ( ! isset( $service['NAME'], $service['VERSION'], $service['ACTIONDESCRIPTION'] ) ) {
+					return $issuers;
+				}
+
+				if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] || '2' !== $service['VERSION'] ) {
+					continue;
+				}
+
+				foreach ( $service['ACTIONDESCRIPTION'] as $action ) {
+					if ( ! isset( $action['NAME'], $action['REQUESTPARAMETERS'] ) ) {
+						return $issuers;
+					}
+
+					if ( 'Pay' !== $action['NAME'] ) {
+						continue;
+					}
+
+					foreach ( $action['REQUESTPARAMETERS'] as $parameter ) {
+
+						if ( ! isset( $parameter['NAME'], $parameter['LISTITEMDESCRIPTION'] ) ) {
+							return $issuers;
+						}
+
+						if ( 'issuer' !== $parameter['NAME'] ) {
+							continue;
+						}
+
+						foreach ( $parameter['LISTITEMDESCRIPTION'] as $issuer ) {
+							$issuers[ $issuer['VALUE'] ] = $issuer['DESCRIPTION'];
+						}
+
+						break;
+					}
+				}
+			}
 		}
+
+		return $issuers;
 	}
 
 	//////////////////////////////////////////////////

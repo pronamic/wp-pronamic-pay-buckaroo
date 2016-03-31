@@ -46,4 +46,50 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	public static function urldecode( array $data ) {
 		return array_map( 'urldecode', $data );
 	}
+
+	/**
+	 * Transform flat Buckaroo response into multidimensional array.
+	 *
+	 * @param array $response
+	 * @return array
+	 */
+	public static function transform_flat_response( $response = array() ) {
+		$return = array();
+
+		if ( is_array( $response ) ) {
+			foreach ( $response as $flat_key => $value ) {
+				unset( $response[ $flat_key ] );
+
+				$is_brq = ( 'BRQ_' === substr( $flat_key, 0, 4 ) );
+
+				// Remove 'BRQ_' from flat key (first part key will be prefixed with 'BRQ_')
+				if ( $is_brq ) {
+					$flat_key = substr_replace( $flat_key, '', 0, 4 );
+				}
+
+				$parts = explode( '_', $flat_key );
+
+				// Prefix first key with BRQ_
+				if ( $is_brq && count( $parts ) > 0 ) {
+					$parts[0] = sprintf( 'BRQ_%s', $parts[0] );
+				}
+
+				$item =& $return;
+
+				// Define key parts as array and set current item
+				foreach ( $parts as $key ) {
+					if ( ! isset( $item[ $key ] ) ) {
+						$item[ $key ] = array();
+					}
+
+					$item =& $item[ $key ];
+				}
+
+				// Set value of item
+				$item = $value;
+			}
+		}
+
+		return $return;
+	}
 }
