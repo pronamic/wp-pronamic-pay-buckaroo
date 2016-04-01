@@ -432,8 +432,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$url = add_query_arg( 'op', 'TransactionRequestSpecification', self::GATEWAY_NVP_TEST_URL );
 
 		$data = array(
-			'brq_websitekey' => $this->get_website_key(),
-			'brq_services'   => 'ideal',
+			'brq_websitekey'        => $this->get_website_key(),
+			'brq_services'          => 'ideal',
+			'brq_latestversiononly' => 'True',
 		);
 
 		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
