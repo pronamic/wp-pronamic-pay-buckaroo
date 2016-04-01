@@ -25,6 +25,20 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	const GATEWAY_TEST_URL = 'https://testcheckout.buckaroo.nl/html/';
 
+	/**
+	 * Gateway Name-Value-Pair URL
+	 *
+	 * @var string
+	 */
+	const GATEWAY_NVP_URL = 'https://checkout.buckaroo.nl/nvp/';
+
+	/**
+	 * Gateway Name-Value-Pair test URL
+	 *
+	 * @var string
+	 */
+	const GATEWAY_NVP_TEST_URL = 'https://testcheckout.buckaroo.nl/nvp/';
+
 	//////////////////////////////////////////////////
 
 	/**
@@ -78,6 +92,15 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * @var string
 	 */
 	private $payment_method;
+
+	//////////////////////////////////////////////////
+
+	/**
+	 * The iDEAL issuer
+	 *
+	 * @var string
+	 */
+	private $ideal_issuer;
 
 	//////////////////////////////////////////////////
 
@@ -228,6 +251,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 	public function set_payment_method( $payment_method ) {
 		$this->payment_method = $payment_method;
+	}
+
+	//////////////////////////////////////////////////
+
+	public function get_ideal_issuer() {
+		return $this->ideal_issuer;
+	}
+
+	public function set_ideal_issuer( $issuer ) {
+		$this->ideal_issuer = $issuer;
 	}
 
 	//////////////////////////////////////////////////
@@ -383,6 +416,87 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	public function set_return_cancel_url( $url ) {
 		$this->return_cancel_url = $url;
+	}
+
+	//////////////////////////////////////////////////
+
+	/**
+	 * Get issuers
+	 *
+	 * @see http://support.buckaroo.nl/index.php/Service_iDEAL#iDEAL_banken_lijst_opvragen
+	 * @return array
+	 */
+	public function get_issuers() {
+		$issuers = array();
+
+		$url = add_query_arg( 'op', 'TransactionRequestSpecification', self::GATEWAY_NVP_TEST_URL );
+
+		$data = array(
+			'brq_websitekey'        => $this->get_website_key(),
+			'brq_services'          => 'ideal',
+			'brq_latestversiononly' => 'True',
+			// 'brq_culture'           => 'nl-NL',
+			// 'brq_channel'           => 'web',
+		);
+
+		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
+
+		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
+
+		$result = wp_remote_post( $url, array(
+			'body' => http_build_query( $data ),
+		) );
+
+		if ( 200 === wp_remote_retrieve_response_code( $result ) ) {
+			$body = wp_remote_retrieve_body( $result );
+
+			wp_parse_str( $body, $data );
+
+			$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::transform_flat_response( $data );
+
+			if ( ! isset( $data['BRQ_SERVICES'] ) ) {
+				return $issuers;
+			}
+
+			foreach ( $data['BRQ_SERVICES'] as $service ) {
+				if ( ! isset( $service['NAME'], $service['VERSION'], $service['ACTIONDESCRIPTION'] ) ) {
+					return $issuers;
+				}
+
+				if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
+					continue;
+				}
+
+				foreach ( $service['ACTIONDESCRIPTION'] as $action ) {
+					if ( ! isset( $action['NAME'], $action['REQUESTPARAMETERS'] ) ) {
+						return $issuers;
+					}
+
+					if ( 'Pay' !== $action['NAME'] ) {
+						continue;
+					}
+
+					foreach ( $action['REQUESTPARAMETERS'] as $parameter ) {
+
+						if ( ! isset( $parameter['NAME'], $parameter['LISTITEMDESCRIPTION'] ) ) {
+							return $issuers;
+						}
+
+						if ( 'issuer' !== $parameter['NAME'] ) {
+							continue;
+						}
+
+						foreach ( $parameter['LISTITEMDESCRIPTION'] as $issuer ) {
+							$issuers[ $issuer['VALUE'] ] = $issuer['DESCRIPTION'];
+						}
+
+						break;
+					}
+				}
+			}
+		}
+
+		return $issuers;
 	}
 
 	//////////////////////////////////////////////////

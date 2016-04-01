@@ -84,6 +84,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 */
 	const DESCRIPTION = 'brq_description';
 
+	/**
+	 * Indicator for the 'brq_service_ideal_issuer' parameter
+	 *
+	 * The issuer to use for the payment.
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const IDEAL_ISSUER = 'brq_service_ideal_issuer';
+
 	//////////////////////////////////////////////////
 
 	/**

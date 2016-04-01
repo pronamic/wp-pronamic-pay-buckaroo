@@ -47,6 +47,44 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/////////////////////////////////////////////////
 
 	/**
+	 * Get issuers
+	 *
+	 * @see Pronamic_WP_Pay_Gateway::get_issuers()
+	 */
+	public function get_issuers() {
+		$groups = array();
+
+		$result = $this->client->get_issuers();
+
+		if ( $result ) {
+			$groups[] = array(
+				'options' => $result,
+			);
+		} else {
+			$this->error = $this->client->get_error();
+		}
+
+		return $groups;
+	}
+
+	/////////////////////////////////////////////////
+
+	public function get_issuer_field() {
+		if ( Pronamic_WP_Pay_PaymentMethods::IDEAL === $this->get_payment_method() ) {
+			return array(
+				'id'       => 'pronamic_ideal_issuer_id',
+				'name'     => 'pronamic_ideal_issuer_id',
+				'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
+				'required' => true,
+				'type'     => 'select',
+				'choices'  => $this->get_transient_issuers(),
+			);
+		}
+	}
+
+	/////////////////////////////////////////////////
+
+	/**
 	 * Get supported payment methods
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
@@ -78,6 +116,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL );
+				$this->client->set_ideal_issuer( $data->get_issuer_id() );
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
