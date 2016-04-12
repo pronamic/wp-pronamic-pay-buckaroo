@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.3
+ * @version 1.2.4
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -61,11 +61,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 			$groups[] = array(
 				'options' => $result,
 			);
-		} else {
-			$this->error = $this->client->get_error();
-		}
 
-		return $groups;
+			return $groups;
+		}
+		
+		$this->error = $this->client->get_error();
 	}
 
 	/////////////////////////////////////////////////
