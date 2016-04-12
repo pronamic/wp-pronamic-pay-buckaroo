@@ -64,7 +64,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 
 			return $groups;
 		}
-		
+
 		$this->error = $this->client->get_error();
 	}
 
