@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.3
+ * @version 1.2.4
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
@@ -98,6 +98,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	/**
 	 * The iDEAL issuer
 	 *
+	 * @since 1.2.4
 	 * @var string
 	 */
 	private $ideal_issuer;
@@ -255,10 +256,22 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 	//////////////////////////////////////////////////
 
+	/**
+	 * Get iDEAL issuer.
+	 *
+	 * @since 1.2.4
+	 * @return string
+	 */
 	public function get_ideal_issuer() {
 		return $this->ideal_issuer;
 	}
 
+	/**
+	 * Set iDEAL issuer.
+	 *
+	 * @since 1.2.4
+	 * @param string $issuer
+	 */
 	public function set_ideal_issuer( $issuer ) {
 		$this->ideal_issuer = $issuer;
 	}
@@ -423,6 +436,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	/**
 	 * Get issuers
 	 *
+	 * @since 1.2.4
 	 * @see http://support.buckaroo.nl/index.php/Service_iDEAL#iDEAL_banken_lijst_opvragen
 	 * @return array
 	 */

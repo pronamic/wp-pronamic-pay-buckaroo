@@ -47,8 +47,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/////////////////////////////////////////////////
 
 	/**
-	 * Get issuers
+	 * Get issuers.
 	 *
+	 * @since 1.2.4
 	 * @see Pronamic_WP_Pay_Gateway::get_issuers()
 	 */
 	public function get_issuers() {
@@ -69,6 +70,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 
 	/////////////////////////////////////////////////
 
+	/**
+	 * Get issuer field.
+	 *
+	 * @return array
+	 */
 	public function get_issuer_field() {
 		if ( Pronamic_WP_Pay_PaymentMethods::IDEAL === $this->get_payment_method() ) {
 			return array(

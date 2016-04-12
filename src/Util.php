@@ -80,6 +80,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	/**
 	 * Transform flat Buckaroo response into multidimensional array.
 	 *
+	 * @since 1.2.4
 	 * @param array $response
 	 * @return array
 	 */

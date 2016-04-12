@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.3
+ * @version 1.2.4
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
@@ -90,6 +90,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 * The issuer to use for the payment.
 	 *
 	 * @required false
+	 * @since 1.2.4
 	 * @var string
 	 */
 	const IDEAL_ISSUER = 'brq_service_ideal_issuer';
