@@ -18,10 +18,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 * @param Pronamic_Pay_PaymentDataInterface $data
 	 * @param Pronamic_Pay_Payment              $payment
 	 */
-	public static function get_invoice_number( $invoice_number, Pronamic_Pay_PaymentDataInterface $data, Pronamic_Pay_Payment $payment ) {
+	public static function get_invoice_number( $invoice_number, Pronamic_Pay_Payment $payment ) {
 		// Replacements definition
 		$replacements = array(
-			'{order_id}'   => $data->get_order_id(),
+			'{order_id}'   => $payment->get_order_id(),
 			'{payment_id}' => $payment->get_id(),
 		);
 
