@@ -288,7 +288,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 	//////////////////////////////////////////////////
 
-
 	public function get_excluded_services() {
 		return $this->excluded_services;
 	}

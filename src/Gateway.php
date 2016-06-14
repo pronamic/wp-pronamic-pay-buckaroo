@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.4
+ * @version 1.2.5
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -113,16 +113,13 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::start()
 	 */
-	public function start( Pronamic_Pay_PaymentDataInterface $data, Pronamic_Pay_Payment $payment, $payment_method = null ) {
+	public function start( Pronamic_Pay_Payment $payment ) {
 		$payment->set_action_url( $this->client->get_payment_server_url() );
 
-		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
-		$culture = str_replace( '_', '-', $data->get_language_and_country() );
-
-		switch ( $payment_method ) {
+		switch ( $payment->get_method() ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL );
-				$this->client->set_ideal_issuer( $data->get_issuer_id() );
+				$this->client->set_ideal_issuer( $payment->get_issuer() );
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
@@ -138,11 +135,14 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 				break;
 		}
 
+		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
+		$culture = str_replace( '_', '-', $payment->get_locale() );
+
 		$this->client->set_culture( $culture );
-		$this->client->set_currency( $data->get_currency() );
-		$this->client->set_description( $data->get_description() );
-		$this->client->set_amount( $data->get_amount() );
-		$this->client->set_invoice_number( Pronamic_WP_Pay_Gateways_Buckaroo_Util::get_invoice_number( $this->client->get_invoice_number(), $data, $payment ) );
+		$this->client->set_currency( $payment->get_currency() );
+		$this->client->set_description( $payment->get_description() );
+		$this->client->set_amount( $payment->get_amount() );
+		$this->client->set_invoice_number( Pronamic_WP_Pay_Gateways_Buckaroo_Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
 		$this->client->set_return_url( $payment->get_return_url() );
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
 		$this->client->set_return_error_url( $payment->get_return_url() );
