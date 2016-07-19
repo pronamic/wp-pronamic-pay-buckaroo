@@ -492,46 +492,46 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			return $issuers;
 		}
 
-		if ( isset( $data[ 'BRQ_APIRESULT' ] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
-			$this->error = new WP_Error( 'buckaroo_error', sprintf( '%s %s', $error_msg, $data[ 'BRQ_APIERRORMESSAGE' ] ), $data );
+		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
+			$this->error = new WP_Error( 'buckaroo_error', sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] ), $data );
 
 			return $issuers;
 		}
 
-		if ( ! isset( $data[ 'BRQ_SERVICES' ] ) ) {
+		if ( ! isset( $data['BRQ_SERVICES'] ) ) {
 			return $issuers;
 		}
 
-		foreach ( $data[ 'BRQ_SERVICES' ] as $service ) {
-			if ( ! isset( $service[ 'NAME' ], $service[ 'VERSION' ], $service[ 'ACTIONDESCRIPTION' ] ) ) {
+		foreach ( $data['BRQ_SERVICES'] as $service ) {
+			if ( ! isset( $service['NAME'], $service['VERSION'], $service['ACTIONDESCRIPTION'] ) ) {
 				return $issuers;
 			}
 
-			if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service[ 'NAME' ] ) {
+			if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
 				continue;
 			}
 
-			foreach ( $service[ 'ACTIONDESCRIPTION' ] as $action ) {
-				if ( ! isset( $action[ 'NAME' ], $action[ 'REQUESTPARAMETERS' ] ) ) {
+			foreach ( $service['ACTIONDESCRIPTION'] as $action ) {
+				if ( ! isset( $action['NAME'], $action['REQUESTPARAMETERS'] ) ) {
 					return $issuers;
 				}
 
-				if ( 'Pay' !== $action[ 'NAME' ] ) {
+				if ( 'Pay' !== $action['NAME'] ) {
 					continue;
 				}
 
-				foreach ( $action[ 'REQUESTPARAMETERS' ] as $parameter ) {
+				foreach ( $action['REQUESTPARAMETERS'] as $parameter ) {
 
-					if ( ! isset( $parameter[ 'NAME' ], $parameter[ 'LISTITEMDESCRIPTION' ] ) ) {
+					if ( ! isset( $parameter['NAME'], $parameter['LISTITEMDESCRIPTION'] ) ) {
 						return $issuers;
 					}
 
-					if ( 'issuer' !== $parameter[ 'NAME' ] ) {
+					if ( 'issuer' !== $parameter['NAME'] ) {
 						continue;
 					}
 
-					foreach ( $parameter[ 'LISTITEMDESCRIPTION' ] as $issuer ) {
-						$issuers[ $issuer[ 'VALUE' ] ] = $issuer[ 'DESCRIPTION' ];
+					foreach ( $parameter['LISTITEMDESCRIPTION'] as $issuer ) {
+						$issuers[ $issuer['VALUE'] ] = $issuer['DESCRIPTION'];
 					}
 
 					break;
