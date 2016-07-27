@@ -131,6 +131,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::VISA );
 
 				break;
+			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT :
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH );
 
