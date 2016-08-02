@@ -137,8 +137,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 
 				break;
 			default :
-				// Leap of faith if the WordPress payment method could not transform to a Buckaroo method?
-				$this->client->set_payment_method( $payment_method );
+				if ( '0' !== $payment_method ) {
+					// Leap of faith if the WordPress payment method could not transform to a Buckaroo method?
+					$this->client->set_payment_method( $payment_method );
+				}
 
 				break;
 		}
