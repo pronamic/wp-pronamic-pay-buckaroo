@@ -8,7 +8,7 @@
 [![Total Downloads](https://poser.pugx.org/wp-pay-gateways/buckaroo/downloads.svg)](https://packagist.org/packages/wp-pay-gateways/buckaroo)
 [![Latest Unstable Version](https://poser.pugx.org/wp-pay-gateways/buckaroo/v/unstable.svg)](https://packagist.org/packages/wp-pay-gateways/buckaroo)
 [![License](https://poser.pugx.org/wp-pay-gateways/buckaroo/license.svg)](https://packagist.org/packages/wp-pay-gateways/buckaroo)
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 ## Links
 
