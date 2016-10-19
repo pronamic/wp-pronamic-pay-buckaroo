@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.4
+ * @version 1.2.6
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
@@ -196,8 +196,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Error
+	 * Error.
 	 *
+	 * @since 1.2.6
 	 * @var WP_Error
 	 */
 	private $error;
@@ -216,8 +217,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Error
+	 * Get error.
 	 *
+	 * @since 1.2.6
 	 * @return WP_Error
 	 */
 	public function get_error() {
