@@ -7,7 +7,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
-## [1.2.6] - 2016-10-19
+## [1.2.6] - 2016-10-20
 - Fixed unable to use payment method 'All available methods'.
 - Added new Bancontact constant.
 - Fixed `Fatal error: Call to undefined method Pronamic_WP_Pay_Gateways_Buckaroo_Client::get_error()`.
