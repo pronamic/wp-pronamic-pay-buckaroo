@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.4
+ * @version 1.2.6
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
@@ -196,12 +196,34 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * Error.
+	 *
+	 * @since 1.2.6
+	 * @var WP_Error
+	 */
+	private $error;
+
+	/////////////////////////////////////////////////
+
+	/**
 	 * Constructs and initialize a iDEAL kassa object
 	 */
 	public function __construct() {
 		$this->set_payment_server_url( self::GATEWAY_URL );
 
 		$this->requested_services = array();
+	}
+
+	//////////////////////////////////////////////////
+
+	/**
+	 * Get error.
+	 *
+	 * @since 1.2.6
+	 * @return WP_Error
+	 */
+	public function get_error() {
+		return $this->error;
 	}
 
 	//////////////////////////////////////////////////
@@ -458,51 +480,63 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			'body' => http_build_query( $data ),
 		) );
 
-		if ( 200 === wp_remote_retrieve_response_code( $result ) ) {
-			$body = wp_remote_retrieve_body( $result );
+		$body = wp_remote_retrieve_body( $result );
 
-			wp_parse_str( $body, $data );
+		wp_parse_str( $body, $data );
 
-			$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::transform_flat_response( $data );
+		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::transform_flat_response( $data );
 
-			if ( ! isset( $data['BRQ_SERVICES'] ) ) {
+		$error_msg = __( 'Unable to retrieve issuers from Buckaroo.', 'pronamic_ideal' );
+
+		if ( 200 !== wp_remote_retrieve_response_code( $result ) ) {
+			$this->error = new WP_Error( 'buckaroo_error', $error_msg, $data );
+
+			return $issuers;
+		}
+
+		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
+			$this->error = new WP_Error( 'buckaroo_error', sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] ), $data );
+
+			return $issuers;
+		}
+
+		if ( ! isset( $data['BRQ_SERVICES'] ) ) {
+			return $issuers;
+		}
+
+		foreach ( $data['BRQ_SERVICES'] as $service ) {
+			if ( ! isset( $service['NAME'], $service['VERSION'], $service['ACTIONDESCRIPTION'] ) ) {
 				return $issuers;
 			}
 
-			foreach ( $data['BRQ_SERVICES'] as $service ) {
-				if ( ! isset( $service['NAME'], $service['VERSION'], $service['ACTIONDESCRIPTION'] ) ) {
+			if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
+				continue;
+			}
+
+			foreach ( $service['ACTIONDESCRIPTION'] as $action ) {
+				if ( ! isset( $action['NAME'], $action['REQUESTPARAMETERS'] ) ) {
 					return $issuers;
 				}
 
-				if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
+				if ( 'Pay' !== $action['NAME'] ) {
 					continue;
 				}
 
-				foreach ( $service['ACTIONDESCRIPTION'] as $action ) {
-					if ( ! isset( $action['NAME'], $action['REQUESTPARAMETERS'] ) ) {
+				foreach ( $action['REQUESTPARAMETERS'] as $parameter ) {
+
+					if ( ! isset( $parameter['NAME'], $parameter['LISTITEMDESCRIPTION'] ) ) {
 						return $issuers;
 					}
 
-					if ( 'Pay' !== $action['NAME'] ) {
+					if ( 'issuer' !== $parameter['NAME'] ) {
 						continue;
 					}
 
-					foreach ( $action['REQUESTPARAMETERS'] as $parameter ) {
-
-						if ( ! isset( $parameter['NAME'], $parameter['LISTITEMDESCRIPTION'] ) ) {
-							return $issuers;
-						}
-
-						if ( 'issuer' !== $parameter['NAME'] ) {
-							continue;
-						}
-
-						foreach ( $parameter['LISTITEMDESCRIPTION'] as $issuer ) {
-							$issuers[ $issuer['VALUE'] ] = $issuer['DESCRIPTION'];
-						}
-
-						break;
+					foreach ( $parameter['LISTITEMDESCRIPTION'] as $issuer ) {
+						$issuers[ $issuer['VALUE'] ] = $issuer['DESCRIPTION'];
 					}
+
+					break;
 				}
 			}
 		}
