@@ -14,9 +14,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 	public function __construct() {
 		$this->id            = 'buckaroo';
 		$this->name          = 'Buckaroo - HTML';
-		$this->url           = 'https://payment.buckaroo.nl/';
+		$this->url           = 'https://plaza.buckaroo.nl/';
 		$this->product_url   = __( 'http://www.buckaroo-payments.com', 'pronamic_ideal' );
-		$this->dashboard_url = 'https://payment.buckaroo.nl/';
+		$this->dashboard_url = 'https://plaza.buckaroo.nl/';
 		$this->provider      = 'buckaroo';
 
 		// Actions
