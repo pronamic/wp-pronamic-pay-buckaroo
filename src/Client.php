@@ -595,6 +595,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_ERROR_URL   => $this->get_return_error_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_CANCEL_URL  => $this->get_return_cancel_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_URL           => $this->get_push_url(),
+			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_FAILURE_URL   => $this->get_push_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::REQUESTED_SERVICES => implode( ',', $this->get_requested_services() ),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::EXCLUDED_SERVICES  => $this->get_excluded_services(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::IDEAL_ISSUER       => $this->get_ideal_issuer(),

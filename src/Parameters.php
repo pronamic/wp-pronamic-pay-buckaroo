@@ -183,6 +183,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 */
 	const PUSH_URL = 'brq_push';
 
+	/**
+	 * Indicator for the 'brq_pushfailure' parameter
+	 *
+	 * The push failure URL used for payment status updates.
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const PUSH_FAILURE_URL = 'brq_pushfailure';
+
 	//////////////////////////////////////////////////
 	// Payment response
 	//////////////////////////////////////////////////
