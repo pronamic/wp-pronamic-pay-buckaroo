@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
--
+- Use `brq_push` parameter for the Buckaroo Push URL.
 
 ## [1.2.6] - 2016-10-20
 - Fixed unable to use payment method 'All available methods'.
