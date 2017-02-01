@@ -173,6 +173,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 */
 	const RETURN_CANCEL_URL = 'brq_returncancel';
 
+	/**
+	 * Indicator for the 'brq_push' parameter
+	 *
+	 * The push URL used for payment status updates.
+	 *
+	 * @required false
+	 * @var string
+	 */
+	const PUSH_URL = 'brq_push';
+
 	//////////////////////////////////////////////////
 	// Payment response
 	//////////////////////////////////////////////////

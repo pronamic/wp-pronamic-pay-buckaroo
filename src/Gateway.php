@@ -38,6 +38,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_secret_key( $config->secret_key );
 		$this->client->set_excluded_services( $config->excluded_services );
 		$this->client->set_invoice_number( $config->invoice_number );
+		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
 		if ( 'test' === $config->mode ) {
 			$this->client->set_payment_server_url( Pronamic_WP_Pay_Gateways_Buckaroo_Client::GATEWAY_TEST_URL );
