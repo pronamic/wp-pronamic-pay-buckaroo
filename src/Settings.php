@@ -3,11 +3,11 @@
 /**
  * Title: Buckaroo gateway settings
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.3
+ * @version 1.2.7
  * @since 1.2.1
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_GatewaySettings {

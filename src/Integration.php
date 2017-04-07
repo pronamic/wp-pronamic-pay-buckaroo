@@ -3,11 +3,11 @@
 /**
  * Title: Buckaroo integration
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Reüel van der Steege
- * @version 1.2.3
+ * @version 1.2.7
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gateways_AbstractIntegration {

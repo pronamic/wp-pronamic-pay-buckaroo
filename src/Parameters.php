@@ -3,11 +3,11 @@
 /**
  * Title: Buckaroo parameters constants
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.4
+ * @version 1.2.7
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
@@ -179,6 +179,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 * The push URL used for payment status updates.
 	 *
 	 * @required false
+	 * @since 1.2.7
 	 * @var string
 	 */
 	const PUSH_URL = 'brq_push';
@@ -189,6 +190,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 * The push failure URL used for payment status updates.
 	 *
 	 * @required false
+	 * @since 1.2.7
 	 * @var string
 	 */
 	const PUSH_FAILURE_URL = 'brq_pushfailure';
