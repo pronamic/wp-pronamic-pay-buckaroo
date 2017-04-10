@@ -3,11 +3,11 @@
 /**
  * Title: Buckaroo client
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.6
+ * @version 1.2.7
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
@@ -174,6 +174,15 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * @var string
 	 */
 	private $return_cancel_url;
+
+	//////////////////////////////////////////////////
+
+	/**
+	 * Push URL
+	 *
+	 * @var string
+	 */
+	private $push_url;
 
 	//////////////////////////////////////////////////
 
@@ -455,6 +464,26 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	//////////////////////////////////////////////////
 
 	/**
+	 * Get push URL
+	 *
+	 * @return string
+	 */
+	public function get_push_url() {
+		return $this->push_url;
+	}
+
+	/**
+	 * Set push URL
+	 *
+	 * @param string $url
+	 */
+	public function set_push_url( $url ) {
+		$this->push_url = $url;
+	}
+
+	//////////////////////////////////////////////////
+
+	/**
 	 * Get issuers
 	 *
 	 * @since 1.2.4
@@ -565,6 +594,8 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_REJECT_URL  => $this->get_return_reject_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_ERROR_URL   => $this->get_return_error_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_CANCEL_URL  => $this->get_return_cancel_url(),
+			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_URL           => $this->get_push_url(),
+			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_FAILURE_URL   => $this->get_push_url(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::REQUESTED_SERVICES => implode( ',', $this->get_requested_services() ),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::EXCLUDED_SERVICES  => $this->get_excluded_services(),
 			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::IDEAL_ISSUER       => $this->get_ideal_issuer(),

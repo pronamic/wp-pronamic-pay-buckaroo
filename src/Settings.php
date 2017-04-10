@@ -3,11 +3,11 @@
 /**
  * Title: Buckaroo gateway settings
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.3
+ * @version 1.2.7
  * @since 1.2.1
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_GatewaySettings {
@@ -37,10 +37,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 		$sections['buckaroo_feedback'] = array(
 			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
 			'methods'     => array( 'buckaroo' ),
-			'description' => sprintf(
-				__( 'Set the Push URL in the %s dashboard to receive automatic transaction status updates.', 'pronamic_ideal' ),
-				__( 'Buckaroo', 'pronamic_ideal' )
-			),
+			'description' => __( 'Payment status updates will be processed without any additional configuration. The <em>Push URL</em> is being used to receive the status updates.', 'pronamic_ideal' ),
 		);
 
 		return $sections;
@@ -67,6 +64,17 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => __( 'Secret key as mentioned in the Buckaroo dashboardb on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+		);
+
+		// Transaction feedback
+		$fields[] = array(
+			'section'     => 'buckaroo',
+			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'type'        => 'description',
+			'html'        => sprintf(
+				'<span class="dashicons dashicons-yes"></span> %s',
+				__( 'Payment status updates will be processed without any additional configuration.', 'pronamic_ideal' )
+			),
 		);
 
 		// Excluded services
@@ -110,21 +118,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			'classes'     => array( 'large-text', 'code' ),
 			'value'       => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
 			'readonly'    => true,
-			'tooltip'     => sprintf(
-				__( 'Copy the Push URL to the %s dashboard to receive automatic transaction status updates.', 'pronamic_ideal' ),
-				__( 'Buckaroo', 'pronamic_ideal' )
-			),
-		);
-
-		// Transaction feedback
-		$fields[] = array(
-			'section'     => 'buckaroo',
-			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
-			'type'        => 'description',
-			'html'        => sprintf(
-				'<span class="dashicons dashicons-warning"></span> %s',
-				__( 'Receiving payment status updates needs additional configuration, if not yet completed.', 'pronamic_ideal' )
-			),
+			'tooltip'     => __( 'The Push URL as sent with each transaction to receive automatic payment status updates on.', 'pronamic_ideal' ),
 		);
 
 		return $fields;

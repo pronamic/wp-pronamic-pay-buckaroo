@@ -3,20 +3,20 @@
 /**
  * Title: Buckaroo integration
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Reüel van der Steege
- * @version 1.2.3
+ * @version 1.2.7
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gateways_AbstractIntegration {
 	public function __construct() {
 		$this->id            = 'buckaroo';
 		$this->name          = 'Buckaroo - HTML';
-		$this->url           = 'https://payment.buckaroo.nl/';
+		$this->url           = 'https://plaza.buckaroo.nl/';
 		$this->product_url   = __( 'http://www.buckaroo-payments.com', 'pronamic_ideal' );
-		$this->dashboard_url = 'https://payment.buckaroo.nl/';
+		$this->dashboard_url = 'https://plaza.buckaroo.nl/';
 		$this->provider      = 'buckaroo';
 
 		// Actions

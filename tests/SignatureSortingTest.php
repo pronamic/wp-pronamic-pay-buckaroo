@@ -3,7 +3,7 @@
 /**
  * Title: Buckaroo signature sorting test.
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
@@ -22,7 +22,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTest
 		 */
 		$data = array(
 			'brq_websitekey' => '123456',
-			'brq_amount'     => '50.00',
 			'BRQ_AMOUNT'     => '25.00',
 			'brq_active'     => 'true',
 		);
@@ -30,7 +29,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTest
 		$expected = array(
 			'brq_active'     => 'true',
 			'BRQ_AMOUNT'     => '25.00',
-			'brq_amount'     => '50.00',
 			'brq_websitekey' => '123456',
 		);
 
