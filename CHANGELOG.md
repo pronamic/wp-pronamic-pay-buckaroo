@@ -7,7 +7,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - 
 
-## [1.2.7] - 2017-04-07
+## [1.2.7] - 2017-04-10
 - Use `brq_push` parameter for the Buckaroo Push URL.
 
 ## [1.2.6] - 2016-10-20
