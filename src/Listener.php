@@ -31,10 +31,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateway
 			$data = array_change_key_case( $data, CASE_LOWER );
 
 			if ( isset(
-				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ],
+				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID ],
 				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE ]
 			) ) {
-				$payment_id = $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ];
+				$payment_id = $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID ];
 
 				$payment = get_pronamic_payment( $payment_id );
 
