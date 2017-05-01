@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - 
 
+## [1.2.8] - 2017-05-01
+- Use custom payment ID field in transaction request/response instead of invoice number.
+
 ## [1.2.7] - 2017-04-10
 - Use `brq_push` parameter for the Buckaroo Push URL.
 
@@ -49,7 +52,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.6...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.8...HEAD
+[1.2.8]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.7...1.2.8
+[1.2.7]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.6...1.2.7
 [1.2.6]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.5...1.2.6
 [1.2.5]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.4...1.2.5
 [1.2.4]: https://github.com/wp-pay-gateways/buckaroo/compare/1.2.3...1.2.4

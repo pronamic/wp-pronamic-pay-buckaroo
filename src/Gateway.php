@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.7
+ * @version 1.2.8
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -149,6 +149,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
 		$culture = str_replace( '_', '-', $payment->get_locale() );
 
+		$this->client->set_payment_id( $payment->get_id() );
 		$this->client->set_culture( $culture );
 		$this->client->set_currency( $payment->get_currency() );
 		$this->client->set_description( $payment->get_description() );
