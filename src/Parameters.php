@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.7
+ * @version 1.2.8
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
@@ -325,6 +325,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
 	 * The unique post ID of the payment in WordPress.
 	 *
 	 * @var string
+	 * @since 1.2.8
 	 */
 	const ADD_PRONAMIC_PAYMENT_ID = 'add_pronamic_payment_id';
 }
