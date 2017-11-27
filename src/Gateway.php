@@ -99,8 +99,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	public function get_supported_payment_methods() {
 		return array(
 			Pronamic_WP_Pay_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
 			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
+			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
 		);
 	}
 
@@ -135,6 +136,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT :
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH );
+
+				break;
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
+				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::PAYPAL );
 
 				break;
 			default :
