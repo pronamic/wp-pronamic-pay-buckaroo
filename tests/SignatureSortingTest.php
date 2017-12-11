@@ -14,7 +14,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTest
 	/**
 	 * Test signature sorting.
 	 */
-	function test_signature_sorting() {
+	public function test_signature_sorting() {
 		/**
 		 * Sort these parameters alphabetically on the parameter name (brq_amount comes before brq_websitekey).
 		 *
