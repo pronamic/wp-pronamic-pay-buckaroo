@@ -16,7 +16,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 	 *
 	 * @dataProvider provider_case_mix
 	 */
-	function test_get_signature( $data ) {
+	public function test_get_signature( $data ) {
 		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
 
 		$this->assertEquals( '84e9802d60d727ade4a845c43033051d5758ce25', $signature );
@@ -27,7 +27,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 	 *
 	 * @dataProvider provider_case_mix
 	 */
-	function test_signature_filter( $data ) {
+	public function test_signature_filter( $data ) {
 		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::filter_data( $data );
 
 		$this->assertArrayNotHasKey( 'random_1234567890', $data );
@@ -40,7 +40,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 	 *
 	 * @dataProvider provider
 	 */
-	function test_create_signature( $data ) {
+	public function test_create_signature( $data ) {
 		$secret_key = '29E9BEB3F3428B2BCAA678DEC489A86A';
 
 		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::urldecode( $data );

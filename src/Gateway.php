@@ -99,8 +99,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	public function get_supported_payment_methods() {
 		return array(
 			Pronamic_WP_Pay_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
 			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
+			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
 		);
 	}
 
@@ -120,24 +121,28 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$payment_method = $payment->get_method();
 
 		switch ( $payment_method ) {
-			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
+			case Pronamic_WP_Pay_PaymentMethods::IDEAL:
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL );
 				$this->client->set_ideal_issuer( $payment->get_issuer() );
 
 				break;
-			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD:
 				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::AMERICAN_EXPRESS );
 				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::MAESTRO );
 				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::MASTERCARD );
 				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::VISA );
 
 				break;
-			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT :
-			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
+			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT:
+			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH:
 				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH );
 
 				break;
-			default :
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD:
+				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::PAYPAL );
+
+				break;
+			default:
 				if ( '0' !== $payment_method ) {
 					// Leap of faith if the WordPress payment method could not transform to a Buckaroo method?
 					$this->client->set_payment_method( $payment_method );
@@ -187,7 +192,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 
 		switch ( $method ) {
 			case 'GET':
-				$data = $_GET;
+				$data = $_GET; // WPCS: CSRF OK
 
 				break;
 			case 'POST':

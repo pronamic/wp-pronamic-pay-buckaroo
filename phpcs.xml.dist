@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<ruleset name="WordPress Pay Gateway: Buckaroo rules">
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/wimg/php-compatibility" />
+
+	<config name="minimum_supported_wp_version" value="4.7" />
+
+	<config name="testVersion" value="5.3-99.0" />
+
+	<rule ref="PHPCompatibility" />
+
+	<rule ref="WordPress">
+		<exclude name="Squiz.Commenting" />
+
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+
+		<exclude name="WordPress.VIP.SlowDBQuery.slow_db_query_meta_key" />
+		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
+		<exclude name="WordPress.VIP.ValidatedSanitizedInput" />
+	</rule>
+</ruleset>

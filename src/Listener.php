@@ -19,7 +19,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateway
 
 			switch ( $method ) {
 				case 'GET':
-					$data = $_GET;
+					$data = $_GET; // WPCS: CSRF OK
 
 					break;
 				case 'POST':
