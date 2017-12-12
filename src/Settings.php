@@ -23,7 +23,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_Gateway
 			'methods'     => array( 'buckaroo' ),
 			'description' => sprintf(
 				/* translators: %s: Buckaroo */
-				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
+				__( 'Account details are provided by %1$s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Buckaroo', 'pronamic_ideal' )
 			),
 		);
