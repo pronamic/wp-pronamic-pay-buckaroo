@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Payments\PaymentDataInterface;
 
 /**
  * Title: Buckaroo gateway
@@ -110,7 +111,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/**
 	 * Start
 	 *
-	 * @param Pronamic_Pay_PaymentDataInterface $data
+	 * @param PaymentDataInterface $data
 	 * @param Pronamic_Pay_Payment              $payment
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::start()

@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * Title: Buckaroo listener
@@ -48,7 +49,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateway
 			if ( $payment_id ) {
 				$payment = get_pronamic_payment( $payment_id );
 
-				Pronamic_WP_Pay_Plugin::update_payment( $payment );
+				Plugin::update_payment( $payment );
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Payments\PaymentDataInterface;
 
 /**
  * Title: Buckaroo utility class
@@ -15,7 +16,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 * Get invoice number.
 	 *
 	 * @param string                            $invoice_number
-	 * @param Pronamic_Pay_PaymentDataInterface $data
+	 * @param PaymentDataInterface $data
 	 * @param Pronamic_Pay_Payment              $payment
 	 */
 	public static function get_invoice_number( $invoice_number, Pronamic_Pay_Payment $payment ) {
