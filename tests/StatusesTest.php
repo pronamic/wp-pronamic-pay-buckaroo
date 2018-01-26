@@ -1,5 +1,8 @@
 <?php
 
+use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+use Pronamic\WordPress\Pay\Gateways\Buckaroo\Statuses;
+
 /**
  * Title: Buckaroo statuses constants tests
  * Description:
@@ -17,7 +20,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_StatusesTest extends WP_UnitTestCase {
 	 * @dataProvider statusMatrixProvider
 	 */
 	public function testTransform( $buckaroo_status, $expected ) {
-		$status = Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::transform( $buckaroo_status );
+		$status = Statuses::transform( $buckaroo_status );
 
 		$this->assertEquals( $expected, $status );
 	}
@@ -25,20 +28,20 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_StatusesTest extends WP_UnitTestCase {
 	public function statusMatrixProvider() {
 		return array(
 			// Success
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::PAYMENT_SUCCESS, Pronamic_WP_Pay_Statuses::SUCCESS ),
+			array( Statuses::PAYMENT_SUCCESS, Core_Statuses::SUCCESS ),
 			// Failure
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::PAYMENT_FAILURE, Pronamic_WP_Pay_Statuses::FAILURE ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::VALIDATION_FAILURE, Pronamic_WP_Pay_Statuses::FAILURE ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::TECHNICAL_ERROR, Pronamic_WP_Pay_Statuses::FAILURE ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::PAYMENT_REJECTED, Pronamic_WP_Pay_Statuses::FAILURE ),
+			array( Statuses::PAYMENT_FAILURE, Core_Statuses::FAILURE ),
+			array( Statuses::VALIDATION_FAILURE, Core_Statuses::FAILURE ),
+			array( Statuses::TECHNICAL_ERROR, Core_Statuses::FAILURE ),
+			array( Statuses::PAYMENT_REJECTED, Core_Statuses::FAILURE ),
 			// Open
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::WAITING_FOR_USER_INPUT, Pronamic_WP_Pay_Statuses::OPEN ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::WAITING_FOR_PROCESSOR, Pronamic_WP_Pay_Statuses::OPEN ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::WAITING_ON_CONSUMER_ACTION, Pronamic_WP_Pay_Statuses::OPEN ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::PAYMENT_ON_HOLD, Pronamic_WP_Pay_Statuses::OPEN ),
+			array( Statuses::WAITING_FOR_USER_INPUT, Core_Statuses::OPEN ),
+			array( Statuses::WAITING_FOR_PROCESSOR, Core_Statuses::OPEN ),
+			array( Statuses::WAITING_ON_CONSUMER_ACTION, Core_Statuses::OPEN ),
+			array( Statuses::PAYMENT_ON_HOLD, Core_Statuses::OPEN ),
 			// Cancelled
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::CANCELLED_BY_CONSUMER, Pronamic_WP_Pay_Statuses::CANCELLED ),
-			array( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::CANCELLED_BY_MERCHANT, Pronamic_WP_Pay_Statuses::CANCELLED ),
+			array( Statuses::CANCELLED_BY_CONSUMER, Core_Statuses::CANCELLED ),
+			array( Statuses::CANCELLED_BY_MERCHANT, Core_Statuses::CANCELLED ),
 			// Other
 			array( 'not existing status', null ),
 		);

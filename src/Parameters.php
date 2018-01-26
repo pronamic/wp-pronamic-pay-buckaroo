@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
 /**
  * Title: Buckaroo parameters constants
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.2.8
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Parameters {
+class Parameters {
 	/**
 	 * Indicator for the 'brq_websitekey' parameter
 	 *

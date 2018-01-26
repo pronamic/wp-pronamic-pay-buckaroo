@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
 /**
  * Title: Buckaroo payment methods constants
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.2.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods {
+class PaymentMethods {
 	/**
 	 * Indicator for the 'Achteraf Betalen' payment method
 	 *

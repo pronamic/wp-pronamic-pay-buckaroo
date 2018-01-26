@@ -1,5 +1,9 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\GatewayConfig;
+
 /**
  * Title: Buckaroo config
  * Description:
@@ -10,7 +14,7 @@
  * @version 1.2.3
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Config extends Pronamic_WP_Pay_GatewayConfig {
+class Config extends GatewayConfig {
 	public $website_key;
 
 	public $secret_key;
@@ -20,6 +24,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Config extends Pronamic_WP_Pay_GatewayCo
 	public $invoice_number;
 
 	public function get_gateway_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Gateway';
+		return __NAMESPACE__ . '\Gateway';
 	}
 }

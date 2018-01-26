@@ -1,5 +1,10 @@
 <?php
-use Pronamic\WordPress\Pay\Payments\PaymentDataInterface;
+
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: Buckaroo gateway
@@ -11,7 +16,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentDataInterface;
  * @version 1.2.8
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway {
+class Gateway extends Core_Gateway {
 	/**
 	 * Slug of this gateway
 	 *
@@ -24,17 +29,17 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
-	 * @param Pronamic_WP_Pay_Gateways_Buckaroo_Config $config
+	 * @param Config $config
 	 */
-	public function __construct( Pronamic_WP_Pay_Gateways_Buckaroo_Config $config ) {
+	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
-		$this->set_method( Pronamic_WP_Pay_Gateway::METHOD_HTML_FORM );
+		$this->set_method( Gateway::METHOD_HTML_FORM );
 		$this->set_has_feedback( true );
 		$this->set_amount_minimum( 0.01 );
 		$this->set_slug( self::SLUG );
 
-		$this->client = new Pronamic_WP_Pay_Gateways_Buckaroo_Client();
+		$this->client = new Client();
 		$this->client->set_website_key( $config->website_key );
 		$this->client->set_secret_key( $config->secret_key );
 		$this->client->set_excluded_services( $config->excluded_services );
@@ -42,7 +47,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
 		if ( 'test' === $config->mode ) {
-			$this->client->set_payment_server_url( Pronamic_WP_Pay_Gateways_Buckaroo_Client::GATEWAY_TEST_URL );
+			$this->client->set_payment_server_url( Client::GATEWAY_TEST_URL );
 		}
 	}
 
@@ -78,7 +83,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	 * @return array
 	 */
 	public function get_issuer_field() {
-		if ( Pronamic_WP_Pay_PaymentMethods::IDEAL === $this->get_payment_method() ) {
+		if ( Core_PaymentMethods::IDEAL === $this->get_payment_method() ) {
 			return array(
 				'id'       => 'pronamic_ideal_issuer_id',
 				'name'     => 'pronamic_ideal_issuer_id',
@@ -99,10 +104,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Pronamic_WP_Pay_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
-			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
+			Core_PaymentMethods::IDEAL,
+			Core_PaymentMethods::BANCONTACT,
+			Core_PaymentMethods::CREDIT_CARD,
+			Core_PaymentMethods::PAYPAL,
 		);
 	}
 
@@ -111,36 +116,35 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/**
 	 * Start
 	 *
-	 * @param PaymentDataInterface $data
-	 * @param Pronamic_Pay_Payment              $payment
+	 * @param Payment $payment
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::start()
 	 */
-	public function start( Pronamic_Pay_Payment $payment ) {
+	public function start( Payment $payment ) {
 		$payment->set_action_url( $this->client->get_payment_server_url() );
 
 		$payment_method = $payment->get_method();
 
 		switch ( $payment_method ) {
-			case Pronamic_WP_Pay_PaymentMethods::IDEAL:
-				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL );
+			case Core_PaymentMethods::IDEAL:
+				$this->client->set_payment_method( PaymentMethods::IDEAL );
 				$this->client->set_ideal_issuer( $payment->get_issuer() );
 
 				break;
-			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD:
-				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::AMERICAN_EXPRESS );
-				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::MAESTRO );
-				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::MASTERCARD );
-				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::VISA );
+			case Core_PaymentMethods::CREDIT_CARD:
+				$this->client->add_requested_service( PaymentMethods::AMERICAN_EXPRESS );
+				$this->client->add_requested_service( PaymentMethods::MAESTRO );
+				$this->client->add_requested_service( PaymentMethods::MASTERCARD );
+				$this->client->add_requested_service( PaymentMethods::VISA );
 
 				break;
-			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT:
-			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH:
-				$this->client->set_payment_method( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::BANCONTACT_MISTER_CASH );
+			case Core_PaymentMethods::BANCONTACT:
+			case Core_PaymentMethods::MISTER_CASH:
+				$this->client->set_payment_method( PaymentMethods::BANCONTACT_MISTER_CASH );
 
 				break;
-			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD:
-				$this->client->add_requested_service( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::PAYPAL );
+			case Core_PaymentMethods::PAYPAL:
+				$this->client->add_requested_service( PaymentMethods::PAYPAL );
 
 				break;
 			default:
@@ -160,7 +164,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 		$this->client->set_currency( $payment->get_currency() );
 		$this->client->set_description( $payment->get_description() );
 		$this->client->set_amount( $payment->get_amount() );
-		$this->client->set_invoice_number( Pronamic_WP_Pay_Gateways_Buckaroo_Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
+		$this->client->set_invoice_number( Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
 		$this->client->set_return_url( $payment->get_return_url() );
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
 		$this->client->set_return_error_url( $payment->get_return_url() );
@@ -184,9 +188,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 	/**
 	 * Update status of the specified payment
 	 *
-	 * @param Pronamic_Pay_Payment $payment
+	 * @param Payment $payment
 	 */
-	public function update_status( Pronamic_Pay_Payment $payment ) {
+	public function update_status( Payment $payment ) {
 		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
 
 		$data = array();
@@ -202,34 +206,34 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Gateway extends Pronamic_WP_Pay_Gateway 
 				break;
 		}
 
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::urldecode( $data );
+		$data = Util::urldecode( $data );
 
 		$data = stripslashes_deep( $data );
 
 		$data = $this->client->verify_request( $data );
 
 		if ( $data ) {
-			$payment->set_transaction_id( $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT ] );
-			$payment->set_status( Pronamic_WP_Pay_Gateways_Buckaroo_Statuses::transform( $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE ] ) );
-			$payment->set_consumer_iban( $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
-			$payment->set_consumer_bic( $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
-			$payment->set_consumer_name( $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+			$payment->set_transaction_id( $data[ Parameters::PAYMENT ] );
+			$payment->set_status( Statuses::transform( $data[ Parameters::STATUS_CODE ] ) );
+			$payment->set_consumer_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
+			$payment->set_consumer_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
+			$payment->set_consumer_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
 
 			$labels = array(
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT_METHOD                => __( 'Payment Method', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE                   => __( 'Status Code', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE_DETAIL            => __( 'Status Code Detail', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_MESSAGE                => __( 'Status Message', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER                => __( 'Invoice Number', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::AMOUNT                        => __( 'Amount', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::CURRENCY                      => __( 'Currency', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::TIMESTAMP                     => __( 'Timestamp', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => __( 'Service iDEAL Consumer Issuer', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_NAME   => __( 'Service iDEAL Consumer Name', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => __( 'Service iDEAL Consumer IBAN', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_BIC    => __( 'Service iDEAL Consumer BIC', 'pronamic_ideal' ),
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::TRANSACTIONS                  => __( 'Transactions', 'pronamic_ideal' ),
+				Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
+				Parameters::PAYMENT_METHOD                => __( 'Payment Method', 'pronamic_ideal' ),
+				Parameters::STATUS_CODE                   => __( 'Status Code', 'pronamic_ideal' ),
+				Parameters::STATUS_CODE_DETAIL            => __( 'Status Code Detail', 'pronamic_ideal' ),
+				Parameters::STATUS_MESSAGE                => __( 'Status Message', 'pronamic_ideal' ),
+				Parameters::INVOICE_NUMBER                => __( 'Invoice Number', 'pronamic_ideal' ),
+				Parameters::AMOUNT                        => __( 'Amount', 'pronamic_ideal' ),
+				Parameters::CURRENCY                      => __( 'Currency', 'pronamic_ideal' ),
+				Parameters::TIMESTAMP                     => __( 'Timestamp', 'pronamic_ideal' ),
+				Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => __( 'Service iDEAL Consumer Issuer', 'pronamic_ideal' ),
+				Parameters::SERVICE_IDEAL_CONSUMER_NAME   => __( 'Service iDEAL Consumer Name', 'pronamic_ideal' ),
+				Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => __( 'Service iDEAL Consumer IBAN', 'pronamic_ideal' ),
+				Parameters::SERVICE_IDEAL_CONSUMER_BIC    => __( 'Service iDEAL Consumer BIC', 'pronamic_ideal' ),
+				Parameters::TRANSACTIONS                  => __( 'Transactions', 'pronamic_ideal' ),
 			);
 
 			$note = '';

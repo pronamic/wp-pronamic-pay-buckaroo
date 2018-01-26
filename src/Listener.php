@@ -1,4 +1,8 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\Server;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
@@ -11,10 +15,10 @@ use Pronamic\WordPress\Pay\Plugin;
  * @version 1.2.8
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateways_ListenerInterface {
+class Listener {
 	public static function listen() {
 		if ( filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
-			$method = Pronamic_WP_Pay_Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+			$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
 			$data = array();
 
@@ -34,16 +38,16 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Listener implements Pronamic_Pay_Gateway
 			$payment_id = null;
 
 			if ( isset(
-				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID ],
-				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE ]
+				$data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ],
+				$data[ Parameters::STATUS_CODE ]
 			) ) {
-				$payment_id = $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID ];
+				$payment_id = $data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ];
 			} elseif ( isset(
-				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ],
-				$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE ]
+				$data[ Parameters::INVOICE_NUMBER ],
+				$data[ Parameters::STATUS_CODE ]
 			) ) {
 				// Fallback for payments started with plugin version <= 4.5.5
-				$payment_id = $data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER ];
+				$payment_id = $data[ Parameters::INVOICE_NUMBER ];
 			}
 
 			if ( $payment_id ) {

@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Gateways\Buckaroo\Security;
 
 /**
  * Title: Buckaroo signature sorting test.
@@ -33,7 +34,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTest
 		);
 
 		// Sort
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::sort( $data );
+		$data = Security::sort( $data );
 
 		// Keys
 		$keys_data     = implode( "\n", array_keys( $data ) );
