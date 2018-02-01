@@ -22,8 +22,4 @@ class Config extends GatewayConfig {
 	public $excluded_services;
 
 	public $invoice_number;
-
-	public function get_gateway_class() {
-		return __NAMESPACE__ . '\Gateway';
-	}
 }
