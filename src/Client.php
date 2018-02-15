@@ -558,7 +558,11 @@ class Client {
 		}
 
 		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
-			$this->error = new WP_Error( 'buckaroo_error', sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] ), $data );
+			if ( isset( $data['BRQ_APIERRORMESSAGE'] ) ) {
+				$error_msg = sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] );
+			}
+
+			$this->error = new WP_Error( 'buckaroo_error', $error_msg, $data );
 
 			return $issuers;
 		}
