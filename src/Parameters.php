@@ -97,8 +97,6 @@ class Parameters {
 	 */
 	const IDEAL_ISSUER = 'brq_service_ideal_issuer';
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Indicator for the 'brq_payment_method' parameter
 	 *
@@ -128,8 +126,6 @@ class Parameters {
 	 * @var string
 	 */
 	const EXCLUDED_SERVICES = 'brq_excludedservices';
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Indicator for the 'brq_return' parameter
@@ -197,10 +193,6 @@ class Parameters {
 	 */
 	const PUSH_FAILURE_URL = 'brq_pushfailure';
 
-	//////////////////////////////////////////////////
-	// Payment response
-	//////////////////////////////////////////////////
-
 	/**
 	 * Indicator for the 'brq_payment' parameter
 	 *
@@ -253,10 +245,6 @@ class Parameters {
 	 * @var string
 	 */
 	const TRANSACTIONS = 'brq_transactions';
-
-	//////////////////////////////////////////////////
-	// iDEAL
-	//////////////////////////////////////////////////
 
 	/**
 	 * The name of the issuer (bank) of the consumer
@@ -316,10 +304,6 @@ class Parameters {
 	 * @var string
 	 */
 	const SERVICE_IDEAL_CONSUMER_CITY = 'brq_service_ideal_consumercity';
-
-	//////////////////////////////////////////////////
-	// Custom fields
-	//////////////////////////////////////////////////
 
 	/**
 	 * Indicator for the 'add_pronamic_payment_id' parameter

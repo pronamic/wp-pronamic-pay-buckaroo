@@ -43,16 +43,12 @@ class Client {
 	 */
 	const GATEWAY_NVP_TEST_URL = 'https://testcheckout.buckaroo.nl/nvp/';
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Indicator for the iDEAL payment method
 	 *
 	 * @var string
 	 */
 	const PAYMENT_METHOD_IDEAL = 'ideal';
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The payment server URL
@@ -61,16 +57,12 @@ class Client {
 	 */
 	private $payment_server_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The amount
 	 *
 	 * @var int
 	 */
 	private $amount;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The website key
@@ -79,8 +71,6 @@ class Client {
 	 */
 	private $website_key;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The secret key
 	 *
@@ -88,16 +78,12 @@ class Client {
 	 */
 	private $secret_key;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The payment method
 	 *
 	 * @var string
 	 */
 	private $payment_method;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The iDEAL issuer
@@ -107,16 +93,12 @@ class Client {
 	 */
 	private $ideal_issuer;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The country code (culture)
 	 *
 	 * @var string
 	 */
 	private $culture;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The currency
@@ -125,16 +107,12 @@ class Client {
 	 */
 	private $currency;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The invoice number
 	 *
 	 * @var string
 	 */
 	private $invoice_number;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The description
@@ -143,16 +121,12 @@ class Client {
 	 */
 	private $description;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The return url
 	 *
 	 * @var string
 	 */
 	private $return_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The return reject url
@@ -161,16 +135,12 @@ class Client {
 	 */
 	private $return_reject_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The return error url
 	 *
 	 * @var string
 	 */
 	private $return_error_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The return cancel url
@@ -179,16 +149,12 @@ class Client {
 	 */
 	private $return_cancel_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Push URL
 	 *
 	 * @var string
 	 */
 	private $push_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Requested services
@@ -197,16 +163,12 @@ class Client {
 	 */
 	private $requested_services;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Excluded services
 	 *
 	 * @var array
 	 */
 	private $excluded_services;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Pronamic payment ID
@@ -215,8 +177,6 @@ class Client {
 	 */
 	private $payment_id;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Error.
 	 *
@@ -224,8 +184,6 @@ class Client {
 	 * @var WP_Error
 	 */
 	private $error;
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Constructs and initialize a iDEAL kassa object
@@ -236,8 +194,6 @@ class Client {
 		$this->requested_services = array();
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get error.
 	 *
@@ -247,8 +203,6 @@ class Client {
 	public function get_error() {
 		return $this->error;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get the payment server URL
@@ -268,8 +222,6 @@ class Client {
 		$this->payment_server_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_website_key() {
 		return $this->website_key;
 	}
@@ -277,8 +229,6 @@ class Client {
 	public function set_website_key( $website_key ) {
 		$this->website_key = $website_key;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_secret_key() {
 		return $this->secret_key;
@@ -288,8 +238,6 @@ class Client {
 		$this->secret_key = $secret_key;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_payment_method() {
 		return $this->payment_method;
 	}
@@ -297,8 +245,6 @@ class Client {
 	public function set_payment_method( $payment_method ) {
 		$this->payment_method = $payment_method;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get iDEAL issuer.
@@ -321,8 +267,6 @@ class Client {
 		$this->ideal_issuer = $issuer;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_requested_services() {
 		return $this->requested_services;
 	}
@@ -330,8 +274,6 @@ class Client {
 	public function add_requested_service( $service ) {
 		$this->requested_services[] = $service;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_excluded_services() {
 		return $this->excluded_services;
@@ -341,8 +283,6 @@ class Client {
 		$this->excluded_services = $service;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_culture() {
 		return $this->culture;
 	}
@@ -350,8 +290,6 @@ class Client {
 	public function set_culture( $culture ) {
 		$this->culture = $culture;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_currency() {
 		return $this->currency;
@@ -361,10 +299,6 @@ class Client {
 		$this->currency = $currency;
 	}
 
-	//////////////////////////////////////////////////
-	// Payment
-	//////////////////////////////////////////////////
-
 	public function get_invoice_number() {
 		return $this->invoice_number;
 	}
@@ -372,8 +306,6 @@ class Client {
 	public function set_invoice_number( $invoice_number ) {
 		$this->invoice_number = $invoice_number;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_description() {
 		return $this->description;
@@ -383,8 +315,6 @@ class Client {
 		$this->description = $description;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_amount() {
 		return $this->amount;
 	}
@@ -392,10 +322,6 @@ class Client {
 	public function set_amount( $amount ) {
 		$this->amount = $amount;
 	}
-
-	//////////////////////////////////////////////////
-	// URL's
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get return URL
@@ -415,8 +341,6 @@ class Client {
 		$this->return_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get return reject URL
 	 *
@@ -434,8 +358,6 @@ class Client {
 	public function set_return_reject_url( $url ) {
 		$this->return_reject_url = $url;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get return error URL
@@ -455,8 +377,6 @@ class Client {
 		$this->return_error_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get return cancel URL
 	 *
@@ -474,8 +394,6 @@ class Client {
 	public function set_return_cancel_url( $url ) {
 		$this->return_cancel_url = $url;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get push URL
@@ -495,8 +413,6 @@ class Client {
 		$this->push_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get Pronamic payment ID
 	 *
@@ -514,8 +430,6 @@ class Client {
 	public function set_payment_id( $payment_id ) {
 		$this->payment_id = $payment_id;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get issuers
@@ -611,8 +525,6 @@ class Client {
 		return $issuers;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get HTML fields
 	 *
@@ -647,10 +559,8 @@ class Client {
 		return $data;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
-	 * Verify request  Buckaroo
+	 * Verify request Buckaroo
 	 */
 	public function verify_request( $data ) {
 		$result = false;

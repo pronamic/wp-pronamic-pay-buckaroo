@@ -72,8 +72,6 @@ class Util {
 		return 0 === strcasecmp( $string, $prefix );
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * URL decode array
 	 *

@@ -34,8 +34,6 @@ class Security {
 		return $result;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Filter the data for generating an signature
 	 *
@@ -62,8 +60,6 @@ class Security {
 		return $filter;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Sort the specified data array
 	 *
@@ -76,8 +72,6 @@ class Security {
 
 		return $data;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Create signature
