@@ -35,8 +35,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 		$this->assertArrayNotHasKey( 'random_1234567890', $data );
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Test create signature.
 	 *
@@ -53,8 +51,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 
 		$this->assertEquals( $signature, $signature_check );
 	}
-
-	/////////////////////////////////////////////////
 
 	public function provider() {
 		$data = array(

@@ -92,8 +92,6 @@ class Statuses {
 	 */
 	const CANCELLED_BY_MERCHANT = '891';
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Transform an Buckaroo state to an more global status
 	 *

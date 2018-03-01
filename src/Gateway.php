@@ -24,8 +24,6 @@ class Gateway extends Core_Gateway {
 	 */
 	const SLUG = 'buckaroo';
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
@@ -51,8 +49,6 @@ class Gateway extends Core_Gateway {
 		}
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get issuers.
 	 *
@@ -75,8 +71,6 @@ class Gateway extends Core_Gateway {
 		$this->error = $this->client->get_error();
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get issuer field.
 	 *
@@ -95,8 +89,6 @@ class Gateway extends Core_Gateway {
 		}
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get supported payment methods
 	 *
@@ -110,8 +102,6 @@ class Gateway extends Core_Gateway {
 			Core_PaymentMethods::PAYPAL,
 		);
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Start
@@ -171,8 +161,6 @@ class Gateway extends Core_Gateway {
 		$this->client->set_return_reject_url( $payment->get_return_url() );
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get output HTML
 	 *
@@ -182,8 +170,6 @@ class Gateway extends Core_Gateway {
 	public function get_output_fields() {
 		return $this->client->get_fields();
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Update status of the specified payment
