@@ -1,6 +1,6 @@
 <?php
-use Pronamic\WordPress\Pay\Gateways\Buckaroo\Util;
-use Pronamic\WordPress\Pay\Gateways\Buckaroo\Security;
+
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
 /**
  * Title: Buckaroo signature test.
@@ -12,7 +12,7 @@ use Pronamic\WordPress\Pay\Gateways\Buckaroo\Security;
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
+class SignatureTest extends \WP_UnitTestCase {
 	/**
 	 * Test get signature.
 	 *

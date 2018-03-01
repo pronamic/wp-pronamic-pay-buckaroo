@@ -1,13 +1,13 @@
 <?php
 
-use Pronamic\WordPress\Pay\Core\ConfigProvider;
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
-class Pronamic_WP_Pay_Gateways_Buckaroo_ConfigProviderTest extends WP_UnitTestCase {
+class ConfigProviderTest extends \WP_UnitTestCase {
 	public function test_gateway_factory() {
-		ConfigProvider::register( 'buckaroo', 'Pronamic_WP_Pay_Gateways_Buckaroo_ConfigFactory' );
+		ConfigProvider::register( 'buckaroo', __NAMESPACE__ . '\ConfigFactory' );
 
 		$config = ConfigProvider::get_config( 'buckaroo', -1 );
 
-		$this->assertInstanceOf( 'Pronamic_WP_Pay_Gateways_Buckaroo_Config', $config );
+		$this->assertInstanceOf( __NAMESPACE__ . '\Config', $config );
 	}
 }
