@@ -46,7 +46,7 @@ class Security {
 
 		// List all parameters prefixed with brq_, add_ or cust_, except brq_signature
 		foreach ( $data as $key => $value ) {
-			if ( ! Util::string_starts_with( $key, 'brq_' ) || ! Util::string_starts_with( $key, 'add_' ) || ! Util::string_starts_with( $key, 'cust_' ) ) {
+			if ( ! ( Util::string_starts_with( $key, 'brq_' ) || Util::string_starts_with( $key, 'add_' ) || Util::string_starts_with( $key, 'cust_' ) ) ) {
 				continue;
 			}
 
