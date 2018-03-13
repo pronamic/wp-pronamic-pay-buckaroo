@@ -96,10 +96,13 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Core_PaymentMethods::IDEAL,
+			Core_PaymentMethods::BANK_TRANSFER,
 			Core_PaymentMethods::BANCONTACT,
 			Core_PaymentMethods::CREDIT_CARD,
+			Core_PaymentMethods::GIROPAY,
+			Core_PaymentMethods::IDEAL,
 			Core_PaymentMethods::PAYPAL,
+			Core_PaymentMethods::SOFORT,
 		);
 	}
 
@@ -128,13 +131,13 @@ class Gateway extends Core_Gateway {
 				$this->client->add_requested_service( PaymentMethods::VISA );
 
 				break;
+			case Core_PaymentMethods::BANK_TRANSFER:
 			case Core_PaymentMethods::BANCONTACT:
 			case Core_PaymentMethods::MISTER_CASH:
-				$this->client->set_payment_method( PaymentMethods::BANCONTACT_MISTER_CASH );
-
-				break;
+			case Core_PaymentMethods::GIROPAY:
 			case Core_PaymentMethods::PAYPAL:
-				$this->client->add_requested_service( PaymentMethods::PAYPAL );
+			case Core_PaymentMethods::SOFORT:
+				$this->client->set_payment_method( PaymentMethods::transform( $payment_method ) );
 
 				break;
 			default:
