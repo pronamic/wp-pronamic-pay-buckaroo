@@ -53,6 +53,16 @@ class Listener {
 			if ( $payment_id ) {
 				$payment = get_pronamic_payment( $payment_id );
 
+				// Add note.
+				$note = sprintf(
+					/* translators: %s: Buckaroo */
+					__( 'Webhook requested by %s.', 'pronamic_ideal' ),
+					__( 'Buckaroo', 'pronamic_ideal' )
+				);
+
+				$payment->add_note( $note );
+
+				// Update payment.
 				Plugin::update_payment( $payment );
 			}
 		}
