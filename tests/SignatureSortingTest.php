@@ -10,7 +10,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
  *
  * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 2.0.0
  */
 class SignatureSortingTest extends \WP_UnitTestCase {
 	/**
