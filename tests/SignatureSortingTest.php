@@ -1,16 +1,18 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
 /**
  * Title: Buckaroo signature sorting test.
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 2.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTestCase {
+class SignatureSortingTest extends \WP_UnitTestCase {
 	/**
 	 * Test signature sorting.
 	 */
@@ -33,7 +35,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureSortingTest extends WP_UnitTest
 		);
 
 		// Sort
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::sort( $data );
+		$data = Security::sort( $data );
 
 		// Keys
 		$keys_data     = implode( "\n", array_keys( $data ) );

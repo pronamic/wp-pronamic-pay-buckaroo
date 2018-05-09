@@ -1,24 +1,29 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Payments\Payment;
+
 /**
  * Title: Buckaroo utility class
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.5
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
+class Util {
 	/**
 	 * Get invoice number.
 	 *
-	 * @param string                            $invoice_number
-	 * @param Pronamic_Pay_PaymentDataInterface $data
-	 * @param Pronamic_Pay_Payment              $payment
+	 * @param string $invoice_number
+	 * @param Payment $payment
+	 *
+	 * @return string
 	 */
-	public static function get_invoice_number( $invoice_number, Pronamic_Pay_Payment $payment ) {
+	public static function get_invoice_number( $invoice_number, Payment $payment ) {
 		// Replacements definition
 		$replacements = array(
 			'{order_id}'   => $payment->get_order_id(),
@@ -46,6 +51,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 *
 	 * @param string $string
 	 * @param string $value
+	 *
 	 * @return boolean true if match, false otherwise
 	 */
 	public static function string_equals( $string, $value ) {
@@ -57,6 +63,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 *
 	 * @param string $string
 	 * @param string $prefix
+	 *
 	 * @return boolean true if match, false otherwise
 	 */
 	public static function string_starts_with( $string, $prefix ) {
@@ -65,12 +72,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 		return 0 === strcasecmp( $string, $prefix );
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * URL decode array
 	 *
 	 * @param array $data
+	 *
 	 * @return array
 	 */
 	public static function urldecode( array $data ) {
@@ -81,7 +87,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Util {
 	 * Transform flat Buckaroo response into multidimensional array.
 	 *
 	 * @since 1.2.4
+	 *
 	 * @param array $response
+	 *
 	 * @return array
 	 */
 	public static function transform_flat_response( $response = array() ) {

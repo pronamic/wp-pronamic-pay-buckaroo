@@ -1,16 +1,20 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+
 /**
  * Title: Buckaroo payment methods constants
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods {
+class PaymentMethods {
 	/**
 	 * Indicator for the 'Achteraf Betalen' payment method
 	 *
@@ -108,4 +112,39 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods {
 	 * @var string
 	 */
 	const VISA = 'visa';
+
+	/**
+	 * Payments methods map.
+	 *
+	 * @var array
+	 */
+	private static $map = array(
+		Core_PaymentMethods::BANK_TRANSFER => PaymentMethods::TRANSFER,
+		Core_PaymentMethods::BANCONTACT    => PaymentMethods::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::MISTER_CASH   => PaymentMethods::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::GIROPAY       => PaymentMethods::GIROPAY,
+		Core_PaymentMethods::IDEAL         => PaymentMethods::IDEAL,
+		Core_PaymentMethods::PAYPAL        => PaymentMethods::PAYPAL,
+		Core_PaymentMethods::SOFORT        => PaymentMethods::SOFORTUEBERWEISING,
+	);
+
+	/**
+	 * Transform WordPress payment method to Buckaroo method.
+	 *
+	 * @since 1.1.6
+	 * @param string $method
+	 * @param mixed $default
+	 * @return string
+	 */
+	public static function transform( $payment_method, $default = null ) {
+		if ( ! is_scalar( $payment_method ) ) {
+			return null;
+		}
+
+		if ( isset( self::$map[ $payment_method ] ) ) {
+			return self::$map[ $payment_method ];
+		}
+
+		return $default;
+	}
 }

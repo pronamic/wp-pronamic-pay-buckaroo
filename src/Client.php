@@ -1,16 +1,20 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use WP_Error;
+
 /**
  * Title: Buckaroo client
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.8
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
+class Client {
 	/**
 	 * Gateway URL
 	 *
@@ -39,16 +43,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	const GATEWAY_NVP_TEST_URL = 'https://testcheckout.buckaroo.nl/nvp/';
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Indicator for the iDEAL payment method
 	 *
 	 * @var string
 	 */
 	const PAYMENT_METHOD_IDEAL = 'ideal';
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The payment server URL
@@ -57,16 +57,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $payment_server_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The amount
 	 *
 	 * @var int
 	 */
 	private $amount;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The website key
@@ -75,8 +71,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $website_key;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The secret key
 	 *
@@ -84,16 +78,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $secret_key;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The payment method
 	 *
 	 * @var string
 	 */
 	private $payment_method;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The iDEAL issuer
@@ -103,16 +93,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $ideal_issuer;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The country code (culture)
 	 *
 	 * @var string
 	 */
 	private $culture;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The currency
@@ -121,16 +107,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $currency;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The invoice number
 	 *
 	 * @var string
 	 */
 	private $invoice_number;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The description
@@ -139,16 +121,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $description;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The return url
 	 *
 	 * @var string
 	 */
 	private $return_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The return reject url
@@ -157,16 +135,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $return_reject_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * The return error url
 	 *
 	 * @var string
 	 */
 	private $return_error_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The return cancel url
@@ -175,16 +149,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $return_cancel_url;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Push URL
 	 *
 	 * @var string
 	 */
 	private $push_url;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Requested services
@@ -193,16 +163,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $requested_services;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Excluded services
 	 *
 	 * @var array
 	 */
 	private $excluded_services;
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Pronamic payment ID
@@ -211,8 +177,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	private $payment_id;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Error.
 	 *
@@ -220,8 +184,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * @var WP_Error
 	 */
 	private $error;
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Constructs and initialize a iDEAL kassa object
@@ -232,8 +194,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->requested_services = array();
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get error.
 	 *
@@ -243,8 +203,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function get_error() {
 		return $this->error;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get the payment server URL
@@ -264,8 +222,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->payment_server_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_website_key() {
 		return $this->website_key;
 	}
@@ -273,8 +229,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_website_key( $website_key ) {
 		$this->website_key = $website_key;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_secret_key() {
 		return $this->secret_key;
@@ -284,8 +238,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->secret_key = $secret_key;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_payment_method() {
 		return $this->payment_method;
 	}
@@ -293,8 +245,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_payment_method( $payment_method ) {
 		$this->payment_method = $payment_method;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get iDEAL issuer.
@@ -310,13 +260,12 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 * Set iDEAL issuer.
 	 *
 	 * @since 1.2.4
+	 *
 	 * @param string $issuer
 	 */
 	public function set_ideal_issuer( $issuer ) {
 		$this->ideal_issuer = $issuer;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_requested_services() {
 		return $this->requested_services;
@@ -326,8 +275,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->requested_services[] = $service;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_excluded_services() {
 		return $this->excluded_services;
 	}
@@ -335,8 +282,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_excluded_services( $service ) {
 		$this->excluded_services = $service;
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_culture() {
 		return $this->culture;
@@ -346,8 +291,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->culture = $culture;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_currency() {
 		return $this->currency;
 	}
@@ -355,10 +298,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_currency( $currency ) {
 		$this->currency = $currency;
 	}
-
-	//////////////////////////////////////////////////
-	// Payment
-	//////////////////////////////////////////////////
 
 	public function get_invoice_number() {
 		return $this->invoice_number;
@@ -368,8 +307,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->invoice_number = $invoice_number;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_description() {
 		return $this->description;
 	}
@@ -378,8 +315,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->description = $description;
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_amount() {
 		return $this->amount;
 	}
@@ -387,10 +322,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_amount( $amount ) {
 		$this->amount = $amount;
 	}
-
-	//////////////////////////////////////////////////
-	// URL's
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get return URL
@@ -410,8 +341,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->return_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get return reject URL
 	 *
@@ -429,8 +358,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_return_reject_url( $url ) {
 		$this->return_reject_url = $url;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get return error URL
@@ -450,8 +377,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->return_error_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get return cancel URL
 	 *
@@ -469,8 +394,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_return_cancel_url( $url ) {
 		$this->return_cancel_url = $url;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get push URL
@@ -490,8 +413,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		$this->push_url = $url;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get Pronamic payment ID
 	 *
@@ -509,8 +430,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	public function set_payment_id( $payment_id ) {
 		$this->payment_id = $payment_id;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get issuers
@@ -530,9 +449,9 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 			'brq_latestversiononly' => 'True',
 		);
 
-		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
+		$signature = Security::create_signature( $data, $this->get_secret_key() );
 
-		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
+		$data[ Parameters::SIGNATURE ] = $signature;
 
 		$result = wp_remote_post( $url, array(
 			'body' => http_build_query( $data ),
@@ -542,7 +461,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 
 		wp_parse_str( $body, $data );
 
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::transform_flat_response( $data );
+		$data = Util::transform_flat_response( $data );
 
 		$error_msg = __( 'Unable to retrieve issuers from Buckaroo.', 'pronamic_ideal' );
 
@@ -553,7 +472,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		}
 
 		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
-			$this->error = new WP_Error( 'buckaroo_error', sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] ), $data );
+			if ( isset( $data['BRQ_APIERRORMESSAGE'] ) ) {
+				$error_msg = sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] );
+			}
+
+			$this->error = new WP_Error( 'buckaroo_error', $error_msg, $data );
 
 			return $issuers;
 		}
@@ -567,7 +490,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 				return $issuers;
 			}
 
-			if ( Pronamic_WP_Pay_Gateways_Buckaroo_PaymentMethods::IDEAL !== $service['NAME'] ) {
+			if ( PaymentMethods::IDEAL !== $service['NAME'] ) {
 				continue;
 			}
 
@@ -602,8 +525,6 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 		return $issuers;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get HTML fields
 	 *
@@ -612,63 +533,61 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Client {
 	 */
 	public function get_fields() {
 		$data = array(
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID => $this->get_payment_id(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::WEBSITE_KEY             => $this->get_website_key(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER          => $this->get_invoice_number(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::AMOUNT                  => number_format( $this->get_amount(), 2, '.', '' ),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::CURRENCY                => $this->get_currency(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::CULTURE                 => $this->get_culture(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::DESCRIPTION             => $this->get_description(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT_METHOD          => $this->get_payment_method(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_URL              => $this->get_return_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_REJECT_URL       => $this->get_return_reject_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_ERROR_URL        => $this->get_return_error_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::RETURN_CANCEL_URL       => $this->get_return_cancel_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_URL                => $this->get_push_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PUSH_FAILURE_URL        => $this->get_push_url(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::REQUESTED_SERVICES      => implode( ',', $this->get_requested_services() ),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::EXCLUDED_SERVICES       => $this->get_excluded_services(),
-			Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::IDEAL_ISSUER            => $this->get_ideal_issuer(),
+			Parameters::ADD_PRONAMIC_PAYMENT_ID => $this->get_payment_id(),
+			Parameters::WEBSITE_KEY             => $this->get_website_key(),
+			Parameters::INVOICE_NUMBER          => $this->get_invoice_number(),
+			Parameters::AMOUNT                  => number_format( $this->get_amount(), 2, '.', '' ),
+			Parameters::CURRENCY                => $this->get_currency(),
+			Parameters::CULTURE                 => $this->get_culture(),
+			Parameters::DESCRIPTION             => $this->get_description(),
+			Parameters::PAYMENT_METHOD          => $this->get_payment_method(),
+			Parameters::RETURN_URL              => $this->get_return_url(),
+			Parameters::RETURN_REJECT_URL       => $this->get_return_reject_url(),
+			Parameters::RETURN_ERROR_URL        => $this->get_return_error_url(),
+			Parameters::RETURN_CANCEL_URL       => $this->get_return_cancel_url(),
+			Parameters::PUSH_URL                => $this->get_push_url(),
+			Parameters::PUSH_FAILURE_URL        => $this->get_push_url(),
+			Parameters::REQUESTED_SERVICES      => implode( ',', $this->get_requested_services() ),
+			Parameters::EXCLUDED_SERVICES       => $this->get_excluded_services(),
+			Parameters::IDEAL_ISSUER            => $this->get_ideal_issuer(),
 		);
 
-		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
+		$signature = Security::create_signature( $data, $this->get_secret_key() );
 
-		$data[ Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ] = $signature;
+		$data[ Parameters::SIGNATURE ] = $signature;
 
 		return $data;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
-	 * Verify request  Buckaroo
+	 * Verify request Buckaroo
 	 */
 	public function verify_request( $data ) {
 		$result = false;
 
-		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
+		$signature = Security::get_signature( $data );
 
-		$signature_check = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $this->get_secret_key() );
+		$signature_check = Security::create_signature( $data, $this->get_secret_key() );
 
 		if ( 0 === strcasecmp( $signature, $signature_check ) ) {
 			$data = array_change_key_case( $data, CASE_LOWER );
 
 			$result = filter_var_array( $data, array(
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::ADD_PRONAMIC_PAYMENT_ID       => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT                       => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::PAYMENT_METHOD                => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE                   => FILTER_VALIDATE_INT,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_CODE_DETAIL            => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::STATUS_MESSAGE                => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::INVOICE_NUMBER                => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::AMOUNT                        => FILTER_VALIDATE_FLOAT,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::CURRENCY                      => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::TIMESTAMP                     => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_NAME   => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SERVICE_IDEAL_CONSUMER_BIC    => FILTER_SANITIZE_STRING,
-				Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::TRANSACTIONS                  => FILTER_SANITIZE_STRING,
+				Parameters::ADD_PRONAMIC_PAYMENT_ID       => FILTER_SANITIZE_STRING,
+				Parameters::PAYMENT                       => FILTER_SANITIZE_STRING,
+				Parameters::PAYMENT_METHOD                => FILTER_SANITIZE_STRING,
+				Parameters::STATUS_CODE                   => FILTER_VALIDATE_INT,
+				Parameters::STATUS_CODE_DETAIL            => FILTER_SANITIZE_STRING,
+				Parameters::STATUS_MESSAGE                => FILTER_SANITIZE_STRING,
+				Parameters::INVOICE_NUMBER                => FILTER_SANITIZE_STRING,
+				Parameters::AMOUNT                        => FILTER_VALIDATE_FLOAT,
+				Parameters::CURRENCY                      => FILTER_SANITIZE_STRING,
+				Parameters::TIMESTAMP                     => FILTER_SANITIZE_STRING,
+				Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => FILTER_SANITIZE_STRING,
+				Parameters::SERVICE_IDEAL_CONSUMER_NAME   => FILTER_SANITIZE_STRING,
+				Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => FILTER_SANITIZE_STRING,
+				Parameters::SERVICE_IDEAL_CONSUMER_BIC    => FILTER_SANITIZE_STRING,
+				Parameters::TRANSACTIONS                  => FILTER_SANITIZE_STRING,
 			) );
 		}
 

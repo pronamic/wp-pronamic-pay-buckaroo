@@ -1,16 +1,20 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
+
 /**
  * Title: Buckaroo integration
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Reüel van der Steege
- * @version 1.2.7
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gateways_AbstractIntegration {
+class Integration extends AbstractIntegration {
 	public function __construct() {
 		$this->id            = 'buckaroo';
 		$this->name          = 'Buckaroo - HTML';
@@ -20,7 +24,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 		$this->provider      = 'buckaroo';
 
 		// Actions
-		$function = array( 'Pronamic_WP_Pay_Gateways_Buckaroo_Listener', 'listen' );
+		$function = array( __NAMESPACE__ . '\Listener', 'listen' );
 
 		if ( ! has_action( 'wp_loaded', $function ) ) {
 			add_action( 'wp_loaded', $function );
@@ -28,11 +32,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Integration extends Pronamic_WP_Pay_Gate
 	}
 
 	public function get_config_factory_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_ConfigFactory';
+		return __NAMESPACE__ . '\ConfigFactory';
 	}
 
 	public function get_settings_class() {
-		return 'Pronamic_WP_Pay_Gateways_Buckaroo_Settings';
+		return __NAMESPACE__ . '\Settings';
 	}
 
 	/**

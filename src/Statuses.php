@@ -1,16 +1,20 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+
 /**
  * Title: Buckaroo statuses constants
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Statuses {
+class Statuses {
 	/**
 	 * Payment success
 	 *
@@ -88,30 +92,34 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Statuses {
 	 */
 	const CANCELLED_BY_MERCHANT = '891';
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Transform an Buckaroo state to an more global status
 	 *
-	 * @param string $status
+	 * @param string $status_code
+	 *
+	 * @return null|string
 	 */
 	public static function transform( $status_code ) {
 		switch ( $status_code ) {
 			case self::PAYMENT_SUCCESS:
-				return Pronamic_WP_Pay_Statuses::SUCCESS;
+				return Core_Statuses::SUCCESS;
+
 			case self::PAYMENT_FAILURE:
 			case self::VALIDATION_FAILURE:
 			case self::TECHNICAL_ERROR:
 			case self::PAYMENT_REJECTED:
-				return Pronamic_WP_Pay_Statuses::FAILURE;
+				return Core_Statuses::FAILURE;
+
 			case self::WAITING_FOR_USER_INPUT:
 			case self::WAITING_FOR_PROCESSOR:
 			case self::WAITING_ON_CONSUMER_ACTION:
 			case self::PAYMENT_ON_HOLD:
-				return Pronamic_WP_Pay_Statuses::OPEN;
+				return Core_Statuses::OPEN;
+
 			case self::CANCELLED_BY_CONSUMER:
 			case self::CANCELLED_BY_MERCHANT:
-				return Pronamic_WP_Pay_Statuses::CANCELLED;
+				return Core_Statuses::CANCELLED;
+
 			default:
 				return null;
 		}

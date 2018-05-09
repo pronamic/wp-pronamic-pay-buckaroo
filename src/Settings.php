@@ -1,16 +1,20 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
+use Pronamic\WordPress\Pay\Core\GatewaySettings;
+
 /**
  * Title: Buckaroo gateway settings
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.7
+ * @version 2.0.0
  * @since 1.2.1
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Settings extends Pronamic_WP_Pay_GatewaySettings {
+class Settings extends GatewaySettings {
 	public function __construct() {
 		add_filter( 'pronamic_pay_gateway_sections', array( $this, 'sections' ) );
 		add_filter( 'pronamic_pay_gateway_fields', array( $this, 'fields' ) );

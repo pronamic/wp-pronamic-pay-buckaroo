@@ -1,27 +1,30 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
 /**
  * Title: Buckaroo security class
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 2.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_Security {
+class Security {
 	/**
 	 * Find the signature from an data array
 	 *
 	 * @param array $data
+	 *
 	 * @return null or signature value
 	 */
 	public static function get_signature( $data ) {
 		$result = null;
 
 		foreach ( $data as $key => $value ) {
-			if ( Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE ) ) {
+			if ( Util::string_equals( $key, Parameters::SIGNATURE ) ) {
 				$result = $value;
 
 				break;
@@ -31,12 +34,11 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Security {
 		return $result;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Filter the data for generating an signature
 	 *
 	 * @param array $data
+	 *
 	 * @return array
 	 */
 	public static function filter_data( $data ) {
@@ -44,40 +46,32 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Security {
 
 		// List all parameters prefixed with brq_, add_ or cust_, except brq_signature
 		foreach ( $data as $key => $value ) {
-			if (
-				(
-					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'brq_' )
-						||
-					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'add_' )
-						||
-					Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_starts_with( $key, 'cust_' )
-				)
-					&&
-				(
-					! Pronamic_WP_Pay_Gateways_Buckaroo_Util::string_equals( $key, Pronamic_WP_Pay_Gateways_Buckaroo_Parameters::SIGNATURE )
-				)
-			) {
-				$filter[ $key ] = $value;
+			if ( ! ( Util::string_starts_with( $key, 'brq_' ) || Util::string_starts_with( $key, 'add_' ) || Util::string_starts_with( $key, 'cust_' ) ) ) {
+				continue;
 			}
+
+			if ( Util::string_equals( $key, Parameters::SIGNATURE ) ) {
+				continue;
+			}
+
+			$filter[ $key ] = $value;
 		}
 
 		return $filter;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Sort the specified data array
 	 *
 	 * @param array $data
+	 *
+	 * @return array
 	 */
 	public static function sort( $data ) {
 		uksort( $data, 'strcasecmp' );
 
 		return $data;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Create signature
@@ -87,7 +81,7 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_Security {
 	 *
 	 * @param array $data
 	 * @param string $secret_key
-	 * @param boolean $url_decode
+	 *
 	 * @return string
 	 */
 	public static function create_signature( $data, $secret_key ) {

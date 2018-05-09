@@ -1,23 +1,25 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
+
 /**
  * Title: Buckaroo signature test.
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
  * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 2.0.0
  */
-class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
+class SignatureTest extends \WP_UnitTestCase {
 	/**
 	 * Test get signature.
 	 *
 	 * @dataProvider provider_case_mix
 	 */
 	public function test_get_signature( $data ) {
-		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
+		$signature = Security::get_signature( $data );
 
 		$this->assertEquals( '84e9802d60d727ade4a845c43033051d5758ce25', $signature );
 	}
@@ -28,12 +30,10 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 	 * @dataProvider provider_case_mix
 	 */
 	public function test_signature_filter( $data ) {
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Security::filter_data( $data );
+		$data = Security::filter_data( $data );
 
 		$this->assertArrayNotHasKey( 'random_1234567890', $data );
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Test create signature.
@@ -43,16 +43,14 @@ class Pronamic_WP_Pay_Gateways_Buckaroo_SignatureTest extends WP_UnitTestCase {
 	public function test_create_signature( $data ) {
 		$secret_key = '29E9BEB3F3428B2BCAA678DEC489A86A';
 
-		$data = Pronamic_WP_Pay_Gateways_Buckaroo_Util::urldecode( $data );
+		$data = Util::urldecode( $data );
 
-		$signature = Pronamic_WP_Pay_Gateways_Buckaroo_Security::get_signature( $data );
+		$signature = Security::get_signature( $data );
 
-		$signature_check = Pronamic_WP_Pay_Gateways_Buckaroo_Security::create_signature( $data, $secret_key, true );
+		$signature_check = Security::create_signature( $data, $secret_key, true );
 
 		$this->assertEquals( $signature, $signature_check );
 	}
-
-	/////////////////////////////////////////////////
 
 	public function provider() {
 		$data = array(
