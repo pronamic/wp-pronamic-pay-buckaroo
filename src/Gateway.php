@@ -32,7 +32,7 @@ class Gateway extends Core_Gateway {
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
-		$this->set_method( Gateway::METHOD_HTML_FORM );
+		$this->set_method( self::METHOD_HTML_FORM );
 		$this->set_slug( self::SLUG );
 
 		$this->client = new Client();
@@ -42,7 +42,7 @@ class Gateway extends Core_Gateway {
 		$this->client->set_invoice_number( $config->invoice_number );
 		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
-		if ( 'test' === $config->mode ) {
+		if ( self::MODE_TEST === $config->mode ) {
 			$this->client->set_payment_server_url( Client::GATEWAY_TEST_URL );
 		}
 	}
