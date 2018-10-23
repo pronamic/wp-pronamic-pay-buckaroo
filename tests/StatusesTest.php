@@ -12,7 +12,7 @@ use Pronamic\WordPress\Pay\Core\Statuses as CoreStatuses;
  *
  * @author Remco Tolsma
  * @version 2.0.0
- * @see https://www.mollie.nl/support/documentatie/betaaldiensten/ideal/en/
+ * @link https://www.mollie.nl/support/documentatie/betaaldiensten/ideal/en/
  */
 class StatusesTest extends \WP_UnitTestCase {
 	/**
