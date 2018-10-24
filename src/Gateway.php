@@ -134,7 +134,7 @@ class Gateway extends Core_Gateway {
 
 		$this->client->set_payment_id( $payment->get_id() );
 		$this->client->set_culture( $culture );
-		$this->client->set_currency( $payment->get_currency() );
+		$this->client->set_currency( $payment->get_total_amount()->get_currency()->get_alphabetic_code() );
 		$this->client->set_description( $payment->get_description() );
 		$this->client->set_amount( $payment->get_total_amount()->get_amount() );
 		$this->client->set_invoice_number( Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
