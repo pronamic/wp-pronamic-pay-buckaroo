@@ -25,9 +25,16 @@ class Gateway extends Core_Gateway {
 	const SLUG = 'buckaroo';
 
 	/**
+	 * Client.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
-	 * @param Config $config
+	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
@@ -89,9 +96,9 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Start
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::start()
+	 * @see Core_Gateway::start()
 	 */
 	public function start( Payment $payment ) {
 		$payment->set_action_url( $this->client->get_payment_server_url() );
@@ -157,7 +164,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Update status of the specified payment
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
 		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
@@ -166,11 +173,11 @@ class Gateway extends Core_Gateway {
 
 		switch ( $method ) {
 			case 'GET':
-				$data = $_GET; // WPCS: CSRF OK
+				$data = $_GET; // WPCS: CSRF OK.
 
 				break;
 			case 'POST':
-				$data = $_POST; // WPCS: CSRF OK
+				$data = $_POST; // WPCS: CSRF OK.
 
 				break;
 		}
