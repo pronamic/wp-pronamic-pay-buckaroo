@@ -136,8 +136,15 @@ class Gateway extends Core_Gateway {
 				break;
 		}
 
-		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
-		$culture = str_replace( '_', '-', $payment->get_locale() );
+		// Locale.
+		$locale = '';
+
+		if ( null !== $payment->get_customer() ) {
+			$locale = $payment->get_customer()->get_locale();
+		}
+
+		// Buckaroo uses 'nl-NL' instead of 'nl_NL'.
+		$culture = str_replace( '_', '-', $locale );
 
 		$this->client->set_payment_id( $payment->get_id() );
 		$this->client->set_culture( $culture );
