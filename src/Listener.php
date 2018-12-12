@@ -16,55 +16,60 @@ use Pronamic\WordPress\Pay\Plugin;
  * @since 1.0.0
  */
 class Listener {
+	/**
+	 * Listen.
+	 */
 	public static function listen() {
-		if ( filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
-			$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+		if ( ! filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
+			return;
+		}
 
-			$data = array();
+		$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
-			switch ( $method ) {
-				case 'GET':
-					$data = $_GET; // WPCS: CSRF OK
+		$data = array();
 
-					break;
-				case 'POST':
-					$data = $_POST; // WPCS: CSRF OK
+		switch ( $method ) {
+			case 'GET':
+				$data = $_GET; // WPCS: CSRF OK.
 
-					break;
-			}
+				break;
+			case 'POST':
+				$data = $_POST; // WPCS: CSRF OK.
 
-			$data = array_change_key_case( $data, CASE_LOWER );
+				break;
+		}
 
-			$payment_id = null;
+		$data = array_change_key_case( $data, CASE_LOWER );
 
-			if ( isset(
-				$data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ],
-				$data[ Parameters::STATUS_CODE ]
-			) ) {
-				$payment_id = $data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ];
-			} elseif ( isset(
-				$data[ Parameters::INVOICE_NUMBER ],
-				$data[ Parameters::STATUS_CODE ]
-			) ) {
-				// Fallback for payments started with plugin version <= 4.5.5
-				$payment_id = $data[ Parameters::INVOICE_NUMBER ];
-			}
+		$payment_id = null;
 
-			if ( $payment_id ) {
-				$payment = get_pronamic_payment( $payment_id );
+		if ( isset(
+			$data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ],
+			$data[ Parameters::STATUS_CODE ]
+		) ) {
+			$payment_id = $data[ Parameters::ADD_PRONAMIC_PAYMENT_ID ];
+		} elseif ( isset(
+			$data[ Parameters::INVOICE_NUMBER ],
+			$data[ Parameters::STATUS_CODE ]
+		) ) {
+			// Fallback for payments started with plugin version <= 4.5.5.
+			$payment_id = $data[ Parameters::INVOICE_NUMBER ];
+		}
 
-				// Add note.
-				$note = sprintf(
-					/* translators: %s: Buckaroo */
-					__( 'Webhook requested by %s.', 'pronamic_ideal' ),
-					__( 'Buckaroo', 'pronamic_ideal' )
-				);
+		if ( $payment_id ) {
+			$payment = get_pronamic_payment( $payment_id );
 
-				$payment->add_note( $note );
+			// Add note.
+			$note = sprintf(
+				/* translators: %s: Buckaroo */
+				__( 'Webhook requested by %s.', 'pronamic_ideal' ),
+				__( 'Buckaroo', 'pronamic_ideal' )
+			);
 
-				// Update payment.
-				Plugin::update_payment( $payment );
-			}
+			$payment->add_note( $note );
+
+			// Update payment.
+			Plugin::update_payment( $payment );
 		}
 	}
 }

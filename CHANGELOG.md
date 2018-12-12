@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - 
 
+## [2.0.1] - 2018-12-12
+- Use issuer field from core gateway.
+- Updated deprecated function calls.
+
 ## [2.0.0] - 2018-05-09
 - Switched to PHP namespaces.
 

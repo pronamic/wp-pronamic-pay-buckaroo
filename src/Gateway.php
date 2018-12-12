@@ -13,7 +13,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since 1.0.0
  */
 class Gateway extends Core_Gateway {
@@ -25,16 +25,21 @@ class Gateway extends Core_Gateway {
 	const SLUG = 'buckaroo';
 
 	/**
+	 * Client.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
-	 * @param Config $config
+	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
-		$this->set_method( Gateway::METHOD_HTML_FORM );
-		$this->set_has_feedback( true );
-		$this->set_amount_minimum( 0.01 );
+		$this->set_method( self::METHOD_HTML_FORM );
 		$this->set_slug( self::SLUG );
 
 		$this->client = new Client();
@@ -44,7 +49,7 @@ class Gateway extends Core_Gateway {
 		$this->client->set_invoice_number( $config->invoice_number );
 		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
-		if ( 'test' === $config->mode ) {
+		if ( self::MODE_TEST === $config->mode ) {
 			$this->client->set_payment_server_url( Client::GATEWAY_TEST_URL );
 		}
 	}
@@ -72,24 +77,6 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
-	 * Get issuer field.
-	 *
-	 * @return array
-	 */
-	public function get_issuer_field() {
-		if ( Core_PaymentMethods::IDEAL === $this->get_payment_method() ) {
-			return array(
-				'id'       => 'pronamic_ideal_issuer_id',
-				'name'     => 'pronamic_ideal_issuer_id',
-				'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
-				'required' => true,
-				'type'     => 'select',
-				'choices'  => $this->get_transient_issuers(),
-			);
-		}
-	}
-
-	/**
 	 * Get supported payment methods
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
@@ -109,9 +96,9 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Start
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::start()
+	 * @see Core_Gateway::start()
 	 */
 	public function start( Payment $payment ) {
 		$payment->set_action_url( $this->client->get_payment_server_url() );
@@ -149,14 +136,21 @@ class Gateway extends Core_Gateway {
 				break;
 		}
 
-		// Buckaroo uses 'nl-NL' instead of 'nl_NL'
-		$culture = str_replace( '_', '-', $payment->get_locale() );
+		// Locale.
+		$locale = '';
+
+		if ( null !== $payment->get_customer() ) {
+			$locale = $payment->get_customer()->get_locale();
+		}
+
+		// Buckaroo uses 'nl-NL' instead of 'nl_NL'.
+		$culture = str_replace( '_', '-', $locale );
 
 		$this->client->set_payment_id( $payment->get_id() );
 		$this->client->set_culture( $culture );
-		$this->client->set_currency( $payment->get_currency() );
+		$this->client->set_currency( $payment->get_total_amount()->get_currency()->get_alphabetic_code() );
 		$this->client->set_description( $payment->get_description() );
-		$this->client->set_amount( $payment->get_amount()->get_amount() );
+		$this->client->set_amount( $payment->get_total_amount()->get_value() );
 		$this->client->set_invoice_number( Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
 		$this->client->set_return_url( $payment->get_return_url() );
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
@@ -177,7 +171,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Update status of the specified payment
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
 		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
@@ -186,11 +180,11 @@ class Gateway extends Core_Gateway {
 
 		switch ( $method ) {
 			case 'GET':
-				$data = $_GET; // WPCS: CSRF OK
+				$data = $_GET; // WPCS: CSRF OK.
 
 				break;
 			case 'POST':
-				$data = $_POST; // WPCS: CSRF OK
+				$data = $_POST; // WPCS: CSRF OK.
 
 				break;
 		}

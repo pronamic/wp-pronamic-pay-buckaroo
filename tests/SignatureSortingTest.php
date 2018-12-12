@@ -8,7 +8,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @see http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
+ * @link http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
  * @author Remco Tolsma
  * @version 2.0.0
  */

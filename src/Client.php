@@ -435,7 +435,7 @@ class Client {
 	 * Get issuers
 	 *
 	 * @since 1.2.4
-	 * @see http://support.buckaroo.nl/index.php/Service_iDEAL#iDEAL_banken_lijst_opvragen
+	 * @link http://support.buckaroo.nl/index.php/Service_iDEAL#iDEAL_banken_lijst_opvragen
 	 * @return array
 	 */
 	public function get_issuers() {
