@@ -119,21 +119,23 @@ class PaymentMethods {
 	 * @var array
 	 */
 	private static $map = array(
-		Core_PaymentMethods::BANK_TRANSFER => PaymentMethods::TRANSFER,
-		Core_PaymentMethods::BANCONTACT    => PaymentMethods::BANCONTACT_MISTER_CASH,
-		Core_PaymentMethods::MISTER_CASH   => PaymentMethods::BANCONTACT_MISTER_CASH,
-		Core_PaymentMethods::GIROPAY       => PaymentMethods::GIROPAY,
-		Core_PaymentMethods::IDEAL         => PaymentMethods::IDEAL,
-		Core_PaymentMethods::PAYPAL        => PaymentMethods::PAYPAL,
-		Core_PaymentMethods::SOFORT        => PaymentMethods::SOFORTUEBERWEISING,
+		Core_PaymentMethods::BANK_TRANSFER => self::TRANSFER,
+		Core_PaymentMethods::BANCONTACT    => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::MISTER_CASH   => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::GIROPAY       => self::GIROPAY,
+		Core_PaymentMethods::IDEAL         => self::IDEAL,
+		Core_PaymentMethods::PAYPAL        => self::PAYPAL,
+		Core_PaymentMethods::SOFORT        => self::SOFORTUEBERWEISING,
 	);
 
 	/**
 	 * Transform WordPress payment method to Buckaroo method.
 	 *
 	 * @since 1.1.6
-	 * @param string $method
-	 * @param mixed $default
+	 *
+	 * @param string $payment_method WordPress payment method to transform to Buckaroo method.
+	 * @param mixed  $default        Default payment method.
+	 *
 	 * @return string
 	 */
 	public static function transform( $payment_method, $default = null ) {

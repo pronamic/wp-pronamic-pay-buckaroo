@@ -174,7 +174,7 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
+		$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
 		$data = array();
 

@@ -315,10 +315,20 @@ class Client {
 		$this->description = $description;
 	}
 
+	/**
+	 * Get amount.
+	 *
+	 * @return int
+	 */
 	public function get_amount() {
 		return $this->amount;
 	}
 
+	/**
+	 * Set amount.
+	 *
+	 * @param int $amount Amount.
+	 */
 	public function set_amount( $amount ) {
 		$this->amount = $amount;
 	}
@@ -335,7 +345,7 @@ class Client {
 	/**
 	 * Set return URL
 	 *
-	 * @param string $url
+	 * @param string $url Return URL.
 	 */
 	public function set_return_url( $url ) {
 		$this->return_url = $url;
@@ -353,7 +363,7 @@ class Client {
 	/**
 	 * Set return reject URL
 	 *
-	 * @param string $url
+	 * @param string $url Return reject URL.
 	 */
 	public function set_return_reject_url( $url ) {
 		$this->return_reject_url = $url;
@@ -371,7 +381,7 @@ class Client {
 	/**
 	 * Set return error URL
 	 *
-	 * @param string $url
+	 * @param string $url Return error URL.
 	 */
 	public function set_return_error_url( $url ) {
 		$this->return_error_url = $url;
@@ -389,7 +399,7 @@ class Client {
 	/**
 	 * Set return cancel URL
 	 *
-	 * @param string $url
+	 * @param string $url Return cancel URL.
 	 */
 	public function set_return_cancel_url( $url ) {
 		$this->return_cancel_url = $url;
@@ -407,7 +417,7 @@ class Client {
 	/**
 	 * Set push URL
 	 *
-	 * @param string $url
+	 * @param string $url Push URL.
 	 */
 	public function set_push_url( $url ) {
 		$this->push_url = $url;
@@ -425,7 +435,7 @@ class Client {
 	/**
 	 * Set Pronamic payment ID
 	 *
-	 * @param string $payment_id
+	 * @param string $payment_id Payment ID.
 	 */
 	public function set_payment_id( $payment_id ) {
 		$this->payment_id = $payment_id;
@@ -453,9 +463,12 @@ class Client {
 
 		$data[ Parameters::SIGNATURE ] = $signature;
 
-		$result = wp_remote_post( $url, array(
-			'body' => http_build_query( $data ),
-		) );
+		$result = wp_remote_post(
+			$url,
+			array(
+				'body' => http_build_query( $data ),
+			)
+		);
 
 		$body = wp_remote_retrieve_body( $result );
 
@@ -572,23 +585,26 @@ class Client {
 		if ( 0 === strcasecmp( $signature, $signature_check ) ) {
 			$data = array_change_key_case( $data, CASE_LOWER );
 
-			$result = filter_var_array( $data, array(
-				Parameters::ADD_PRONAMIC_PAYMENT_ID       => FILTER_SANITIZE_STRING,
-				Parameters::PAYMENT                       => FILTER_SANITIZE_STRING,
-				Parameters::PAYMENT_METHOD                => FILTER_SANITIZE_STRING,
-				Parameters::STATUS_CODE                   => FILTER_VALIDATE_INT,
-				Parameters::STATUS_CODE_DETAIL            => FILTER_SANITIZE_STRING,
-				Parameters::STATUS_MESSAGE                => FILTER_SANITIZE_STRING,
-				Parameters::INVOICE_NUMBER                => FILTER_SANITIZE_STRING,
-				Parameters::AMOUNT                        => FILTER_VALIDATE_FLOAT,
-				Parameters::CURRENCY                      => FILTER_SANITIZE_STRING,
-				Parameters::TIMESTAMP                     => FILTER_SANITIZE_STRING,
-				Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => FILTER_SANITIZE_STRING,
-				Parameters::SERVICE_IDEAL_CONSUMER_NAME   => FILTER_SANITIZE_STRING,
-				Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => FILTER_SANITIZE_STRING,
-				Parameters::SERVICE_IDEAL_CONSUMER_BIC    => FILTER_SANITIZE_STRING,
-				Parameters::TRANSACTIONS                  => FILTER_SANITIZE_STRING,
-			) );
+			$result = filter_var_array(
+				$data,
+				array(
+					Parameters::ADD_PRONAMIC_PAYMENT_ID    => FILTER_SANITIZE_STRING,
+					Parameters::PAYMENT                    => FILTER_SANITIZE_STRING,
+					Parameters::PAYMENT_METHOD             => FILTER_SANITIZE_STRING,
+					Parameters::STATUS_CODE                => FILTER_VALIDATE_INT,
+					Parameters::STATUS_CODE_DETAIL         => FILTER_SANITIZE_STRING,
+					Parameters::STATUS_MESSAGE             => FILTER_SANITIZE_STRING,
+					Parameters::INVOICE_NUMBER             => FILTER_SANITIZE_STRING,
+					Parameters::AMOUNT                     => FILTER_VALIDATE_FLOAT,
+					Parameters::CURRENCY                   => FILTER_SANITIZE_STRING,
+					Parameters::TIMESTAMP                  => FILTER_SANITIZE_STRING,
+					Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => FILTER_SANITIZE_STRING,
+					Parameters::SERVICE_IDEAL_CONSUMER_NAME => FILTER_SANITIZE_STRING,
+					Parameters::SERVICE_IDEAL_CONSUMER_IBAN => FILTER_SANITIZE_STRING,
+					Parameters::SERVICE_IDEAL_CONSUMER_BIC => FILTER_SANITIZE_STRING,
+					Parameters::TRANSACTIONS               => FILTER_SANITIZE_STRING,
+				)
+			);
 		}
 
 		return $result;
