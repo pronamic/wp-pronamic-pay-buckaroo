@@ -15,8 +15,11 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 
-		<exclude name="WordPress.VIP.SlowDBQuery.slow_db_query_meta_key" />
 		<exclude name="WordPress.VIP.SuperGlobalInputUsage" />
 		<exclude name="WordPress.VIP.ValidatedSanitizedInput" />
+	</rule>
+
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_key">
+		<exclude-pattern>src/Settings.php</exclude-pattern>
 	</rule>
 </ruleset>
