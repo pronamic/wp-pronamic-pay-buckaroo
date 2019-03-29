@@ -8,11 +8,11 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Buckaroo listener
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.2
  * @since 1.0.0
  */
 class Listener {
@@ -58,6 +58,10 @@ class Listener {
 
 		if ( $payment_id ) {
 			$payment = get_pronamic_payment( $payment_id );
+
+			if ( null === $payment ) {
+				return;
+			}
 
 			// Add note.
 			$note = sprintf(

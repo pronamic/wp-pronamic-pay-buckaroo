@@ -4,16 +4,17 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Core\Server;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: Buckaroo gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 2.0.1
+ * @version 2.0.2
  * @since 1.0.0
  */
 class Gateway extends Core_Gateway {
@@ -174,7 +175,7 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$method = filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING );
+		$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
 
 		$data = array();
 

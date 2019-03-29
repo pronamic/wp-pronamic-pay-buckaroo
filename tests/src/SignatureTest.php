@@ -5,7 +5,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 /**
  * Title: Buckaroo signature test.
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @link http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf

@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\Core\GatewaySettings;
 /**
  * Title: Buckaroo gateway settings
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -15,13 +15,23 @@ use Pronamic\WordPress\Pay\Core\GatewaySettings;
  * @since 1.2.1
  */
 class Settings extends GatewaySettings {
+	/**
+	 * Settings constructor.
+	 */
 	public function __construct() {
 		add_filter( 'pronamic_pay_gateway_sections', array( $this, 'sections' ) );
 		add_filter( 'pronamic_pay_gateway_fields', array( $this, 'fields' ) );
 	}
 
+	/**
+	 * Sections.
+	 *
+	 * @param array $sections Sections.
+	 *
+	 * @return array
+	 */
 	public function sections( array $sections ) {
-		// Buckaroo
+		// Buckaroo.
 		$sections['buckaroo'] = array(
 			'title'       => __( 'Buckaroo', 'pronamic_ideal' ),
 			'methods'     => array( 'buckaroo' ),
@@ -38,7 +48,7 @@ class Settings extends GatewaySettings {
 			'description' => __( 'Optional settings for advanced usage only.', 'pronamic_ideal' ),
 		);
 
-		// Transaction feedback
+		// Transaction feedback.
 		$sections['buckaroo_feedback'] = array(
 			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
 			'methods'     => array( 'buckaroo' ),
@@ -48,8 +58,15 @@ class Settings extends GatewaySettings {
 		return $sections;
 	}
 
+	/**
+	 * Fields.
+	 *
+	 * @param array $fields Fields.
+	 *
+	 * @return array
+	 */
 	public function fields( array $fields ) {
-		// Website Key
+		// Website Key.
 		$fields[] = array(
 			'filter'   => FILTER_SANITIZE_STRING,
 			'section'  => 'buckaroo',
@@ -60,7 +77,7 @@ class Settings extends GatewaySettings {
 			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
 		);
 
-		// Secret Key
+		// Secret Key.
 		$fields[] = array(
 			'filter'   => FILTER_SANITIZE_STRING,
 			'section'  => 'buckaroo',
@@ -71,7 +88,7 @@ class Settings extends GatewaySettings {
 			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboardb on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
 		);
 
-		// Transaction feedback
+		// Transaction feedback.
 		$fields[] = array(
 			'section' => 'buckaroo',
 			'title'   => __( 'Transaction feedback', 'pronamic_ideal' ),
@@ -82,7 +99,7 @@ class Settings extends GatewaySettings {
 			),
 		);
 
-		// Excluded services
+		// Excluded services.
 		$fields[] = array(
 			'filter'   => FILTER_SANITIZE_STRING,
 			'section'  => 'buckaroo_advanced',
@@ -97,7 +114,7 @@ class Settings extends GatewaySettings {
 			),
 		);
 
-		// Invoice number
+		// Invoice number.
 		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'buckaroo_advanced',
@@ -119,7 +136,7 @@ class Settings extends GatewaySettings {
 			),
 		);
 
-		// Push URL
+		// Push URL.
 		$fields[] = array(
 			'section'  => 'buckaroo_feedback',
 			'title'    => __( 'Push URL', 'pronamic_ideal' ),
