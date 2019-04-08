@@ -91,12 +91,10 @@ class Settings extends GatewaySettings {
 		// Transaction feedback.
 		$fields[] = array(
 			'section' => 'buckaroo',
+			'methods' => array( 'buckaroo' ),
 			'title'   => __( 'Transaction feedback', 'pronamic_ideal' ),
 			'type'    => 'description',
-			'html'    => sprintf(
-				'<span class="dashicons dashicons-yes"></span> %s',
-				__( 'Payment status updates will be processed without any additional configuration.', 'pronamic_ideal' )
-			),
+			'html'    => __( 'Payment status updates will be processed without any additional configuration.', 'pronamic_ideal' ),
 		);
 
 		// Excluded services.
@@ -145,6 +143,15 @@ class Settings extends GatewaySettings {
 			'value'    => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
 			'readonly' => true,
 			'tooltip'  => __( 'The Push URL as sent with each transaction to receive automatic payment status updates on.', 'pronamic_ideal' ),
+		);
+
+		// Webhook status.
+		$fields[] = array(
+			'section'  => 'buckaroo_feedback',
+			'methods'  => array( 'buckaroo' ),
+			'title'    => __( 'Status', 'pronamic_ideal' ),
+			'type'     => 'description',
+			'callback' => array( 'Pronamic\WordPress\Pay\WebhookManager', 'settings_status' ),
 		);
 
 		return $fields;
