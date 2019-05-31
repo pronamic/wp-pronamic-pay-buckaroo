@@ -22,6 +22,10 @@ class Integration extends AbstractIntegration {
 		$this->product_url   = __( 'http://www.buckaroo-payments.com', 'pronamic_ideal' );
 		$this->dashboard_url = 'https://plaza.buckaroo.nl/';
 		$this->provider      = 'buckaroo';
+		$this->supports      = array(
+			'webhook',
+		);
+
 
 		// Actions
 		$function = array( __NAMESPACE__ . '\Listener', 'listen' );
