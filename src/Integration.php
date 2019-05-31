@@ -53,4 +53,80 @@ class Integration extends AbstractIntegration {
 
 		return $settings;
 	}
+
+	public function get_settings_fields() {
+		$fields = array();
+
+		// Website Key.
+		$fields[] = array(
+			'section'  => 'general',
+			'filter'   => FILTER_SANITIZE_STRING,
+			'meta_key' => '_pronamic_gateway_buckaroo_website_key',
+			'title'    => __( 'Website Key', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'code' ),
+			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
+		);
+
+		// Secret Key.
+		$fields[] = array(
+			'section'  => 'general',
+			'filter'   => FILTER_SANITIZE_STRING,
+			'meta_key' => '_pronamic_gateway_buckaroo_secret_key',
+			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'regular-text', 'code' ),
+			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboardb on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+		);
+
+		// Excluded services.
+		$fields[] = array(
+			'section'  => 'advanced',
+			'filter'   => FILTER_SANITIZE_STRING,
+			'meta_key' => '_pronamic_gateway_buckaroo_excluded_services',
+			'title'    => __( 'Excluded services', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'regular-text', 'code' ),
+			'tooltip'  => sprintf(
+				/* translators: %s: <code>brq_exludedservices</code> */
+				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
+				sprintf( '<code>%s</code>', 'brq_exludedservices' )
+			),
+		);
+
+		// Invoice number.
+		$fields[] = array(
+			'section'     => 'advanced',
+			'filter'      => FILTER_SANITIZE_STRING,
+			'meta_key'    => '_pronamic_gateway_buckaroo_invoice_number',
+			'title'       => __( 'Invoice number', 'pronamic_ideal' ),
+			'type'        => 'text',
+			'classes'     => array( 'regular-text', 'code' ),
+			'tooltip'     => sprintf(
+				/* translators: %s: <code>brq_invoicenumber</code> */
+				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
+				sprintf( '<code>%s</code>', 'brq_invoicenumber' )
+			),
+			'description' => sprintf(
+				'%s<br />%s',
+				/* translators: %s: <code>{order_id}</code> <code>{payment_id}</code> */
+				sprintf( __( 'Available tags: %s', 'pronamic_ideal' ), sprintf( '<code>%s</code> <code>%s</code>', '{order_id}', '{payment_id}' ) ),
+				/* translators: %s: <code>{payment_id}</code> */
+				sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), '{payment_id}' )
+			),
+		);
+
+		// Push URL.
+		$fields[] = array(
+			'section'  => 'feedback',
+			'title'    => __( 'Push URL', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'large-text', 'code' ),
+			'value'    => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
+			'readonly' => true,
+			'tooltip'  => __( 'The Push URL as sent with each transaction to receive automatic payment status updates on.', 'pronamic_ideal' ),
+		);
+
+		return $fields;
+	}
 }
