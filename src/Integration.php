@@ -26,36 +26,12 @@ class Integration extends AbstractIntegration {
 			'webhook',
 		);
 
-
 		// Actions
 		$function = array( __NAMESPACE__ . '\Listener', 'listen' );
 
 		if ( ! has_action( 'wp_loaded', $function ) ) {
 			add_action( 'wp_loaded', $function );
 		}
-	}
-
-	public function get_config_factory_class() {
-		return __NAMESPACE__ . '\ConfigFactory';
-	}
-
-	public function get_settings_class() {
-		return __NAMESPACE__ . '\Settings';
-	}
-
-	/**
-	 * Get required settings for this integration.
-	 *
-	 * @link https://github.com/wp-premium/gravityforms/blob/1.9.16/includes/fields/class-gf-field-multiselect.php#L21-L42
-	 * @since 1.2.2
-	 * @return array
-	 */
-	public function get_settings() {
-		$settings = parent::get_settings();
-
-		$settings[] = 'buckaroo';
-
-		return $settings;
 	}
 
 	public function get_settings_fields() {
@@ -132,5 +108,17 @@ class Integration extends AbstractIntegration {
 		);
 
 		return $fields;
+	}
+
+	public function get_config( $post_id ) {
+		$config = new Config();
+
+		$config->website_key       = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_website_key', true );
+		$config->secret_key        = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_secret_key', true );
+		$config->excluded_services = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_excluded_services', true );
+		$config->invoice_number    = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_invoice_number', true );
+		$config->mode              = get_post_meta( $post_id, '_pronamic_gateway_mode', true );
+
+		return $config;
 	}
 }
