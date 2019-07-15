@@ -24,6 +24,8 @@ class Integration extends AbstractIntegration {
 		$this->provider      = 'buckaroo';
 		$this->supports      = array(
 			'webhook',
+			'webhook_log',
+			'webhook_no_config',
 		);
 
 		// Actions

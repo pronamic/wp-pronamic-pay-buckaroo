@@ -4,7 +4,6 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
 use Pronamic\WordPress\Pay\Core\Server;
 use Pronamic\WordPress\Pay\Plugin;
-use Pronamic\WordPress\Pay\WebhookManager;
 
 /**
  * Title: Buckaroo listener
@@ -74,7 +73,7 @@ class Listener {
 			$payment->add_note( $note );
 
 			// Log webhook request.
-			WebhookManager::log_payment( $payment );
+			do_action( 'pronamic_pay_webhook_log_payment', $payment );
 
 			// Update payment.
 			Plugin::update_payment( $payment );
