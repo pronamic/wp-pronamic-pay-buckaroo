@@ -30,11 +30,13 @@ class Listener {
 
 		switch ( $method ) {
 			case 'GET':
-				$data = $_GET; // WPCS: CSRF OK.
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$data = $_GET;
 
 				break;
 			case 'POST':
-				$data = $_POST; // WPCS: CSRF OK.
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$data = $_POST;
 
 				break;
 		}
@@ -71,6 +73,9 @@ class Listener {
 			);
 
 			$payment->add_note( $note );
+
+			// Log webhook request.
+			do_action( 'pronamic_pay_webhook_log_payment', $payment );
 
 			// Update payment.
 			Plugin::update_payment( $payment );

@@ -19,13 +19,6 @@ use Pronamic\WordPress\Pay\Payments\Payment;
  */
 class Gateway extends Core_Gateway {
 	/**
-	 * Slug of this gateway
-	 *
-	 * @var string
-	 */
-	const SLUG = 'buckaroo';
-
-	/**
 	 * Client.
 	 *
 	 * @var Client
@@ -41,7 +34,6 @@ class Gateway extends Core_Gateway {
 		parent::__construct( $config );
 
 		$this->set_method( self::METHOD_HTML_FORM );
-		$this->set_slug( self::SLUG );
 
 		$this->client = new Client();
 		$this->client->set_website_key( $config->website_key );
@@ -181,11 +173,13 @@ class Gateway extends Core_Gateway {
 
 		switch ( $method ) {
 			case 'GET':
-				$data = $_GET; // WPCS: CSRF OK.
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$data = $_GET;
 
 				break;
 			case 'POST':
-				$data = $_POST; // WPCS: CSRF OK.
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$data = $_POST;
 
 				break;
 		}
