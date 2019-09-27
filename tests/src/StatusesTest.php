@@ -2,7 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
-use Pronamic\WordPress\Pay\Core\Statuses as CoreStatuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus as CoreStatuses;
 
 /**
  * Title: Buckaroo statuses constants tests
