@@ -2,8 +2,6 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
-use WP_Error;
-
 /**
  * Title: Buckaroo client
  * Description:
@@ -178,30 +176,12 @@ class Client {
 	private $payment_id;
 
 	/**
-	 * Error.
-	 *
-	 * @since 1.2.6
-	 * @var WP_Error
-	 */
-	private $error;
-
-	/**
 	 * Constructs and initialize a iDEAL kassa object
 	 */
 	public function __construct() {
 		$this->set_payment_server_url( self::GATEWAY_URL );
 
 		$this->requested_services = array();
-	}
-
-	/**
-	 * Get error.
-	 *
-	 * @since 1.2.6
-	 * @return WP_Error
-	 */
-	public function get_error() {
-		return $this->error;
 	}
 
 	/**
@@ -479,9 +459,7 @@ class Client {
 		$error_msg = __( 'Unable to retrieve issuers from Buckaroo.', 'pronamic_ideal' );
 
 		if ( 200 !== wp_remote_retrieve_response_code( $result ) ) {
-			$this->error = new WP_Error( 'buckaroo_error', $error_msg, $data );
-
-			return $issuers;
+			throw new \Pronamic\WordPress\Pay\GatewayException( 'buckaroo', $error_msg, $data );
 		}
 
 		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
@@ -489,9 +467,7 @@ class Client {
 				$error_msg = sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] );
 			}
 
-			$this->error = new WP_Error( 'buckaroo_error', $error_msg, $data );
-
-			return $issuers;
+			throw new \Pronamic\WordPress\Pay\GatewayException( 'buckaroo', $error_msg, $data );
 		}
 
 		if ( ! isset( $data['BRQ_SERVICES'] ) ) {
