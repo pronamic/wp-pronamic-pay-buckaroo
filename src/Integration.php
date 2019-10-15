@@ -20,6 +20,7 @@ class Integration extends AbstractIntegration {
 		$this->name          = 'Buckaroo - HTML';
 		$this->url           = 'https://plaza.buckaroo.nl/';
 		$this->product_url   = __( 'http://www.buckaroo-payments.com', 'pronamic_ideal' );
+		$this->manual_url    = __( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' );
 		$this->dashboard_url = 'https://plaza.buckaroo.nl/';
 		$this->provider      = 'buckaroo';
 		$this->supports      = array(
