@@ -1,4 +1,12 @@
 <?php
+/**
+ * Status test
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Buckaroo
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
@@ -18,15 +26,23 @@ class StatusesTest extends \WP_UnitTestCase {
 	/**
 	 * Test transform.
 	 *
-	 * @dataProvider statusMatrixProvider
+	 * @param string $buckaroo_status Buckaroo status.
+	 * @param string $expected        Expected status.
+	 *
+	 * @dataProvider transform_provider
 	 */
-	public function testTransform( $buckaroo_status, $expected ) {
+	public function test_transform( $buckaroo_status, $expected ) {
 		$status = Statuses::transform( $buckaroo_status );
 
 		$this->assertEquals( $expected, $status );
 	}
 
-	public function statusMatrixProvider() {
+	/**
+	 * Data provider for transform.
+	 *
+	 * @return array
+	 */
+	public function transform_provider() {
 		return array(
 			// Success.
 			array( Statuses::PAYMENT_SUCCESS, Core_Statuses::SUCCESS ),

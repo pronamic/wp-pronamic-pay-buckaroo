@@ -1,4 +1,12 @@
 <?php
+/**
+ * Signature test
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Buckaroo
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
@@ -16,6 +24,8 @@ class SignatureTest extends \WP_UnitTestCase {
 	/**
 	 * Test get signature.
 	 *
+	 * @param array $data Data for signature.
+	 *
 	 * @dataProvider provider_case_mix
 	 */
 	public function test_get_signature( $data ) {
@@ -26,6 +36,8 @@ class SignatureTest extends \WP_UnitTestCase {
 
 	/**
 	 * Test signature filter.
+	 *
+	 * @param array $data Data for signature.
 	 *
 	 * @dataProvider provider_case_mix
 	 */
@@ -38,6 +50,8 @@ class SignatureTest extends \WP_UnitTestCase {
 	/**
 	 * Test create signature.
 	 *
+	 * @param array $data Data for signature.
+	 *
 	 * @dataProvider provider
 	 */
 	public function test_create_signature( $data ) {
@@ -47,11 +61,16 @@ class SignatureTest extends \WP_UnitTestCase {
 
 		$signature = Security::get_signature( $data );
 
-		$signature_check = Security::create_signature( $data, $secret_key, true );
+		$signature_check = Security::create_signature( $data, $secret_key );
 
 		$this->assertEquals( $signature, $signature_check );
 	}
 
+	/**
+	 * Data provider for signature.
+	 *
+	 * @return array
+	 */
 	public function provider() {
 		$data = array(
 			'BRQ_AMOUNT'                       => '50.00',
@@ -79,6 +98,11 @@ class SignatureTest extends \WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Data provider for case mix.
+	 *
+	 * @return array
+	 */
 	public function provider_case_mix() {
 		$data_mixcase = array(
 			'Brq_amount'                       => '55.00',
