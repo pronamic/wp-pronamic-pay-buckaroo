@@ -2,7 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
-use Pronamic\WordPress\Pay\Payments\PaymentStatus as CoreStatuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 
 /**
  * Title: Buckaroo statuses constants tests
@@ -28,22 +28,22 @@ class StatusesTest extends \WP_UnitTestCase {
 
 	public function statusMatrixProvider() {
 		return array(
-			// Success
-			array( Statuses::PAYMENT_SUCCESS, CoreStatuses::SUCCESS ),
-			// Failure
-			array( Statuses::PAYMENT_FAILURE, CoreStatuses::FAILURE ),
-			array( Statuses::VALIDATION_FAILURE, CoreStatuses::FAILURE ),
-			array( Statuses::TECHNICAL_ERROR, CoreStatuses::FAILURE ),
-			array( Statuses::PAYMENT_REJECTED, CoreStatuses::FAILURE ),
-			// Open
-			array( Statuses::WAITING_FOR_USER_INPUT, CoreStatuses::OPEN ),
-			array( Statuses::WAITING_FOR_PROCESSOR, CoreStatuses::OPEN ),
-			array( Statuses::WAITING_ON_CONSUMER_ACTION, CoreStatuses::OPEN ),
-			array( Statuses::PAYMENT_ON_HOLD, CoreStatuses::OPEN ),
-			// Cancelled
-			array( Statuses::CANCELLED_BY_CONSUMER, CoreStatuses::CANCELLED ),
-			array( Statuses::CANCELLED_BY_MERCHANT, CoreStatuses::CANCELLED ),
-			// Other
+			// Success.
+			array( Statuses::PAYMENT_SUCCESS, Core_Statuses::SUCCESS ),
+			// Failure.
+			array( Statuses::PAYMENT_FAILURE, Core_Statuses::FAILURE ),
+			array( Statuses::VALIDATION_FAILURE, Core_Statuses::FAILURE ),
+			array( Statuses::TECHNICAL_ERROR, Core_Statuses::FAILURE ),
+			array( Statuses::PAYMENT_REJECTED, Core_Statuses::FAILURE ),
+			// Open.
+			array( Statuses::WAITING_FOR_USER_INPUT, Core_Statuses::OPEN ),
+			array( Statuses::WAITING_FOR_PROCESSOR, Core_Statuses::OPEN ),
+			array( Statuses::WAITING_ON_CONSUMER_ACTION, Core_Statuses::OPEN ),
+			array( Statuses::PAYMENT_ON_HOLD, Core_Statuses::OPEN ),
+			// Cancelled.
+			array( Statuses::CANCELLED_BY_CONSUMER, Core_Statuses::CANCELLED ),
+			array( Statuses::CANCELLED_BY_MERCHANT, Core_Statuses::CANCELLED ),
+			// Other.
 			array( 'not existing status', null ),
 		);
 	}
