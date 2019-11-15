@@ -95,7 +95,20 @@ class Gateway extends Core_Gateway {
 	 */
 	public function start( Payment $payment ) {
 		$payment->set_action_url( $this->client->get_payment_server_url() );
+	}
 
+	/**
+	 * Get output HTML
+	 *
+	 * @param Payment $payment Payment.
+	 *
+	 * @return string
+	 *
+	 * @see     Core_Gateway::get_output_html()
+	 * @since   1.1.1
+	 * @version 2.0.4
+	 */
+	public function get_output_fields( Payment $payment ) {
 		$payment_method = $payment->get_method();
 
 		switch ( $payment_method ) {
@@ -149,15 +162,7 @@ class Gateway extends Core_Gateway {
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
 		$this->client->set_return_error_url( $payment->get_return_url() );
 		$this->client->set_return_reject_url( $payment->get_return_url() );
-	}
 
-	/**
-	 * Get output HTML
-	 *
-	 * @since 1.1.1
-	 * @see Pronamic_WP_Pay_Gateway::get_output_html()
-	 */
-	public function get_output_fields() {
 		return $this->client->get_fields();
 	}
 
