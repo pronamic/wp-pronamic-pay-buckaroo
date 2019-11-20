@@ -56,17 +56,17 @@ class Gateway extends Core_Gateway {
 	public function get_issuers() {
 		$groups = array();
 
-		$result = $this->client->get_issuers();
+		try {
+			$result = $this->client->get_issuers();
 
-		if ( $result ) {
 			$groups[] = array(
 				'options' => $result,
 			);
-
-			return $groups;
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'buckaroo', $e->getMessage() );
 		}
 
-		$this->error = $this->client->get_error();
+		return $groups;
 	}
 
 	/**

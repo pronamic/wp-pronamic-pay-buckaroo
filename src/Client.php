@@ -459,7 +459,7 @@ class Client {
 		$error_msg = __( 'Unable to retrieve issuers from Buckaroo.', 'pronamic_ideal' );
 
 		if ( 200 !== wp_remote_retrieve_response_code( $result ) ) {
-			throw new \Pronamic\WordPress\Pay\GatewayException( 'buckaroo', $error_msg, $data );
+			throw new \Exception( $error_msg );
 		}
 
 		if ( isset( $data['BRQ_APIRESULT'] ) && 'Fail' === $data['BRQ_APIRESULT'] ) {
@@ -467,7 +467,7 @@ class Client {
 				$error_msg = sprintf( '%s %s', $error_msg, $data['BRQ_APIERRORMESSAGE'] );
 			}
 
-			throw new \Pronamic\WordPress\Pay\GatewayException( 'buckaroo', $error_msg, $data );
+			throw new \Exception( $error_msg );
 		}
 
 		if ( ! isset( $data['BRQ_SERVICES'] ) ) {
