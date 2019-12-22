@@ -11,7 +11,7 @@ use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
  * Company: Pronamic
  *
  * @author Reüel van der Steege
- * @version 2.0.0
+ * @version 2.0.4
  * @since 1.0.0
  */
 class Integration extends AbstractIntegration {
@@ -27,6 +27,8 @@ class Integration extends AbstractIntegration {
 			'webhook_log',
 			'webhook_no_config',
 		);
+
+		$this->set_manual_url( __( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ) );
 
 		// Actions
 		$function = array( __NAMESPACE__ . '\Listener', 'listen' );

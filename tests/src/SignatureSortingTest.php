@@ -1,4 +1,12 @@
 <?php
+/**
+ * Signature sorting test
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Buckaroo
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
@@ -10,7 +18,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
  *
  * @link http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
  * @author Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  */
 class SignatureSortingTest extends \WP_UnitTestCase {
 	/**
@@ -34,14 +42,14 @@ class SignatureSortingTest extends \WP_UnitTestCase {
 			'brq_websitekey' => '123456',
 		);
 
-		// Sort
+		// Sort.
 		$data = Security::sort( $data );
 
-		// Keys
+		// Keys.
 		$keys_data     = implode( "\n", array_keys( $data ) );
 		$keys_expected = implode( "\n", array_keys( $expected ) );
 
-		// Assert
+		// Assert.
 		$this->assertEquals( $keys_expected, $keys_data );
 	}
 }
