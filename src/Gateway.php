@@ -36,10 +36,10 @@ class Gateway extends Core_Gateway {
 		$this->set_method( self::METHOD_HTML_FORM );
 
 		$this->client = new Client();
-		$this->client->set_website_key( $config->website_key );
-		$this->client->set_secret_key( $config->secret_key );
-		$this->client->set_excluded_services( $config->excluded_services );
-		$this->client->set_invoice_number( $config->invoice_number );
+		$this->client->set_website_key( $config->get_website_key() );
+		$this->client->set_secret_key( $config->get_secret_key() );
+		$this->client->set_excluded_services( $config->get_excluded_services() );
+		$this->client->set_invoice_number( $config->get_invoice_number() );
 		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
 		if ( self::MODE_TEST === $config->mode ) {
