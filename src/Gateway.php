@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
+use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Server;
@@ -198,9 +199,19 @@ class Gateway extends Core_Gateway {
 		if ( $data ) {
 			$payment->set_transaction_id( $data[ Parameters::PAYMENT ] );
 			$payment->set_status( Statuses::transform( $data[ Parameters::STATUS_CODE ] ) );
-			$payment->set_consumer_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
-			$payment->set_consumer_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
-			$payment->set_consumer_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+
+			// Consumer bank details.
+			$consumer_bank_details = $payment->get_consumer_bank_details();
+
+			if ( null === $consumer_bank_details ) {
+				$consumer_bank_details = new BankAccountDetails();
+
+				$payment->set_consumer_bank_details( $consumer_bank_details );
+			}
+
+			$consumer_bank_details->set_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+			$consumer_bank_details->set_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
+			$consumer_bank_details->set_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
 
 			$labels = array(
 				Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
