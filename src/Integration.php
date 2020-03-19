@@ -2,33 +2,44 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
-use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
+use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
 
 /**
  * Title: Buckaroo integration
  * Description:
- * Copyright: 2005-2019 Pronamic
+ * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author Reüel van der Steege
  * @version 2.0.4
  * @since 1.0.0
  */
-class Integration extends AbstractIntegration {
-	public function __construct() {
-		$this->id            = 'buckaroo';
-		$this->name          = 'Buckaroo - HTML';
-		$this->url           = 'https://plaza.buckaroo.nl/';
-		$this->product_url   = __( 'http://www.buckaroo-payments.com', 'pronamic_ideal' );
-		$this->dashboard_url = 'https://plaza.buckaroo.nl/';
-		$this->provider      = 'buckaroo';
-		$this->supports      = array(
-			'webhook',
-			'webhook_log',
-			'webhook_no_config',
+class Integration extends AbstractGatewayIntegration {
+	/**
+	 * Construct Buckaroo integration.
+	 *
+	 * @param array $args Arguments.
+	 */
+	public function __construct( $args = array() ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'            => 'buckaroo',
+				'name'          => 'Buckaroo - HTML',
+				'url'           => 'https://plaza.buckaroo.nl/',
+				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
+				'dashboard_url' => 'https://plaza.buckaroo.nl/',
+				'provider'      => 'buckaroo',
+				'supports'      => array(
+					'webhook',
+					'webhook_log',
+					'webhook_no_config',
+				),
+				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
+			)
 		);
 
-		$this->set_manual_url( __( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ) );
+		parent::__construct( $args );
 
 		// Actions
 		$function = array( __NAMESPACE__ . '\Listener', 'listen' );

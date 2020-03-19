@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
+use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Server;
@@ -10,7 +11,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 /**
  * Title: Buckaroo gateway
  * Description:
- * Copyright: 2005-2019 Pronamic
+ * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -36,10 +37,10 @@ class Gateway extends Core_Gateway {
 		$this->set_method( self::METHOD_HTML_FORM );
 
 		$this->client = new Client();
-		$this->client->set_website_key( $config->website_key );
-		$this->client->set_secret_key( $config->secret_key );
-		$this->client->set_excluded_services( $config->excluded_services );
-		$this->client->set_invoice_number( $config->invoice_number );
+		$this->client->set_website_key( $config->get_website_key() );
+		$this->client->set_secret_key( $config->get_secret_key() );
+		$this->client->set_excluded_services( $config->get_excluded_services() );
+		$this->client->set_invoice_number( $config->get_invoice_number() );
 		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
 
 		if ( self::MODE_TEST === $config->mode ) {
@@ -198,9 +199,19 @@ class Gateway extends Core_Gateway {
 		if ( $data ) {
 			$payment->set_transaction_id( $data[ Parameters::PAYMENT ] );
 			$payment->set_status( Statuses::transform( $data[ Parameters::STATUS_CODE ] ) );
-			$payment->set_consumer_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
-			$payment->set_consumer_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
-			$payment->set_consumer_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+
+			// Consumer bank details.
+			$consumer_bank_details = $payment->get_consumer_bank_details();
+
+			if ( null === $consumer_bank_details ) {
+				$consumer_bank_details = new BankAccountDetails();
+
+				$payment->set_consumer_bank_details( $consumer_bank_details );
+			}
+
+			$consumer_bank_details->set_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+			$consumer_bank_details->set_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
+			$consumer_bank_details->set_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
 
 			$labels = array(
 				Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
