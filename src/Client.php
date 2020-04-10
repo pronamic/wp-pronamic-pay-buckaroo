@@ -521,6 +521,12 @@ class Client {
 	 * @return string
 	 */
 	public function get_fields() {
+		// Description with HTML entities such as `&#038;` decoded into `&`, to prevent invalid signature.
+		$description = $this->get_description();
+
+		$description  = html_entity_decode( $description );
+
+		// Data.
 		$data = array(
 			Parameters::ADD_PRONAMIC_PAYMENT_ID => $this->get_payment_id(),
 			Parameters::WEBSITE_KEY             => $this->get_website_key(),
@@ -528,7 +534,7 @@ class Client {
 			Parameters::AMOUNT                  => number_format( $this->get_amount(), 2, '.', '' ),
 			Parameters::CURRENCY                => $this->get_currency(),
 			Parameters::CULTURE                 => $this->get_culture(),
-			Parameters::DESCRIPTION             => $this->get_description(),
+			Parameters::DESCRIPTION             => $description,
 			Parameters::PAYMENT_METHOD          => $this->get_payment_method(),
 			Parameters::RETURN_URL              => $this->get_return_url(),
 			Parameters::RETURN_REJECT_URL       => $this->get_return_reject_url(),
