@@ -524,7 +524,7 @@ class Client {
 		// Description with HTML entities such as `&#038;` decoded into `&`, to prevent invalid signature.
 		$description = $this->get_description();
 
-		$description  = html_entity_decode( $description );
+		$description = html_entity_decode( $description );
 
 		// Data.
 		$data = array(
