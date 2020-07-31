@@ -83,7 +83,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
 			'tooltip'  => sprintf(
-				/* translators: %s: <code>brq_exludedservices</code> */
+				/* translators: %s: <code>brq_parameter</code> */
 				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
 				sprintf( '<code>%s</code>', 'brq_exludedservices' )
 			),
@@ -98,15 +98,15 @@ class Integration extends AbstractGatewayIntegration {
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => sprintf(
-				/* translators: %s: <code>brq_invoicenumber</code> */
+				/* translators: %s: <code>brq_parameter</code> */
 				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
 				sprintf( '<code>%s</code>', 'brq_invoicenumber' )
 			),
 			'description' => sprintf(
 				'%s<br />%s',
-				/* translators: %s: <code>{order_id}</code> <code>{payment_id}</code> */
+				/* translators: %s: <code>{tag}</code> */
 				sprintf( __( 'Available tags: %s', 'pronamic_ideal' ), sprintf( '<code>%s</code> <code>%s</code>', '{order_id}', '{payment_id}' ) ),
-				/* translators: %s: <code>{payment_id}</code> */
+				/* translators: %s: default code */
 				sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), '{payment_id}' )
 			),
 		);
