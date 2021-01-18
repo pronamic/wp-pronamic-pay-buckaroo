@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 /**
  * Title: Buckaroo utility class
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
