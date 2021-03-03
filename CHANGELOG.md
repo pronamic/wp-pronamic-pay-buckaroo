@@ -48,7 +48,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - Fixed `Fatal error: Call to undefined method Pronamic_WP_Pay_Gateways_Buckaroo_Client::get_error()`.
 
 ## [1.2.5] - 2016-06-14
-- Simplified the gateay payment start function.
+- Simplified the gateway payment start function.
 
 ## [1.2.4] - 2016-04-12
 - Added support for iDEAL issuer.
@@ -76,7 +76,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [1.1.0] - 2015-02-27
 - Updated WordPress pay core library to version 1.1.0.
-- Fixed isues with filter_input INPUT_SERVER (https://bugs.php.net/bug.php?id=49184).
+- Fixed issues with filter_input INPUT_SERVER (https://bugs.php.net/bug.php?id=49184).
 
 ## [1.0.0] - 2015-01-19
 - First release.
