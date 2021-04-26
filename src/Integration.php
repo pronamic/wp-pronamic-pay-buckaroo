@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
 /**
  * Title: Buckaroo integration
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Reüel van der Steege
@@ -49,6 +49,11 @@ class Integration extends AbstractGatewayIntegration {
 		}
 	}
 
+	/**
+	 * Get settings fields.
+	 *
+	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
+	 */
 	public function get_settings_fields() {
 		$fields = array();
 
@@ -71,7 +76,7 @@ class Integration extends AbstractGatewayIntegration {
 			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
-			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboardb on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboard on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
 		);
 
 		// Excluded services.
@@ -83,7 +88,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
 			'tooltip'  => sprintf(
-				/* translators: %s: <code>brq_exludedservices</code> */
+				/* translators: %s: <code>brq_parameter</code> */
 				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
 				sprintf( '<code>%s</code>', 'brq_exludedservices' )
 			),
@@ -98,15 +103,15 @@ class Integration extends AbstractGatewayIntegration {
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => sprintf(
-				/* translators: %s: <code>brq_invoicenumber</code> */
+				/* translators: %s: <code>brq_parameter</code> */
 				__( 'This controls the Buckaroo %s parameter.', 'pronamic_ideal' ),
 				sprintf( '<code>%s</code>', 'brq_invoicenumber' )
 			),
 			'description' => sprintf(
 				'%s<br />%s',
-				/* translators: %s: <code>{order_id}</code> <code>{payment_id}</code> */
+				/* translators: %s: <code>{tag}</code> */
 				sprintf( __( 'Available tags: %s', 'pronamic_ideal' ), sprintf( '<code>%s</code> <code>%s</code>', '{order_id}', '{payment_id}' ) ),
-				/* translators: %s: <code>{payment_id}</code> */
+				/* translators: %s: default code */
 				sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), '{payment_id}' )
 			),
 		);
@@ -125,6 +130,13 @@ class Integration extends AbstractGatewayIntegration {
 		return $fields;
 	}
 
+	/**
+	 * Get config.
+	 *
+	 * @param int $post_id Gateway config post ID.
+	 *
+	 * @return Config
+	 */
 	public function get_config( $post_id ) {
 		$config = new Config();
 

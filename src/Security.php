@@ -5,7 +5,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 /**
  * Title: Buckaroo security class
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -16,9 +16,9 @@ class Security {
 	/**
 	 * Find the signature from an data array
 	 *
-	 * @param array $data
+	 * @param array $data Data.
 	 *
-	 * @return null or signature value
+	 * @return string|null
 	 */
 	public static function get_signature( $data ) {
 		$result = null;

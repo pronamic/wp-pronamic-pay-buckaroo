@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 /**
  * Title: Buckaroo payment methods constants
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -133,10 +133,10 @@ class PaymentMethods {
 	 *
 	 * @since 1.1.6
 	 *
-	 * @param string $payment_method WordPress payment method to transform to Buckaroo method.
-	 * @param mixed  $default        Default payment method.
+	 * @param string      $payment_method WordPress payment method to transform to Buckaroo method.
+	 * @param null|string $default        Default payment method.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public static function transform( $payment_method, $default = null ) {
 		if ( ! is_scalar( $payment_method ) ) {

@@ -8,7 +8,7 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Buckaroo listener
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -18,6 +18,8 @@ use Pronamic\WordPress\Pay\Plugin;
 class Listener {
 	/**
 	 * Listen.
+	 *
+	 * @return void
 	 */
 	public static function listen() {
 		if ( ! filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
@@ -67,7 +69,7 @@ class Listener {
 
 			// Add note.
 			$note = sprintf(
-				/* translators: %s: Buckaroo */
+				/* translators: %s: payment provider name */
 				__( 'Webhook requested by %s.', 'pronamic_ideal' ),
 				__( 'Buckaroo', 'pronamic_ideal' )
 			);

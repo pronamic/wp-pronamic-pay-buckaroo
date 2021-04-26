@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 /**
  * Title: Buckaroo utility class
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -75,9 +75,9 @@ class Util {
 	/**
 	 * URL decode array
 	 *
-	 * @param array $data
+	 * @param array<int|string, string> $data Data.
 	 *
-	 * @return array
+	 * @return array<int|string, string>
 	 */
 	public static function urldecode( array $data ) {
 		return array_map( 'urldecode', $data );
@@ -88,9 +88,9 @@ class Util {
 	 *
 	 * @since 1.2.4
 	 *
-	 * @param array $response
+	 * @param array<string, string> $response Response.
 	 *
-	 * @return array
+	 * @return array<string, array|string>
 	 */
 	public static function transform_flat_response( $response = array() ) {
 		$return = array();

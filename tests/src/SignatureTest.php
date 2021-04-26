@@ -3,7 +3,7 @@
  * Signature test
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Gateways\Buckaroo
  */
@@ -13,7 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 /**
  * Title: Buckaroo signature test.
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @link http://pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
