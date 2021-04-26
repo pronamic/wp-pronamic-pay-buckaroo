@@ -16,9 +16,9 @@ class Security {
 	/**
 	 * Find the signature from an data array
 	 *
-	 * @param array $data
+	 * @param array $data Data.
 	 *
-	 * @return null or signature value
+	 * @return string|null
 	 */
 	public static function get_signature( $data ) {
 		$result = null;

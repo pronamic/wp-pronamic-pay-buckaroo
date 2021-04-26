@@ -49,6 +49,11 @@ class Integration extends AbstractGatewayIntegration {
 		}
 	}
 
+	/**
+	 * Get settings fields.
+	 *
+	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
+	 */
 	public function get_settings_fields() {
 		$fields = array();
 
@@ -125,6 +130,13 @@ class Integration extends AbstractGatewayIntegration {
 		return $fields;
 	}
 
+	/**
+	 * Get config.
+	 *
+	 * @param int $post_id Gateway config post ID.
+	 *
+	 * @return Config
+	 */
 	public function get_config( $post_id ) {
 		$config = new Config();
 

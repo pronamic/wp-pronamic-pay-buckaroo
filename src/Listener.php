@@ -18,6 +18,8 @@ use Pronamic\WordPress\Pay\Plugin;
 class Listener {
 	/**
 	 * Listen.
+	 *
+	 * @return void
 	 */
 	public static function listen() {
 		if ( ! filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {

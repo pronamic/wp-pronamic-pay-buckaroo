@@ -103,7 +103,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return string
+	 * @return array
 	 *
 	 * @see     Core_Gateway::get_output_html()
 	 * @since   1.1.1
@@ -131,7 +131,7 @@ class Gateway extends Core_Gateway {
 			case Core_PaymentMethods::GIROPAY:
 			case Core_PaymentMethods::PAYPAL:
 			case Core_PaymentMethods::SOFORT:
-				$this->client->set_payment_method( PaymentMethods::transform( $payment_method ) );
+				$this->client->set_payment_method( PaymentMethods::transform( (string) $payment_method ) );
 
 				break;
 			default:
@@ -144,21 +144,25 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Locale.
-		$locale = '';
+		$culture = null;
 
-		if ( null !== $payment->get_customer() ) {
-			$locale = $payment->get_customer()->get_locale();
+		$customer = $payment->get_customer();
+
+		if ( null !== $customer ) {
+			$locale = $customer->get_locale();
+
+			// Buckaroo uses 'nl-NL' instead of 'nl_NL'.
+			if ( ! empty( $locale ) ) {
+				$culture = str_replace( '_', '-', $locale );
+			}
 		}
 
-		// Buckaroo uses 'nl-NL' instead of 'nl_NL'.
-		$culture = str_replace( '_', '-', $locale );
-
-		$this->client->set_payment_id( $payment->get_id() );
+		$this->client->set_payment_id( (string) $payment->get_id() );
 		$this->client->set_culture( $culture );
 		$this->client->set_currency( $payment->get_total_amount()->get_currency()->get_alphabetic_code() );
 		$this->client->set_description( $payment->get_description() );
 		$this->client->set_amount( $payment->get_total_amount()->get_value() );
-		$this->client->set_invoice_number( Util::get_invoice_number( $this->client->get_invoice_number(), $payment ) );
+		$this->client->set_invoice_number( Util::get_invoice_number( (string) $this->client->get_invoice_number(), $payment ) );
 		$this->client->set_return_url( $payment->get_return_url() );
 		$this->client->set_return_cancel_url( $payment->get_return_url() );
 		$this->client->set_return_error_url( $payment->get_return_url() );
@@ -196,58 +200,73 @@ class Gateway extends Core_Gateway {
 
 		$data = $this->client->verify_request( $data );
 
-		if ( $data ) {
-			$payment->set_transaction_id( $data[ Parameters::PAYMENT ] );
-			$payment->set_status( Statuses::transform( $data[ Parameters::STATUS_CODE ] ) );
-
-			// Consumer bank details.
-			$consumer_bank_details = $payment->get_consumer_bank_details();
-
-			if ( null === $consumer_bank_details ) {
-				$consumer_bank_details = new BankAccountDetails();
-
-				$payment->set_consumer_bank_details( $consumer_bank_details );
-			}
-
-			$consumer_bank_details->set_name( $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
-			$consumer_bank_details->set_iban( $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
-			$consumer_bank_details->set_bic( $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
-
-			$labels = array(
-				Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
-				Parameters::PAYMENT_METHOD                => __( 'Payment Method', 'pronamic_ideal' ),
-				Parameters::STATUS_CODE                   => __( 'Status Code', 'pronamic_ideal' ),
-				Parameters::STATUS_CODE_DETAIL            => __( 'Status Code Detail', 'pronamic_ideal' ),
-				Parameters::STATUS_MESSAGE                => __( 'Status Message', 'pronamic_ideal' ),
-				Parameters::INVOICE_NUMBER                => __( 'Invoice Number', 'pronamic_ideal' ),
-				Parameters::AMOUNT                        => __( 'Amount', 'pronamic_ideal' ),
-				Parameters::CURRENCY                      => __( 'Currency', 'pronamic_ideal' ),
-				Parameters::TIMESTAMP                     => __( 'Timestamp', 'pronamic_ideal' ),
-				Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => __( 'Service iDEAL Consumer Issuer', 'pronamic_ideal' ),
-				Parameters::SERVICE_IDEAL_CONSUMER_NAME   => __( 'Service iDEAL Consumer Name', 'pronamic_ideal' ),
-				Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => __( 'Service iDEAL Consumer IBAN', 'pronamic_ideal' ),
-				Parameters::SERVICE_IDEAL_CONSUMER_BIC    => __( 'Service iDEAL Consumer BIC', 'pronamic_ideal' ),
-				Parameters::TRANSACTIONS                  => __( 'Transactions', 'pronamic_ideal' ),
-			);
-
-			$note = '';
-
-			$note .= '<p>';
-			$note .= __( 'Buckaroo data:', 'pronamic_ideal' );
-			$note .= '</p>';
-
-			$note .= '<dl>';
-
-			foreach ( $labels as $key => $label ) {
-				if ( isset( $data[ $key ] ) ) {
-					$note .= sprintf( '<dt>%s</dt>', esc_html( $label ) );
-					$note .= sprintf( '<dd>%s</dd>', esc_html( $data[ $key ] ) );
-				}
-			}
-
-			$note .= '</dl>';
-
-			$payment->add_note( $note );
+		if ( false === $data ) {
+			return;
 		}
+
+		$payment->set_transaction_id( (string) $data[ Parameters::PAYMENT ] );
+		$payment->set_status( Statuses::transform( (string) $data[ Parameters::STATUS_CODE ] ) );
+
+		// Consumer bank details.
+		$consumer_bank_details = $payment->get_consumer_bank_details();
+
+		if ( null === $consumer_bank_details ) {
+			$consumer_bank_details = new BankAccountDetails();
+
+			$payment->set_consumer_bank_details( $consumer_bank_details );
+		}
+
+		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_NAME, $data ) ) {
+			$consumer_bank_details->set_name( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
+		}
+
+		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_IBAN, $data ) ) {
+			$consumer_bank_details->set_iban( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
+		}
+
+		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_BIC, $data ) ) {
+			$consumer_bank_details->set_bic( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
+		}
+
+		$labels = array(
+			Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
+			Parameters::PAYMENT_METHOD                => __( 'Payment Method', 'pronamic_ideal' ),
+			Parameters::STATUS_CODE                   => __( 'Status Code', 'pronamic_ideal' ),
+			Parameters::STATUS_CODE_DETAIL            => __( 'Status Code Detail', 'pronamic_ideal' ),
+			Parameters::STATUS_MESSAGE                => __( 'Status Message', 'pronamic_ideal' ),
+			Parameters::INVOICE_NUMBER                => __( 'Invoice Number', 'pronamic_ideal' ),
+			Parameters::AMOUNT                        => __( 'Amount', 'pronamic_ideal' ),
+			Parameters::CURRENCY                      => __( 'Currency', 'pronamic_ideal' ),
+			Parameters::TIMESTAMP                     => __( 'Timestamp', 'pronamic_ideal' ),
+			Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => __( 'Service iDEAL Consumer Issuer', 'pronamic_ideal' ),
+			Parameters::SERVICE_IDEAL_CONSUMER_NAME   => __( 'Service iDEAL Consumer Name', 'pronamic_ideal' ),
+			Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => __( 'Service iDEAL Consumer IBAN', 'pronamic_ideal' ),
+			Parameters::SERVICE_IDEAL_CONSUMER_BIC    => __( 'Service iDEAL Consumer BIC', 'pronamic_ideal' ),
+			Parameters::TRANSACTIONS                  => __( 'Transactions', 'pronamic_ideal' ),
+		);
+
+		$note = '';
+
+		$note .= '<p>';
+		$note .= __( 'Buckaroo data:', 'pronamic_ideal' );
+		$note .= '</p>';
+
+		$note .= '<dl>';
+
+		foreach ( $labels as $key => $label ) {
+			if ( ! isset( $data[ $key ] ) ) {
+				continue;
+			}
+
+			$note .= sprintf(
+				'<dt>%s</dt><dd>%s</dd>',
+				esc_html( $label ),
+				esc_html( (string) $data[ $key ] )
+			);
+		}
+
+		$note .= '</dl>';
+
+		$payment->add_note( $note );
 	}
 }
