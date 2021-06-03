@@ -95,6 +95,100 @@ class Gateway extends Core_Gateway {
 	 * @see Core_Gateway::start()
 	 */
 	public function start( Payment $payment ) {
+		/**
+		 * Authentication.
+		 * 
+		 * The HMAC SHA256 is calculated over a concatenated string (as raw data/binary/bytes) of the following values: WebsiteKey, requestHttpMethod, requestUri, requestTimeStamp, nonce, requestContentBase64String. See the next table for more information about these values. Please note: the Base64 hash should be a string of 44 characters. If yours is longer, it is probably in hexadecimal format.
+		 *
+		 * @link https://dev.buckaroo.nl/Apis/Description/json
+		 */
+		$website_key         = $this->config->website_key;
+		$request_http_method = 'POST';
+		$request_uri         = 'testcheckout.buckaroo.nl/json/datarequest/specifications';
+		$request_timestamp   = \strval( \time() );
+		$nonce               = \wp_generate_password( 32 );
+		$request_content     = '{
+  "Services": [
+    {
+      "Name": "idealqr",
+	  "Version": 1
+	}
+  ]
+}';
+
+		$data = \implode(
+			'',
+			array(
+				$website_key,
+				$request_http_method,
+				$request_uri,
+				$request_timestamp,
+				$nonce,
+				\base64_encode( \md5( $request_content, true ) ),
+			)
+		);
+
+		$authorization = 'hmac ' . $this->config->website_key . ':' . hash_hmac( 'sha256', $data, $this->config->secret_key ) . ':' . $nonce . ':' . $request_timestamp;
+
+$postArray = array(
+    "Currency" => "EUR",
+    "AmountDebit" => 10.00,
+    "Invoice" => "testinvoice 123",
+    "Services" => array(
+        "ServiceList" => array(
+            array(
+                "Action" => "Pay",
+                "Name" => "ideal",
+                "Parameters" => array(
+                    array(
+                        "Name" => "issuer",
+                        "Value" => "ABNANL2A"
+                    )
+                )
+            )
+        )
+    )
+);
+
+
+$post = json_encode($postArray);
+
+echo $post . '<br><br>';
+
+$md5  = md5($post, true);
+$post = base64_encode($md5);
+
+echo '<b>MD5 from json</b> ' . $md5 . '<br><br>';
+echo '<b>base64 from MD5</b> ' . $post . '<br><br>';
+
+$websiteKey = $this->config->website_key;
+$test = 'testcheckout.buckaroo.nl/json/Transaction';
+$uri        = strtolower(urlencode($test));
+$nonce      = 'nonce_' . rand(0000000, 9999999);
+$time       = time();
+
+$hmac       = $websiteKey . 'POST' . $uri . $time . $nonce . $post;
+$s          = hash_hmac('sha256', $hmac, $this->config->secret_key, true);
+$hmac       = base64_encode($s);
+
+$authorization = ("hmac " . $this->config->website_key . ':' . $hmac . ':' . $nonce . ':' . $time);
+var_dump($this->config );
+var_dump($authorization );
+		$test = \Pronamic\WordPress\Http\Facades\Http::request(
+			'https://' . $test,
+			array(
+				'method'  => $request_http_method,
+				'headers' => array(
+					'Authorization' => $authorization,
+					'Content-Type'  => 'application/json',
+				),
+				'body'    => \json_encode($postArray),
+			)
+		);
+
+		var_dump( $test );
+		exit;
+
 		$payment->set_action_url( $this->client->get_payment_server_url() );
 	}
 
