@@ -25,7 +25,7 @@ class Integration extends AbstractGatewayIntegration {
 			$args,
 			array(
 				'id'            => 'buckaroo',
-				'name'          => 'Buckaroo - HTML',
+				'name'          => 'Buckaroo',
 				'url'           => 'https://plaza.buckaroo.nl/',
 				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
 				'dashboard_url' => 'https://plaza.buckaroo.nl/',
