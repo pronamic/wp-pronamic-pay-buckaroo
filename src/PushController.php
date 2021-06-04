@@ -72,7 +72,7 @@ class PushController {
 		return new \WP_Error(
 			'pronamic_pay_buckaroo_push_unknown_content_type',
 			\sprintf(
-				'Unknown Buckaroo push request: %s.',
+				'Unknown Buckaroo push request content type: %s.',
 				$request->get_header( 'Content-Type' )
 			),
 			array( 'status' => 500 )

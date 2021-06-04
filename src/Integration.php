@@ -161,7 +161,7 @@ class Integration extends AbstractGatewayIntegration {
 			'title'    => __( 'Push URL', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'large-text', 'code' ),
-			'value'    => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
+			'value'    => \rest_url( self::REST_ROUTE_NAMESPACE . '/push' ),
 			'readonly' => true,
 			'tooltip'  => __( 'The Push URL as sent with each transaction to receive automatic payment status updates on.', 'pronamic_ideal' ),
 		);
