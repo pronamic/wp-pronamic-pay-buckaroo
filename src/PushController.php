@@ -90,6 +90,18 @@ class PushController {
 
 		$data = \json_decode( $json );
 
+		/**
+		 * Process Refunds.
+		 * 
+		 * @link https://support.buckaroo.nl/categorie%C3%ABn/integratie/transactietypes-overzicht
+		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+		 */
+		foreach ( $data->Transaction->RelatedTransactions as $related_transaction ) {
+			if ( 'refund' === $related_transaction->RelationType ) {
+				$key = $related_transaction->RelatedTransactionKey;
+			}
+		}
+
 		$transaction_key = $data->Transaction->Key;
 
 		return $this->handle_transcation_key( $transaction_key );
