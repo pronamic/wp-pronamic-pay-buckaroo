@@ -16,6 +16,13 @@ use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
  */
 class Integration extends AbstractGatewayIntegration {
 	/**
+	 * REST route namespace.
+	 *
+	 * @var string
+	 */
+	const REST_ROUTE_NAMESPACE = 'pronamic-pay/buckaroo/v1';
+
+	/**
 	 * Construct Buckaroo integration.
 	 *
 	 * @param array $args Arguments.
@@ -47,6 +54,38 @@ class Integration extends AbstractGatewayIntegration {
 		if ( ! has_action( 'wp_loaded', $function ) ) {
 			add_action( 'wp_loaded', $function );
 		}
+	}
+
+	/**
+	 * Setup.
+	 */
+	public function setup() {
+		\add_filter(
+			'pronamic_gateway_configuration_display_value_' . $this->get_id(),
+			array( $this, 'gateway_configuration_display_value' ),
+			10,
+			2
+		);
+
+		// Push controller.
+		$push_controller = new PushController();
+
+		$push_controller->setup();
+	}
+
+	/**
+	 * Gateway configuration display value.
+	 *
+	 * @param string $display_value Display value.
+	 * @param int    $post_id       Gateway configuration post ID.
+	 * @return string
+	 */
+	public function gateway_configuration_display_value( $display_value, $post_id ) {
+		$config = $this->get_config( $post_id );
+
+		$display_value = $config->website_key;
+
+		return $display_value;
 	}
 
 	/**

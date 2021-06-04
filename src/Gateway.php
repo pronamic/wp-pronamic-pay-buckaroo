@@ -101,95 +101,176 @@ class Gateway extends Core_Gateway {
 		 * The HMAC SHA256 is calculated over a concatenated string (as raw data/binary/bytes) of the following values: WebsiteKey, requestHttpMethod, requestUri, requestTimeStamp, nonce, requestContentBase64String. See the next table for more information about these values. Please note: the Base64 hash should be a string of 44 characters. If yours is longer, it is probably in hexadecimal format.
 		 *
 		 * @link https://dev.buckaroo.nl/Apis/Description/json
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Authentication
 		 */
+
+		$endpoint = 'Transaction';
+
+		/**
+		 * Currency.
+		 */
+		$currency_code = $payment->get_total_amount()->get_currency()->get_alphabetic_code();
+
+		if ( null === $currency_code ) {
+			throw new \InvalidArgumentException( 'Can not start payment with empty currency code.' );
+		}
+
+		/**
+		 * JSON Transaction.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+		 */
+		$data = (object) array(
+			'Currency'        => $currency_code,
+			'AmountDebit'     => $payment->get_total_amount()->get_value(),
+			'Invoice'         => \sprintf(
+				'Payment %d',
+				$payment->get_id()
+			),
+			'ReturnURL'       => $payment->get_return_url(),
+			'ReturnURLCancel' => \add_query_arg(
+				'buckaroo_return_url_cancel',
+				true,
+				$payment->get_return_url()
+			),
+			'ReturnURLError'  => \add_query_arg(
+				'buckaroo_return_url_error',
+				true,
+				$payment->get_return_url()
+			),
+			'ReturnURLReject' => \add_query_arg(
+				'buckaroo_return_url_reject',
+				true,
+				$payment->get_return_url()
+			),
+			/**
+			 * Push URL.
+			 * 
+			 * When provided, this push URL overrides all the push URLs as configured in the payment plaza under websites for the associated website key
+			 *
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'PushURL'         => 'https://webhook.site/7cc95130-7490-480f-b903-87f021249342',
+			/**
+			 * Push URL Failure.
+			 * 
+			 * When provided, this push URL overrides the push URL for failed transactions as configured in the payment plaza under websites for the associated website key.
+			 *
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'PushURLFailure'  => 'https://webhook.site/7cc95130-7490-480f-b903-87f021249342',
+			/**
+			 * Services.
+			 *
+			 * Specifies which service (can be a payment method and/or additional service) is being called upon in the request.
+			 *
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'Services'        => array(
+				'ServiceList' => array(
+					array(
+						'Action'     => 'Pay',
+						'Name'       => 'ideal',
+						'Parameters' => array(
+							array(
+								'Name'  => 'issuer',
+								'Value' => 'ABNANL2A',
+							),
+						),
+					),
+				),
+			),
+		);
+
+		/*
+		$endpoint = 'Transaction/Specifications';
+
+		$data = (object) array(
+			'Services' => array(
+				(object) array(
+					'Name'    => 'ideal',
+					'Version' => 2,
+				),
+			),
+		);
+		*/
+
 		$website_key         = $this->config->website_key;
 		$request_http_method = 'POST';
-		$request_uri         = 'testcheckout.buckaroo.nl/json/datarequest/specifications';
+		$request_uri         = 'testcheckout.buckaroo.nl/json/' . $endpoint;
 		$request_timestamp   = \strval( \time() );
 		$nonce               = \wp_generate_password( 32 );
-		$request_content     = '{
-  "Services": [
-    {
-      "Name": "idealqr",
-	  "Version": 1
-	}
-  ]
-}';
+		$request_content     = \json_encode( $data );
 
-		$data = \implode(
+		$values = \implode(
 			'',
 			array(
 				$website_key,
 				$request_http_method,
-				$request_uri,
+				\strtolower( \urlencode( $request_uri ) ),
 				$request_timestamp,
 				$nonce,
 				\base64_encode( \md5( $request_content, true ) ),
 			)
 		);
 
-		$authorization = 'hmac ' . $this->config->website_key . ':' . hash_hmac( 'sha256', $data, $this->config->secret_key ) . ':' . $nonce . ':' . $request_timestamp;
+		$hash = \hash_hmac( 'sha256', $values, $this->config->secret_key, true );
 
-$postArray = array(
-    "Currency" => "EUR",
-    "AmountDebit" => 10.00,
-    "Invoice" => "testinvoice 123",
-    "Services" => array(
-        "ServiceList" => array(
-            array(
-                "Action" => "Pay",
-                "Name" => "ideal",
-                "Parameters" => array(
-                    array(
-                        "Name" => "issuer",
-                        "Value" => "ABNANL2A"
-                    )
-                )
-            )
-        )
-    )
-);
+		$hmac = \base64_encode( $hash );
 
+		$authorization = \sprintf(
+			'hmac %s:%s:%s:%s',
+			$this->config->website_key,
+			$hmac,
+			$nonce,
+			$request_timestamp
+		);
 
-$post = json_encode($postArray);
-
-echo $post . '<br><br>';
-
-$md5  = md5($post, true);
-$post = base64_encode($md5);
-
-echo '<b>MD5 from json</b> ' . $md5 . '<br><br>';
-echo '<b>base64 from MD5</b> ' . $post . '<br><br>';
-
-$websiteKey = $this->config->website_key;
-$test = 'testcheckout.buckaroo.nl/json/Transaction';
-$uri        = strtolower(urlencode($test));
-$nonce      = 'nonce_' . rand(0000000, 9999999);
-$time       = time();
-
-$hmac       = $websiteKey . 'POST' . $uri . $time . $nonce . $post;
-$s          = hash_hmac('sha256', $hmac, $this->config->secret_key, true);
-$hmac       = base64_encode($s);
-
-$authorization = ("hmac " . $this->config->website_key . ':' . $hmac . ':' . $nonce . ':' . $time);
-var_dump($this->config );
-var_dump($authorization );
-		$test = \Pronamic\WordPress\Http\Facades\Http::request(
-			'https://' . $test,
+		$response = \Pronamic\WordPress\Http\Facades\Http::request(
+			'https://' . $request_uri,
 			array(
 				'method'  => $request_http_method,
 				'headers' => array(
 					'Authorization' => $authorization,
 					'Content-Type'  => 'application/json',
 				),
-				'body'    => \json_encode($postArray),
+				'body'    => $request_content,
 			)
 		);
 
-		var_dump( $test );
-		exit;
+		$object = $response->json();
 
-		$payment->set_action_url( $this->client->get_payment_server_url() );
+		if ( 'Redirect' !== $object->RequiredAction->Name ) {
+			throw new \Exception(
+				\sprintf(
+					'Unsupported Buckaroo required action: %s',
+					$object->RequiredAction->Name
+				)
+			);
+		}
+
+		$payment->set_action_url( $object->RequiredAction->RedirectURL );
+
+		/**
+		 * Buckaroo keys.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
+		 */
+		$payment->set_meta( 'buckaroo_transaction_key', $object->Key );
+		$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+
+		/**
+		 * Transaction ID.
+		 *
+		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal]
+		 */
+		foreach ( $object->Services as $service ) {
+			foreach ( $service->Parameters as $parameter ) {
+				if ( 'transactionId' === $parameter->Name ) {
+					$payment->set_transaction_id( $parameter->Value );
+				}
+			}
+		}
 	}
 
 	/**
