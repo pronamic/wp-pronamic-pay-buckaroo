@@ -63,9 +63,9 @@ class PushController {
 			return $this->handle_json_push( $request );
 		}
 
-		$content_type = $request->get_header( 'Content-Type' );
+		$content_type = $request->get_content_type();
 
-		if ( 'application/x-www-form-urlencoded' === $content_type ) {
+		if ( null !== $content_type && 'application/x-www-form-urlencoded' === $content_type['value'] ) {
 			return $this->handle_http_post_push( $request );
 		}
 
@@ -73,7 +73,7 @@ class PushController {
 			'pronamic_pay_buckaroo_push_unknown_content_type',
 			\sprintf(
 				'Unknown Buckaroo push request: %s.',
-				$content_type
+				$request->get_header( 'Content-Type' )
 			),
 			array( 'status' => 500 )
 		);
