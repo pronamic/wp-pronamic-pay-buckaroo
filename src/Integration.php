@@ -38,6 +38,8 @@ class Integration extends AbstractGatewayIntegration {
 				'dashboard_url' => 'https://plaza.buckaroo.nl/',
 				'provider'      => 'buckaroo',
 				'supports'      => array(
+					'payment_status_request',
+					'refunds',
 					'webhook',
 					'webhook_log',
 					'webhook_no_config',
