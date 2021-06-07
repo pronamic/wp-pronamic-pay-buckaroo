@@ -36,6 +36,15 @@ class Gateway extends Core_Gateway {
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
+		// Supported features.
+		$this->supports = array(
+			'payment_status_request',
+			'refunds',
+			'webhook',
+			'webhook_log',
+			'webhook_no_config',
+		);
+
 		$this->client = new Client();
 		$this->client->set_website_key( $config->get_website_key() );
 		$this->client->set_secret_key( $config->get_secret_key() );
