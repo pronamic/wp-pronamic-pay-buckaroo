@@ -67,14 +67,25 @@ class Gateway extends Core_Gateway {
 	public function get_issuers() {
 		$groups = array();
 
-		try {
-			$result = $this->client->get_issuers();
+		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-			$groups[] = array(
-				'options' => $result,
-			);
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'buckaroo', $e->getMessage() );
+		foreach ( $object->Actions as $action ) {
+			if ( 'Pay' === $action->Name ) {
+				foreach ( $action->RequestParameters as $request_parameter ) {
+					if ( 'issuer' === $request_parameter->Name ) {
+						foreach ( $request_parameter->ListItemDescriptions as $item ) {
+							if ( ! array_key_exists( $item->GroupName, $groups ) ) {
+								$groups[ $item->GroupName ] = array(
+									'name'    => $item->GroupName,
+									'options' => array(),
+								);
+							}
+
+							$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
+						}
+					}
+				}
+			}
 		}
 
 		return $groups;
@@ -122,10 +133,7 @@ class Gateway extends Core_Gateway {
 		$data = (object) array(
 			'Currency'        => $currency_code,
 			'AmountDebit'     => $payment->get_total_amount()->get_value(),
-			'Invoice'         => \sprintf(
-				'Payment %d',
-				$payment->get_id()
-			),
+			'Invoice'         => Util::get_invoice_number( (string) $this->client->get_invoice_number(), $payment ),
 			'ReturnURL'       => $payment->get_return_url(),
 			'ReturnURLCancel' => \add_query_arg(
 				'buckaroo_return_url_cancel',
@@ -204,7 +212,45 @@ class Gateway extends Core_Gateway {
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 			 */
 			'ServicesExcludedForClient' => $this->config->get_excluded_services(),
+			/**
+			 * Custom parameters.
+			 * 
+			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+			 */
+			'CustomParameters' => array(
+				(object) array(
+					'Name'  => 'pronamic_payment_id',
+					'Value' => $payment->get_id(),
+				),
+			),
 		);
+
+		/**
+		 * Client IP.
+		 * 
+		 * In this field the IP address of the customer (or employee) for which
+		 * the action is being performed can be passed. Please note, If this
+		 * field is not sent to our gateway, your server IP address will be
+		 * used as the clientIP. This may result in unwanted behaviour for
+		 * anti-fraud checks. Also, certain payment methods perform checks on
+		 * the IP address, if an IP address is overused, the request could be
+		 * blocked. This field is sent in the following format, where 
+		 * type 0 = IPv4 and type 1 = IPv6: 
+		 * "ClientIP": { "Type": 0, "Address": "0.0.0.0" },
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+		 * @link https://stackoverflow.com/questions/1448871/how-to-know-which-version-of-the-internet-protocol-ip-a-client-is-using-when-c/1448901
+		 */
+		if ( null !== $customer ) {
+			$ip_address = $customer->get_ip_address();
+
+			if ( null !== $ip_address ) {
+				$data->ClientIP = (object) array(
+					'Type'    => false === \strpos( $ip_address, ':' ) ? 0 : 1,
+					'Address' => $ip_address,
+				);
+			}
+		}
 
 		/**
 		 * Payment method.
@@ -360,48 +406,6 @@ class Gateway extends Core_Gateway {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get output HTML
-	 *
-	 * @param Payment $payment Payment.
-	 *
-	 * @return array
-	 *
-	 * @see     Core_Gateway::get_output_html()
-	 * @since   1.1.1
-	 * @version 2.0.4
-	 */
-	public function get_output_fields( Payment $payment ) {
-		$payment_method = $payment->get_method();
-
-		// Locale.
-		$culture = null;
-
-		$customer = $payment->get_customer();
-
-		if ( null !== $customer ) {
-			$locale = $customer->get_locale();
-
-			// Buckaroo uses 'nl-NL' instead of 'nl_NL'.
-			if ( ! empty( $locale ) ) {
-				$culture = str_replace( '_', '-', $locale );
-			}
-		}
-
-		$this->client->set_payment_id( (string) $payment->get_id() );
-		$this->client->set_culture( $culture );
-		$this->client->set_currency( $payment->get_total_amount()->get_currency()->get_alphabetic_code() );
-		$this->client->set_description( $payment->get_description() );
-		$this->client->set_amount( $payment->get_total_amount()->get_value() );
-		$this->client->set_invoice_number( Util::get_invoice_number( (string) $this->client->get_invoice_number(), $payment ) );
-		$this->client->set_return_url( $payment->get_return_url() );
-		$this->client->set_return_cancel_url( $payment->get_return_url() );
-		$this->client->set_return_error_url( $payment->get_return_url() );
-		$this->client->set_return_reject_url( $payment->get_return_url() );
-
-		return $this->client->get_fields();
 	}
 
 	/**
