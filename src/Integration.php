@@ -16,6 +16,13 @@ use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
  */
 class Integration extends AbstractGatewayIntegration {
 	/**
+	 * REST route namespace.
+	 *
+	 * @var string
+	 */
+	const REST_ROUTE_NAMESPACE = 'pronamic-pay/buckaroo/v1';
+
+	/**
 	 * Construct Buckaroo integration.
 	 *
 	 * @param array $args Arguments.
@@ -25,12 +32,14 @@ class Integration extends AbstractGatewayIntegration {
 			$args,
 			array(
 				'id'            => 'buckaroo',
-				'name'          => 'Buckaroo - HTML',
+				'name'          => 'Buckaroo',
 				'url'           => 'https://plaza.buckaroo.nl/',
 				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
 				'dashboard_url' => 'https://plaza.buckaroo.nl/',
 				'provider'      => 'buckaroo',
 				'supports'      => array(
+					'payment_status_request',
+					'refunds',
 					'webhook',
 					'webhook_log',
 					'webhook_no_config',
@@ -40,13 +49,38 @@ class Integration extends AbstractGatewayIntegration {
 		);
 
 		parent::__construct( $args );
+	}
 
-		// Actions
-		$function = array( __NAMESPACE__ . '\Listener', 'listen' );
+	/**
+	 * Setup.
+	 */
+	public function setup() {
+		\add_filter(
+			'pronamic_gateway_configuration_display_value_' . $this->get_id(),
+			array( $this, 'gateway_configuration_display_value' ),
+			10,
+			2
+		);
 
-		if ( ! has_action( 'wp_loaded', $function ) ) {
-			add_action( 'wp_loaded', $function );
-		}
+		// Push controller.
+		$push_controller = new PushController();
+
+		$push_controller->setup();
+	}
+
+	/**
+	 * Gateway configuration display value.
+	 *
+	 * @param string $display_value Display value.
+	 * @param int    $post_id       Gateway configuration post ID.
+	 * @return string
+	 */
+	public function gateway_configuration_display_value( $display_value, $post_id ) {
+		$config = $this->get_config( $post_id );
+
+		$display_value = $config->website_key;
+
+		return $display_value;
 	}
 
 	/**
@@ -122,7 +156,7 @@ class Integration extends AbstractGatewayIntegration {
 			'title'    => __( 'Push URL', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'large-text', 'code' ),
-			'value'    => add_query_arg( 'buckaroo_push', '', home_url( '/' ) ),
+			'value'    => \rest_url( self::REST_ROUTE_NAMESPACE . '/push' ),
 			'readonly' => true,
 			'tooltip'  => __( 'The Push URL as sent with each transaction to receive automatic payment status updates on.', 'pronamic_ideal' ),
 		);
