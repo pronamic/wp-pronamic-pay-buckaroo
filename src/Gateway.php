@@ -170,6 +170,40 @@ class Gateway extends Core_Gateway {
 					
 				),
 			),
+			/**
+			 * Continue On Incomplete.
+			 * 
+			 * Specifies if a redirecturl to a payment form will be returned to
+			 * which a customer should be sent if no paymentmethod is selected
+			 * or if any required parameter which the customer may provide is
+			 * missing or incorrect. Possible Values:
+			 * 
+			 * · No: This is the default. The request will fail if not all the
+			 * needed information is provided.
+			 * 
+			 * · RedirectToHTML: A redirect to the HTML gateway is provided if
+			 * a recoverable problems are detected in the request. The customer
+			 * can then provide the needed information there.
+			 * 
+			 * @link https://dev.buckaroo.nl/Apis
+			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+			 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ContinueOnIncomplete
+			 */
+			'ContinueOnIncomplete'      => 'RedirectToHTML',
+			/**
+			 * Services Excluded For Client.
+			 * 
+			 * If no primary service is provided and ContinueOnIncomplete is
+			 * set, this list of comma separated servicescodes can be used to
+			 * limit the number of services from which the customer may choose
+			 * once he is redirected to the payment form. Services which are
+			 * entered in this field are not selectable.
+			 * This field is optional.
+			 * 
+			 * @link https://dev.buckaroo.nl/Apis
+			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+			 */
+			'ServicesExcludedForClient' => $this->config->get_excluded_services(),
 		);
 
 		/**
