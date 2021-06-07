@@ -37,6 +37,16 @@ class CLI {
 				'shortdesc' => 'This returns the status for the provided transaction',
 			)
 		);
+
+		\WP_CLI::add_command(
+			'pronamic-pay buckaroo transaction refund-info',
+			function( $args, $assoc_args ) {
+				$this->wp_cli_transaction_refund_info( $args, $assoc_args );
+			},
+			array(
+				'shortdesc' => 'This returns the refund info',
+			)
+		);
 	}
 
 	/**
@@ -52,6 +62,24 @@ class CLI {
 
 		foreach ( $args as $transaction_key ) {
 			$result = $gateway->request( 'GET', 'Transaction/Status/' . $transaction_key );
+
+			\WP_CLI::line( \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
+		}
+	}
+
+	/**
+	 * CLI transaction refund info.
+	 *
+	 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/GET-json-Transaction-Status-transactionKey
+	 * @param array<string> $args       Arguments.
+	 * @param array<string> $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function wp_cli_transaction_refund_info( $args, $assoc_args ) {
+		$gateway = $this->integration->get_gateway( $assoc_args['config_id'] );
+
+		foreach ( $args as $transaction_key ) {
+			$result = $gateway->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
 			\WP_CLI::line( \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
 		}
