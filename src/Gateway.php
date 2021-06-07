@@ -136,41 +136,41 @@ class Gateway extends Core_Gateway {
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 */
 		$data = (object) array(
-			'Currency'        => $currency_code,
-			'AmountDebit'     => $payment->get_total_amount()->get_value(),
-			'Invoice'         => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
-			'ReturnURL'       => $payment->get_return_url(),
-			'ReturnURLCancel' => \add_query_arg(
+			'Currency'                  => $currency_code,
+			'AmountDebit'               => $payment->get_total_amount()->get_value(),
+			'Invoice'                   => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
+			'ReturnURL'                 => $payment->get_return_url(),
+			'ReturnURLCancel'           => \add_query_arg(
 				'buckaroo_return_url_cancel',
 				true,
 				$payment->get_return_url()
 			),
-			'ReturnURLError'  => \add_query_arg(
+			'ReturnURLError'            => \add_query_arg(
 				'buckaroo_return_url_error',
 				true,
 				$payment->get_return_url()
 			),
-			'ReturnURLReject' => \add_query_arg(
+			'ReturnURLReject'           => \add_query_arg(
 				'buckaroo_return_url_reject',
 				true,
 				$payment->get_return_url()
 			),
 			/**
 			 * Push URL.
-			 * 
+			 *
 			 * When provided, this push URL overrides all the push URLs as configured in the payment plaza under websites for the associated website key
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURL'         => $push_url,
+			'PushURL'                   => $push_url,
 			/**
 			 * Push URL Failure.
-			 * 
+			 *
 			 * When provided, this push URL overrides the push URL for failed transactions as configured in the payment plaza under websites for the associated website key.
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURLFailure'  => $push_url,
+			'PushURLFailure'            => $push_url,
 			/**
 			 * Services.
 			 *
@@ -178,26 +178,24 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'Services'        => (object) array(
-				'ServiceList' => array(
-					
-				),
+			'Services'                  => (object) array(
+				'ServiceList' => array(),
 			),
 			/**
 			 * Continue On Incomplete.
-			 * 
+			 *
 			 * Specifies if a redirecturl to a payment form will be returned to
 			 * which a customer should be sent if no paymentmethod is selected
 			 * or if any required parameter which the customer may provide is
 			 * missing or incorrect. Possible Values:
-			 * 
+			 *
 			 * · No: This is the default. The request will fail if not all the
 			 * needed information is provided.
-			 * 
+			 *
 			 * · RedirectToHTML: A redirect to the HTML gateway is provided if
 			 * a recoverable problems are detected in the request. The customer
 			 * can then provide the needed information there.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ContinueOnIncomplete
@@ -205,24 +203,24 @@ class Gateway extends Core_Gateway {
 			'ContinueOnIncomplete'      => 'RedirectToHTML',
 			/**
 			 * Services Excluded For Client.
-			 * 
+			 *
 			 * If no primary service is provided and ContinueOnIncomplete is
 			 * set, this list of comma separated servicescodes can be used to
 			 * limit the number of services from which the customer may choose
 			 * once he is redirected to the payment form. Services which are
 			 * entered in this field are not selectable.
 			 * This field is optional.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 			 */
 			'ServicesExcludedForClient' => $this->config->get_excluded_services(),
 			/**
 			 * Custom parameters.
-			 * 
+			 *
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 			 */
-			'CustomParameters' => array(
+			'CustomParameters'          => array(
 				(object) array(
 					'Name'  => 'pronamic_payment_id',
 					'Value' => $payment->get_id(),
@@ -232,17 +230,17 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Client IP.
-		 * 
+		 *
 		 * In this field the IP address of the customer (or employee) for which
 		 * the action is being performed can be passed. Please note, If this
 		 * field is not sent to our gateway, your server IP address will be
 		 * used as the clientIP. This may result in unwanted behaviour for
 		 * anti-fraud checks. Also, certain payment methods perform checks on
 		 * the IP address, if an IP address is overused, the request could be
-		 * blocked. This field is sent in the following format, where 
-		 * type 0 = IPv4 and type 1 = IPv6: 
+		 * blocked. This field is sent in the following format, where
+		 * type 0 = IPv4 and type 1 = IPv6:
 		 * "ClientIP": { "Type": 0, "Address": "0.0.0.0" },
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 * @link https://stackoverflow.com/questions/1448871/how-to-know-which-version-of-the-internet-protocol-ip-a-client-is-using-when-c/1448901
 		 */
@@ -261,7 +259,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Payment method.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServicesRequest
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServiceRequest
@@ -271,7 +269,7 @@ class Gateway extends Core_Gateway {
 		switch ( $payment_method ) {
 			/**
 			 * Payment method creditcard.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
 			 */
 			case Core_PaymentMethods::CREDIT_CARD:
@@ -298,7 +296,7 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method iDEAL.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal#pay
 			 */
 			case Core_PaymentMethods::IDEAL:
@@ -316,62 +314,62 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method transfer.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/transfer#pay
 			 */
 			case Core_PaymentMethods::BANK_TRANSFER:
 				$data->Services->ServiceList[] = (object) array(
-					'Action'     => 'Pay',
-					'Name'       => 'transfer',
+					'Action' => 'Pay',
+					'Name'   => 'transfer',
 				);
 
 				break;
 			/**
 			 * Payment method Bancontact.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/bancontact#pay
 			 */
 			case Core_PaymentMethods::BANCONTACT:
 			case Core_PaymentMethods::MISTER_CASH:
 				$data->Services->ServiceList[] = (object) array(
-					'Action'     => 'Pay',
-					'Name'       => 'bancontactmrcash',
+					'Action' => 'Pay',
+					'Name'   => 'bancontactmrcash',
 				);
 
 				break;
 			/**
 			 * Payment method Giropay.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/giropay#pay
 			 */
 			case Core_PaymentMethods::GIROPAY:
 				$data->Services->ServiceList[] = (object) array(
-					'Action'     => 'Pay',
-					'Name'       => 'giropay',
+					'Action' => 'Pay',
+					'Name'   => 'giropay',
 				);
 
 				break;
 			/**
 			 * Payment method PayPal.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/paypal#pay
 			 */
 			case Core_PaymentMethods::PAYPAL:
 				$data->Services->ServiceList[] = (object) array(
-					'Action'     => 'Pay',
-					'Name'       => 'paypal',
+					'Action' => 'Pay',
+					'Name'   => 'paypal',
 				);
 
 				break;
 			/**
 			 * Payment method Sofort.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort#pay
 			 */
 			case Core_PaymentMethods::SOFORT:
 				$data->Services->ServiceList[] = (object) array(
-					'Action'     => 'Pay',
-					'Name'       => 'sofortueberweisung',
+					'Action' => 'Pay',
+					'Name'   => 'sofortueberweisung',
 				);
 
 				break;
@@ -395,7 +393,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Buckaroo keys.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
 		 */
 		$payment->set_meta( 'buckaroo_transaction_key', $object->Key );
@@ -431,7 +429,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Authentication.
-		 * 
+		 *
 		 * The HMAC SHA256 is calculated over a concatenated string (as raw data/binary/bytes) of the following values: WebsiteKey, requestHttpMethod, requestUri, requestTimeStamp, nonce, requestContentBase64String. See the next table for more information about these values. Please note: the Base64 hash should be a string of 44 characters. If yours is longer, it is probably in hexadecimal format.
 		 *
 		 * @link https://dev.buckaroo.nl/Apis/Description/json
@@ -484,14 +482,14 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Request Errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 */
 		$exception = null;
 
 		/**
 		 * Channel errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
 		 */
 		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
@@ -500,7 +498,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Service errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
 		 */
 		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
@@ -509,7 +507,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Action errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
 		 */
 		foreach ( $object->RequestErrors->ActionErrors as $error ) {
@@ -518,7 +516,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Action errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
 		 */
 		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
@@ -527,7 +525,7 @@ class Gateway extends Core_Gateway {
 
 		/**
 		 * Action errors.
-		 * 
+		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
 		 */
 		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {

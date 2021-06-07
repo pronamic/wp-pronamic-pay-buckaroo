@@ -94,7 +94,7 @@ class PushController {
 
 		/**
 		 * Process Refunds.
-		 * 
+		 *
 		 * @link https://support.buckaroo.nl/categorie%C3%ABn/integratie/transactietypes-overzicht
 		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
 		 */
@@ -133,7 +133,7 @@ class PushController {
 		 * brq_transactions, but may contain multiple transaction keys.
 		 * The same field in the push response will always contain one single
 		 * transaction key. For consistence, both fields have the same name.
-		 * 
+		 *
 		 * @link https://www.pronamic.nl/wp-content/uploads/2013/04/BPE-3.0-Gateway-HTML.1.02.pdf
 		 */
 		$transaction_key = $parameters['brq_transactions'];
