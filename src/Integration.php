@@ -49,6 +49,15 @@ class Integration extends AbstractGatewayIntegration {
 		);
 
 		parent::__construct( $args );
+
+		/**
+		 * CLI.
+		 *
+		 * @link https://github.com/woocommerce/woocommerce/blob/3.9.0/includes/class-woocommerce.php#L453-L455
+		 */
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			new CLI( $this );
+		}
 	}
 
 	/**

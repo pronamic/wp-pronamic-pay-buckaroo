@@ -420,7 +420,7 @@ class Gateway extends Core_Gateway {
 	 * @param string      $endpoint JSON API endpoint.
 	 * @param object|null $data     Data.
 	 */
-	private function request( $method, $endpoint, $data = null ) {
+	public function request( $method, $endpoint, $data = null ) {
 		$host = 'checkout.buckaroo.nl';
 
 		if ( self::MODE_TEST === $this->config->mode ) {
