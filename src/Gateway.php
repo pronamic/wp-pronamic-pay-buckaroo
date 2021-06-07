@@ -34,7 +34,7 @@ class Gateway extends Core_Gateway {
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
-		$this->set_method( self::METHOD_HTML_FORM );
+		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
 		$this->client = new Client();
 		$this->client->set_website_key( $config->get_website_key() );
