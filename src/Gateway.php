@@ -447,15 +447,18 @@ class Gateway extends Core_Gateway {
 			array(
 				$website_key,
 				$request_http_method,
-				\strtolower( \urlencode( $request_uri ) ),
+				\strtolower( \rawurlencode( $request_uri ) ),
 				$request_timestamp,
 				$nonce,
+				\
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 				null === $data ? '' : \base64_encode( \md5( $request_content, true ) ),
 			)
 		);
 
 		$hash = \hash_hmac( 'sha256', $values, $this->config->secret_key, true );
 
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		$hmac = \base64_encode( $hash );
 
 		$authorization = \sprintf(

@@ -154,6 +154,7 @@ class PushController {
 			return new \WP_Error(
 				'rest_buckaroo_unknown_transaction',
 				\sprintf(
+					/* translators: %s: Buckaroo transaction key. */
 					\__( 'Unable to found payment for transaction key: %s.', 'pronamic_ideal ' ),
 					$transaction_key
 				),
