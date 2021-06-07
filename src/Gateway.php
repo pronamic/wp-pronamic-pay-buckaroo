@@ -45,17 +45,6 @@ class Gateway extends Core_Gateway {
 			'webhook_log',
 			'webhook_no_config',
 		);
-
-		$this->client = new Client();
-		$this->client->set_website_key( $config->get_website_key() );
-		$this->client->set_secret_key( $config->get_secret_key() );
-		$this->client->set_excluded_services( $config->get_excluded_services() );
-		$this->client->set_invoice_number( $config->get_invoice_number() );
-		$this->client->set_push_url( add_query_arg( 'buckaroo_push', '', home_url( '/' ) ) );
-
-		if ( self::MODE_TEST === $config->mode ) {
-			$this->client->set_payment_server_url( Client::GATEWAY_TEST_URL );
-		}
 	}
 
 	/**
@@ -133,7 +122,7 @@ class Gateway extends Core_Gateway {
 		$data = (object) array(
 			'Currency'        => $currency_code,
 			'AmountDebit'     => $payment->get_total_amount()->get_value(),
-			'Invoice'         => Util::get_invoice_number( (string) $this->client->get_invoice_number(), $payment ),
+			'Invoice'         => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
 			'ReturnURL'       => $payment->get_return_url(),
 			'ReturnURLCancel' => \add_query_arg(
 				'buckaroo_return_url_cancel',
@@ -241,6 +230,8 @@ class Gateway extends Core_Gateway {
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 * @link https://stackoverflow.com/questions/1448871/how-to-know-which-version-of-the-internet-protocol-ip-a-client-is-using-when-c/1448901
 		 */
+		$customer = $payment->get_customer();
+
 		if ( null !== $customer ) {
 			$ip_address = $customer->get_ip_address();
 
@@ -378,7 +369,7 @@ class Gateway extends Core_Gateway {
 		if ( 'Redirect' !== $object->RequiredAction->Name ) {
 			throw new \Exception(
 				\sprintf(
-					'Unsupported Buckaroo required action: %s',
+					'Unsupported Buckaroo action: %s',
 					$object->RequiredAction->Name
 				)
 			);
@@ -416,6 +407,12 @@ class Gateway extends Core_Gateway {
 	 * @param object|null $data     Data.
 	 */
 	private function request( $method, $endpoint, $data = null ) {
+		$host = 'checkout.buckaroo.nl';
+
+		if ( self::MODE_TEST === $this->config->mode ) {
+			$host = 'testcheckout.buckaroo.nl';
+		}
+
 		/**
 		 * Authentication.
 		 * 
@@ -426,7 +423,7 @@ class Gateway extends Core_Gateway {
 		 */
 		$website_key         = $this->config->website_key;
 		$request_http_method = $method;
-		$request_uri         = 'testcheckout.buckaroo.nl/json/' . $endpoint;
+		$request_uri         = $host . '/json/' . $endpoint;
 		$request_timestamp   = \strval( \time() );
 		$nonce               = \wp_generate_password( 32 );
 		$request_content     = null === $data ? '' : \json_encode( $data );
