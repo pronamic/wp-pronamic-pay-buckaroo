@@ -27,6 +27,8 @@ class PushController {
 	 */
 	public function setup() {
 		\add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
+
+		\add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 	}
 
 	/**
@@ -179,5 +181,21 @@ class PushController {
 				'transaction_key' => $transaction_key,
 			)
 		);
+	}
+
+	/**
+	 * WordPress loaded, check for deprecated webhook call.
+	 *
+	 * @link https://github.com/WordPress/WordPress/blob/5.3/wp-includes/rest-api.php#L277-L309
+	 * @return void
+	 */
+	public function wp_loaded() {
+		if ( ! filter_has_var( INPUT_GET, 'buckaroo_push' ) ) {
+			return;
+		}
+
+		\rest_get_server()->serve_request( '/pronamic-pay/buckaroo/v1/push' );
+
+		exit;
 	}
 }
