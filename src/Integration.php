@@ -49,13 +49,6 @@ class Integration extends AbstractGatewayIntegration {
 		);
 
 		parent::__construct( $args );
-
-		// Actions
-		$function = array( __NAMESPACE__ . '\Listener', 'listen' );
-
-		if ( ! has_action( 'wp_loaded', $function ) ) {
-			add_action( 'wp_loaded', $function );
-		}
 	}
 
 	/**
