@@ -149,7 +149,7 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURL'         => 'https://webhook.site/7cc95130-7490-480f-b903-87f021249342',
+			'PushURL'         => \rest_url( Integration::REST_ROUTE_NAMESPACE . '/push' ),
 			/**
 			 * Push URL Failure.
 			 * 
@@ -157,7 +157,7 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURLFailure'  => 'https://webhook.site/7cc95130-7490-480f-b903-87f021249342',
+			'PushURLFailure'  => \rest_url( Integration::REST_ROUTE_NAMESPACE . '/push' ),
 			/**
 			 * Services.
 			 *
@@ -165,22 +165,134 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'Services'        => array(
+			'Services'        => (object) array(
 				'ServiceList' => array(
-					array(
-						'Action'     => 'Pay',
-						'Name'       => 'ideal',
-						'Parameters' => array(
-							array(
-								'Name'  => 'issuer',
-								'Value' => 'ABNANL2A',
-							),
-						),
-					),
+					
 				),
 			),
 		);
 
+		/**
+		 * Payment method.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServicesRequest
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServiceRequest
+		 */
+		$payment_method = $payment->get_method();
+
+		switch ( $payment_method ) {
+			/**
+			 * Payment method creditcard.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
+			 */
+			case Core_PaymentMethods::CREDIT_CARD:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
+				);
+
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MAESTRO,
+				);
+
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MASTERCARD,
+				);
+
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::VISA,
+				);
+
+				break;
+			/**
+			 * Payment method iDEAL.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal#pay
+			 */
+			case Core_PaymentMethods::IDEAL:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'ideal',
+					'Parameters' => array(
+						array(
+							'Name'  => 'issuer',
+							'Value' => $payment->get_issuer(),
+						),
+					),
+				);
+
+				break;
+			/**
+			 * Payment method transfer.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/transfer#pay
+			 */
+			case Core_PaymentMethods::BANK_TRANSFER:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'transfer',
+				);
+
+				break;
+			/**
+			 * Payment method Bancontact.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/bancontact#pay
+			 */
+			case Core_PaymentMethods::BANCONTACT:
+			case Core_PaymentMethods::MISTER_CASH:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'bancontactmrcash',
+				);
+
+				break;
+			/**
+			 * Payment method Giropay.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/giropay#pay
+			 */
+			case Core_PaymentMethods::GIROPAY:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'giropay',
+				);
+
+				break;
+			/**
+			 * Payment method PayPal.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/paypal#pay
+			 */
+			case Core_PaymentMethods::PAYPAL:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'paypal',
+				);
+
+				break;
+			/**
+			 * Payment method Sofort.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort#pay
+			 */
+			case Core_PaymentMethods::SOFORT:
+				$data->Services->ServiceList[] = (object) array(
+					'Action'     => 'Pay',
+					'Name'       => 'sofortueberweisung',
+				);
+
+				break;
+		}
+
+		/**
+		 * Request.
+		 */
 		$object = $this->request( 'POST', 'Transaction', $data );
 
 		if ( 'Redirect' !== $object->RequiredAction->Name ) {
@@ -229,37 +341,6 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_output_fields( Payment $payment ) {
 		$payment_method = $payment->get_method();
-
-		switch ( $payment_method ) {
-			case Core_PaymentMethods::IDEAL:
-				$this->client->set_payment_method( PaymentMethods::IDEAL );
-				$this->client->set_ideal_issuer( $payment->get_issuer() );
-
-				break;
-			case Core_PaymentMethods::CREDIT_CARD:
-				$this->client->add_requested_service( PaymentMethods::AMERICAN_EXPRESS );
-				$this->client->add_requested_service( PaymentMethods::MAESTRO );
-				$this->client->add_requested_service( PaymentMethods::MASTERCARD );
-				$this->client->add_requested_service( PaymentMethods::VISA );
-
-				break;
-			case Core_PaymentMethods::BANK_TRANSFER:
-			case Core_PaymentMethods::BANCONTACT:
-			case Core_PaymentMethods::MISTER_CASH:
-			case Core_PaymentMethods::GIROPAY:
-			case Core_PaymentMethods::PAYPAL:
-			case Core_PaymentMethods::SOFORT:
-				$this->client->set_payment_method( PaymentMethods::transform( (string) $payment_method ) );
-
-				break;
-			default:
-				if ( '0' !== $payment_method ) {
-					// Leap of faith if the WordPress payment method could not transform to a Buckaroo method?
-					$this->client->set_payment_method( $payment_method );
-				}
-
-				break;
-		}
 
 		// Locale.
 		$culture = null;
@@ -348,7 +429,68 @@ class Gateway extends Core_Gateway {
 			)
 		);
 
-		return $response->json();
+		$object = $response->json();
+
+		/**
+		 * Request Errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+		 */
+		$exception = null;
+
+		/**
+		 * Channel errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
+		 */
+		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Service errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
+		 */
+		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
+		 */
+		foreach ( $object->RequestErrors->ActionErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
+		 */
+		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 * 
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
+		 */
+		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		if ( null !== $exception ) {
+			throw $exception;
+		}
+
+		/**
+		 * OK.
+		 */
+		return $object;
 	}
 
 	/**
