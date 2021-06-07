@@ -440,7 +440,7 @@ class Gateway extends Core_Gateway {
 		$request_uri         = $host . '/json/' . $endpoint;
 		$request_timestamp   = \strval( \time() );
 		$nonce               = \wp_generate_password( 32 );
-		$request_content     = null === $data ? '' : \json_encode( $data );
+		$request_content     = null === $data ? '' : \wp_json_encode( $data );
 
 		$values = \implode(
 			'',
