@@ -115,6 +115,22 @@ class Gateway extends Core_Gateway {
 		}
 
 		/**
+		 * Push URL.
+		 */
+		$push_url = \rest_url( Integration::REST_ROUTE_NAMESPACE . '/push' );
+
+		/**
+		 * Filters the Buckaroo push URL.
+		 *
+		 * If you want to debug the Buckaroo report URL you can use this filter
+		 * to override the push URL. You could for example use a service like
+		 * https://webhook.site/ to inspect the push requests from Buckaroo.
+		 *
+		 * @param string $push_url Buckaroo push URL.
+		 */
+		$push_url = \apply_filters( 'pronamic_pay_buckaroo_push_url', $push_url );
+
+		/**
 		 * JSON Transaction.
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
@@ -146,7 +162,7 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURL'         => \rest_url( Integration::REST_ROUTE_NAMESPACE . '/push' ),
+			'PushURL'         => $push_url,
 			/**
 			 * Push URL Failure.
 			 * 
@@ -154,7 +170,7 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'PushURLFailure'  => \rest_url( Integration::REST_ROUTE_NAMESPACE . '/push' ),
+			'PushURLFailure'  => $push_url,
 			/**
 			 * Services.
 			 *
