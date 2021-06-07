@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
@@ -355,43 +356,73 @@ class Gateway extends Core_Gateway {
 		return $this->client->get_fields();
 	}
 
+	private function request( $method, $endpoint, $data = null ) {
+		$website_key         = $this->config->website_key;
+		$request_http_method = $method;
+		$request_uri         = 'testcheckout.buckaroo.nl/json/' . $endpoint;
+		$request_timestamp   = \strval( \time() );
+		$nonce               = \wp_generate_password( 32 );
+		$request_content     = null === $data ? '' : \json_encode( $data );
+
+		$values = \implode(
+			'',
+			array(
+				$website_key,
+				$request_http_method,
+				\strtolower( \urlencode( $request_uri ) ),
+				$request_timestamp,
+				$nonce,
+				null === $data ? '' : \base64_encode( \md5( $request_content, true ) ),
+			)
+		);
+
+		$hash = \hash_hmac( 'sha256', $values, $this->config->secret_key, true );
+
+		$hmac = \base64_encode( $hash );
+
+		$authorization = \sprintf(
+			'hmac %s:%s:%s:%s',
+			$this->config->website_key,
+			$hmac,
+			$nonce,
+			$request_timestamp
+		);
+
+		$response = \Pronamic\WordPress\Http\Facades\Http::request(
+			'https://' . $request_uri,
+			array(
+				'method'  => $request_http_method,
+				'headers' => array(
+					'Authorization' => $authorization,
+					'Content-Type'  => 'application/json',
+				),
+				'body'    => $request_content,
+			)
+		);
+
+		return $response->json();
+	}
+
 	/**
 	 * Update status of the specified payment
 	 *
+	 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/GET-json-Transaction-Status-transactionKey
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$method = Server::get( 'REQUEST_METHOD', FILTER_SANITIZE_STRING );
+		$transaction_key = $payment->get_meta( 'buckaroo_transaction_key' );
 
-		$data = array();
-
-		switch ( $method ) {
-			case 'GET':
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$data = $_GET;
-
-				break;
-			case 'POST':
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing
-				$data = $_POST;
-
-				break;
-		}
-
-		$data = Util::urldecode( $data );
-
-		$data = stripslashes_deep( $data );
-
-		$data = $this->client->verify_request( $data );
-
-		if ( false === $data ) {
+		if ( empty( $transaction_key ) ) {
 			return;
 		}
 
-		$payment->set_transaction_id( (string) $data[ Parameters::PAYMENT ] );
-		$payment->set_status( Statuses::transform( (string) $data[ Parameters::STATUS_CODE ] ) );
+		$result = $this->request( 'GET', 'Transaction/Status/' . $transaction_key );
 
-		// Consumer bank details.
+		$payment->set_status( Statuses::transform( \strval( $result->Status->Code->Code ) ) );
+
+		/**
+		 * Consumer bank details.
+		 */
 		$consumer_bank_details = $payment->get_consumer_bank_details();
 
 		if ( null === $consumer_bank_details ) {
@@ -400,57 +431,38 @@ class Gateway extends Core_Gateway {
 			$payment->set_consumer_bank_details( $consumer_bank_details );
 		}
 
-		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_NAME, $data ) ) {
-			$consumer_bank_details->set_name( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_NAME ] );
-		}
+		/**
+		 * Services.
+		 */
+		foreach ( $result->Services as $service ) {
+			foreach ( $service->Parameters as $parameter ) {
+				if ( 'transactionId' === $parameter->Name ) {
+					$payment->set_transaction_id( $parameter->Value );
+				}
 
-		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_IBAN, $data ) ) {
-			$consumer_bank_details->set_iban( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_IBAN ] );
-		}
+				if ( 'consumerName' === $parameter->Name ) {
+					$consumer_bank_details->set_name( $parameter->Value );
+				}
 
-		if ( \array_key_exists( Parameters::SERVICE_IDEAL_CONSUMER_BIC, $data ) ) {
-			$consumer_bank_details->set_bic( (string) $data[ Parameters::SERVICE_IDEAL_CONSUMER_BIC ] );
-		}
+				if ( 'consumerIBAN' === $parameter->Name ) {
+					$consumer_bank_details->set_iban( $parameter->Value );
+				}
 
-		$labels = array(
-			Parameters::PAYMENT                       => __( 'Payment', 'pronamic_ideal' ),
-			Parameters::PAYMENT_METHOD                => __( 'Payment Method', 'pronamic_ideal' ),
-			Parameters::STATUS_CODE                   => __( 'Status Code', 'pronamic_ideal' ),
-			Parameters::STATUS_CODE_DETAIL            => __( 'Status Code Detail', 'pronamic_ideal' ),
-			Parameters::STATUS_MESSAGE                => __( 'Status Message', 'pronamic_ideal' ),
-			Parameters::INVOICE_NUMBER                => __( 'Invoice Number', 'pronamic_ideal' ),
-			Parameters::AMOUNT                        => __( 'Amount', 'pronamic_ideal' ),
-			Parameters::CURRENCY                      => __( 'Currency', 'pronamic_ideal' ),
-			Parameters::TIMESTAMP                     => __( 'Timestamp', 'pronamic_ideal' ),
-			Parameters::SERVICE_IDEAL_CONSUMER_ISSUER => __( 'Service iDEAL Consumer Issuer', 'pronamic_ideal' ),
-			Parameters::SERVICE_IDEAL_CONSUMER_NAME   => __( 'Service iDEAL Consumer Name', 'pronamic_ideal' ),
-			Parameters::SERVICE_IDEAL_CONSUMER_IBAN   => __( 'Service iDEAL Consumer IBAN', 'pronamic_ideal' ),
-			Parameters::SERVICE_IDEAL_CONSUMER_BIC    => __( 'Service iDEAL Consumer BIC', 'pronamic_ideal' ),
-			Parameters::TRANSACTIONS                  => __( 'Transactions', 'pronamic_ideal' ),
-		);
-
-		$note = '';
-
-		$note .= '<p>';
-		$note .= __( 'Buckaroo data:', 'pronamic_ideal' );
-		$note .= '</p>';
-
-		$note .= '<dl>';
-
-		foreach ( $labels as $key => $label ) {
-			if ( ! isset( $data[ $key ] ) ) {
-				continue;
+				if ( 'consumerBIC' === $parameter->Name ) {
+					$consumer_bank_details->set_iban( $parameter->Value );
+				}
 			}
-
-			$note .= sprintf(
-				'<dt>%s</dt><dd>%s</dd>',
-				esc_html( $label ),
-				esc_html( (string) $data[ $key ] )
-			);
 		}
 
-		$note .= '</dl>';
+		/**
+		 * Refunds.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/GET-json-Transaction-RefundInfo-transactionKey
+		 */
+		$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
-		$payment->add_note( $note );
+		$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
+
+		$payment->set_refunded_amount( $refunded_amount );
 	}
 }
