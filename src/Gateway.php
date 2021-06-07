@@ -106,17 +106,6 @@ class Gateway extends Core_Gateway {
 	 */
 	public function start( Payment $payment ) {
 		/**
-		 * Authentication.
-		 * 
-		 * The HMAC SHA256 is calculated over a concatenated string (as raw data/binary/bytes) of the following values: WebsiteKey, requestHttpMethod, requestUri, requestTimeStamp, nonce, requestContentBase64String. See the next table for more information about these values. Please note: the Base64 hash should be a string of 44 characters. If yours is longer, it is probably in hexadecimal format.
-		 *
-		 * @link https://dev.buckaroo.nl/Apis/Description/json
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/Authentication
-		 */
-
-		$endpoint = 'Transaction';
-
-		/**
 		 * Currency.
 		 */
 		$currency_code = $payment->get_total_amount()->get_currency()->get_alphabetic_code();
@@ -192,63 +181,7 @@ class Gateway extends Core_Gateway {
 			),
 		);
 
-		/*
-		$endpoint = 'Transaction/Specifications';
-
-		$data = (object) array(
-			'Services' => array(
-				(object) array(
-					'Name'    => 'ideal',
-					'Version' => 2,
-				),
-			),
-		);
-		*/
-
-		$website_key         = $this->config->website_key;
-		$request_http_method = 'POST';
-		$request_uri         = 'testcheckout.buckaroo.nl/json/' . $endpoint;
-		$request_timestamp   = \strval( \time() );
-		$nonce               = \wp_generate_password( 32 );
-		$request_content     = \json_encode( $data );
-
-		$values = \implode(
-			'',
-			array(
-				$website_key,
-				$request_http_method,
-				\strtolower( \urlencode( $request_uri ) ),
-				$request_timestamp,
-				$nonce,
-				\base64_encode( \md5( $request_content, true ) ),
-			)
-		);
-
-		$hash = \hash_hmac( 'sha256', $values, $this->config->secret_key, true );
-
-		$hmac = \base64_encode( $hash );
-
-		$authorization = \sprintf(
-			'hmac %s:%s:%s:%s',
-			$this->config->website_key,
-			$hmac,
-			$nonce,
-			$request_timestamp
-		);
-
-		$response = \Pronamic\WordPress\Http\Facades\Http::request(
-			'https://' . $request_uri,
-			array(
-				'method'  => $request_http_method,
-				'headers' => array(
-					'Authorization' => $authorization,
-					'Content-Type'  => 'application/json',
-				),
-				'body'    => $request_content,
-			)
-		);
-
-		$object = $response->json();
+		$object = $this->request( 'POST', 'Transaction', $data );
 
 		if ( 'Redirect' !== $object->RequiredAction->Name ) {
 			throw new \Exception(
@@ -356,7 +289,22 @@ class Gateway extends Core_Gateway {
 		return $this->client->get_fields();
 	}
 
+	/**
+	 * JSON API Request.
+	 *
+	 * @param string      $method   HTTP request method.
+	 * @param string      $endpoint JSON API endpoint.
+	 * @param object|null $data     Data.
+	 */
 	private function request( $method, $endpoint, $data = null ) {
+		/**
+		 * Authentication.
+		 * 
+		 * The HMAC SHA256 is calculated over a concatenated string (as raw data/binary/bytes) of the following values: WebsiteKey, requestHttpMethod, requestUri, requestTimeStamp, nonce, requestContentBase64String. See the next table for more information about these values. Please note: the Base64 hash should be a string of 44 characters. If yours is longer, it is probably in hexadecimal format.
+		 *
+		 * @link https://dev.buckaroo.nl/Apis/Description/json
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Authentication
+		 */
 		$website_key         = $this->config->website_key;
 		$request_http_method = $method;
 		$request_uri         = 'testcheckout.buckaroo.nl/json/' . $endpoint;
