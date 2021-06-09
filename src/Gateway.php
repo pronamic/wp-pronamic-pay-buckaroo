@@ -380,6 +380,65 @@ class Gateway extends Core_Gateway {
 		 */
 		$object = $this->request( 'POST', 'Transaction', $data );
 
+		/**
+		 * Request Errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
+		 */
+		$exception = null;
+
+		/**
+		 * Channel errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
+		 */
+		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Service errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
+		 */
+		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
+		 */
+		foreach ( $object->RequestErrors->ActionErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
+		 */
+		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		/**
+		 * Action errors.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
+		 */
+		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {
+			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+		}
+
+		if ( null !== $exception ) {
+			throw $exception;
+		}
+
+		/**
+		 * Required Action.
+		 */
 		if ( 'Redirect' !== $object->RequiredAction->Name ) {
 			throw new \Exception(
 				\sprintf(
@@ -482,62 +541,6 @@ class Gateway extends Core_Gateway {
 		);
 
 		$object = $response->json();
-
-		/**
-		 * Request Errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
-		 */
-		$exception = null;
-
-		/**
-		 * Channel errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
-		 */
-		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Service errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
-		 */
-		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
-		 */
-		foreach ( $object->RequestErrors->ActionErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
-		 */
-		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
-		 */
-		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		if ( null !== $exception ) {
-			throw $exception;
-		}
 
 		/**
 		 * OK.
