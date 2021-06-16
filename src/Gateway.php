@@ -138,6 +138,7 @@ class Gateway extends Core_Gateway {
 		$data = (object) array(
 			'Currency'                  => $currency_code,
 			'AmountDebit'               => $payment->get_total_amount()->get_value(),
+			'Description'               => $payment->get_description(),
 			'Invoice'                   => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
 			'ReturnURL'                 => $payment->get_return_url(),
 			'ReturnURLCancel'           => \add_query_arg(
