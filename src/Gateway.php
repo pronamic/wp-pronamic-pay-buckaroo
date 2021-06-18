@@ -386,55 +386,61 @@ class Gateway extends Core_Gateway {
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 */
-		$exception = null;
+		if ( \property_exists( $object, 'RequestErrors' ) && null !== $object->RequestErrors ) {
+			$exception = null;
 
-		/**
-		 * Channel errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
-		 */
-		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+			$error_types = array(
+				/**
+				 * Channel errors.
+				 *
+				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
+				 */
+				'ChannelErrors',
 
-		/**
-		 * Service errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
-		 */
-		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+				/**
+				 * Service errors.
+				 *
+				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
+				 */
+				'ServiceErrors',
 
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
-		 */
-		foreach ( $object->RequestErrors->ActionErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+				/**
+				 * Action errors.
+				 *
+				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
+				 */
+				'ActionErrors',
 
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
-		 */
-		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+				/**
+				 * Parameter errors.
+				 *
+				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
+				 */
+				'ParameterErrors',
 
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
-		 */
-		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+				/**
+				 * Custom parameter errors.
+				 *
+				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
+				 */
+				'CustomParameterErrors',
+			);
 
-		if ( null !== $exception ) {
-			throw $exception;
+			foreach ( $error_types as $error_type ) {
+				// Check if error type exists in response.
+				if ( ! \property_exists( $object->RequestErrors, $error_type ) ) {
+					continue;
+				}
+
+				// Set exception.
+				foreach ( $object->RequestErrors->$error_type as $error ) {
+					$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+				}
+			}
+
+			if ( null !== $exception ) {
+				throw $exception;
+			}
 		}
 
 		/**
