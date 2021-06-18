@@ -613,8 +613,10 @@ class Gateway extends Core_Gateway {
 		 */
 		$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
-		$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
+		if ( \property_exists( $result, 'RefundedAmount' ) && ! empty( $result->RefundedAmount ) ) {
+			$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
 
-		$payment->set_refunded_amount( $refunded_amount );
+			$payment->set_refunded_amount( $refunded_amount );
+		}
 	}
 }
