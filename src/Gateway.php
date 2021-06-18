@@ -420,20 +420,12 @@ class Gateway extends Core_Gateway {
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
 		 */
-		$payment->set_meta( 'buckaroo_transaction_key', $object->Key );
-		$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+		if ( \property_exists( $object, 'Key' ) ) {
+			$payment->set_transaction_id( $object->Key );
+		}
 
-		/**
-		 * Transaction ID.
-		 *
-		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal]
-		 */
-		foreach ( $object->Services as $service ) {
-			foreach ( $service->Parameters as $parameter ) {
-				if ( 'transactionId' === $parameter->Name ) {
-					$payment->set_transaction_id( $parameter->Value );
-				}
-			}
+		if ( \property_exists( $object, 'PaymentKey' ) ) {
+			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
 		}
 	}
 
@@ -520,7 +512,7 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$transaction_key = $payment->get_meta( 'buckaroo_transaction_key' );
+		$transaction_key = $payment->get_transaction_id();
 
 		if ( empty( $transaction_key ) ) {
 			return;
@@ -546,10 +538,6 @@ class Gateway extends Core_Gateway {
 		 */
 		foreach ( $result->Services as $service ) {
 			foreach ( $service->Parameters as $parameter ) {
-				if ( 'transactionId' === $parameter->Name ) {
-					$payment->set_transaction_id( $parameter->Value );
-				}
-
 				if ( 'consumerName' === $parameter->Name ) {
 					$consumer_bank_details->set_name( $parameter->Value );
 				}
