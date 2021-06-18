@@ -389,51 +389,9 @@ class Gateway extends Core_Gateway {
 		if ( \property_exists( $object, 'RequestErrors' ) && null !== $object->RequestErrors ) {
 			$exception = null;
 
-			$error_types = array(
-				/**
-				 * Channel errors.
-				 *
-				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
-				 */
-				'ChannelErrors',
-
-				/**
-				 * Service errors.
-				 *
-				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
-				 */
-				'ServiceErrors',
-
-				/**
-				 * Action errors.
-				 *
-				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
-				 */
-				'ActionErrors',
-
-				/**
-				 * Parameter errors.
-				 *
-				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
-				 */
-				'ParameterErrors',
-
-				/**
-				 * Custom parameter errors.
-				 *
-				 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
-				 */
-				'CustomParameterErrors',
-			);
-
-			foreach ( $error_types as $error_type ) {
-				// Check if error type exists in response.
-				if ( ! \property_exists( $object->RequestErrors, $error_type ) ) {
-					continue;
-				}
-
-				// Set exception.
-				foreach ( $object->RequestErrors->$error_type as $error ) {
+			foreach ( $object->RequestErrors as $errors ) {
+				foreach ( $errors as $error ) {
+					// Add exception.
 					$exception = new \Exception( $error->ErrorMessage, 0, $exception );
 				}
 			}
