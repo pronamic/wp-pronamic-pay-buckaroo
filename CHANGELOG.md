@@ -7,6 +7,12 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - 
 
+## [2.2.0] - 2021-06-18
+- Added initial support for refunds.
+- Added WP-CLI command to retrieve the transaction status by transaction key.
+- Updated integration to JSON API.
+- Switched to WordPress REST API for Push URL.
+
 ## [2.1.2] - 2021-04-26
 - Started using `pronamic/wp-http`.
 
@@ -84,7 +90,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/2.1.2...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/wp-pay-gateways/buckaroo/compare/2.1.2...2.2.0
 [2.1.2]: https://github.com/wp-pay-gateways/buckaroo/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/wp-pay-gateways/buckaroo/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/wp-pay-gateways/buckaroo/compare/2.0.4...2.1.0

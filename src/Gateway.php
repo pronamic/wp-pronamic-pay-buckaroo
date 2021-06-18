@@ -8,6 +8,7 @@ use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Server;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 
 /**
  * Title: Buckaroo gateway
@@ -386,55 +387,19 @@ class Gateway extends Core_Gateway {
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 */
-		$exception = null;
+		if ( \property_exists( $object, 'RequestErrors' ) && null !== $object->RequestErrors ) {
+			$exception = null;
 
-		/**
-		 * Channel errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseChannelError
-		 */
-		foreach ( $object->RequestErrors->ChannelErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
+			foreach ( $object->RequestErrors as $errors ) {
+				foreach ( $errors as $error ) {
+					// Add exception.
+					$exception = new \Exception( $error->ErrorMessage, 0, $exception );
+				}
+			}
 
-		/**
-		 * Service errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseServiceError
-		 */
-		foreach ( $object->RequestErrors->ServiceErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseActionError
-		 */
-		foreach ( $object->RequestErrors->ActionErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseParameterError
-		 */
-		foreach ( $object->RequestErrors->ParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		/**
-		 * Action errors.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionRequestResponseCustomParameterError
-		 */
-		foreach ( $object->RequestErrors->CustomParameterErrors as $error ) {
-			$exception = new \Exception( $error->ErrorMessage, 0, $exception );
-		}
-
-		if ( null !== $exception ) {
-			throw $exception;
+			if ( null !== $exception ) {
+				throw $exception;
+			}
 		}
 
 		/**
@@ -456,20 +421,12 @@ class Gateway extends Core_Gateway {
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
 		 */
-		$payment->set_meta( 'buckaroo_transaction_key', $object->Key );
-		$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+		if ( \property_exists( $object, 'Key' ) ) {
+			$payment->set_transaction_id( $object->Key );
+		}
 
-		/**
-		 * Transaction ID.
-		 *
-		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal]
-		 */
-		foreach ( $object->Services as $service ) {
-			foreach ( $service->Parameters as $parameter ) {
-				if ( 'transactionId' === $parameter->Name ) {
-					$payment->set_transaction_id( $parameter->Value );
-				}
-			}
+		if ( \property_exists( $object, 'PaymentKey' ) ) {
+			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
 		}
 	}
 
@@ -556,7 +513,7 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$transaction_key = $payment->get_meta( 'buckaroo_transaction_key' );
+		$transaction_key = $payment->get_transaction_id();
 
 		if ( empty( $transaction_key ) ) {
 			return;
@@ -582,10 +539,6 @@ class Gateway extends Core_Gateway {
 		 */
 		foreach ( $result->Services as $service ) {
 			foreach ( $service->Parameters as $parameter ) {
-				if ( 'transactionId' === $parameter->Name ) {
-					$payment->set_transaction_id( $parameter->Value );
-				}
-
 				if ( 'consumerName' === $parameter->Name ) {
 					$consumer_bank_details->set_name( $parameter->Value );
 				}
@@ -607,8 +560,110 @@ class Gateway extends Core_Gateway {
 		 */
 		$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
-		$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
+		if ( \property_exists( $result, 'RefundedAmount' ) && ! empty( $result->RefundedAmount ) ) {
+			$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
 
-		$payment->set_refunded_amount( $refunded_amount );
+			$payment->set_refunded_amount( $refunded_amount );
+		}
+	}
+
+	/**
+	 * Create refund.
+	 *
+	 * @param string $transaction_id Transaction ID.
+	 * @param Money  $amount         Amount to refund.
+	 * @param string $description    Refund reason.
+	 * @return string
+	 */
+	public function create_refund( $transaction_id, Money $amount, $description = null ) {
+		$original_transaction = $this->request( 'GET', 'Transaction/Status/' . $transaction_id );
+
+		if ( ! \is_object( $original_transaction ) ) {
+			throw new \Exception(
+				sprintf(
+					/* translators: %s: transaction key */
+					__( 'Unable to create refund for transaction with transaction key: %s', 'pronamic_ideal' ),
+					$transaction_id
+				)
+			);
+		}
+
+		$service_name = Util::get_transaction_service( $original_transaction );
+
+		if ( null === $service_name ) {
+			throw new \Exception(
+				sprintf(
+					/* translators: %s: transaction key */
+					__( 'Unable to create refund for transaction without service name. Transaction key: %s', 'pronamic_ideal' ),
+					$transaction_id
+				)
+			);
+		}
+
+		// Invoice.
+		$payment = \get_pronamic_payment_by_transaction_id( $transaction_id );
+
+		$invoice = null;
+
+		if ( null !== $payment ) {
+			$invoice = Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment );
+		}
+
+		// Refund request.
+		$data = (object) array(
+			'Channel'                => 'Web',
+			'Currency'               => $amount->get_currency()->get_alphabetic_code(),
+			'AmountCredit'           => (float) $amount->get_value(),
+			'Invoice'                => $invoice,
+			'OriginalTransactionKey' => $transaction_id,
+			'Services'               => array(
+				'ServiceList' => array(
+					array(
+						'Name'   => $service_name,
+						'Action' => 'Refund',
+					),
+				),
+			),
+		);
+
+		$refund = $this->request( 'POST', 'Transaction', $data );
+
+		// Check refund object.
+		if ( ! \is_object( $refund ) ) {
+			return null;
+		}
+
+		// Check refund status.
+		if ( \property_exists( $refund, 'Status' ) && \property_exists( $refund->Status, 'Code' ) ) {
+			$status = Statuses::transform( (string) $refund->Status->Code->Code );
+
+			if ( PaymentStatus::SUCCESS !== $status ) {
+				throw new \Exception(
+					\sprintf(
+						/* translators: 1: payment provider name, 2: status message, 3: status sub message*/
+						__( 'Unable to create refund at %1$s gateway: %2$s%3$s', 'pronamic_ideal' ),
+						__( 'Buckaroo', 'pronamic_ideal' ),
+						$refund->Status->Code->Description,
+						\property_exists( $refund->Status, 'SubCode' ) ? ' – ' . $refund->Status->SubCode->Description : ''
+					)
+				);
+			}
+		}
+
+		// Update payment refunded amount.
+		if ( null !== $payment ) {
+			$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_id );
+
+			if ( \property_exists( $result, 'RefundedAmount' ) && ! empty( $result->RefundedAmount ) ) {
+				$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
+
+				$payment->set_refunded_amount( $refunded_amount );
+			}
+		}
+
+		// Return.
+		$refund_id = \property_exists( $refund, 'Key' ) ? $refund->Key : null;
+
+		return $refund_id;
 	}
 }

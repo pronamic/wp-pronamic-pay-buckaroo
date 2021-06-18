@@ -106,7 +106,7 @@ class PushController {
 
 		$transaction_key = $data->Transaction->Key;
 
-		return $this->handle_transcation_key( $transaction_key );
+		return $this->handle_transaction_key( $transaction_key );
 	}
 
 	/**
@@ -138,7 +138,7 @@ class PushController {
 		 */
 		$transaction_key = $parameters['brq_transactions'];
 
-		return $this->handle_transcation_key( $transaction_key );
+		return $this->handle_transaction_key( $transaction_key );
 	}
 
 	/**
@@ -147,15 +147,15 @@ class PushController {
 	 * @param string $transaction_key Transaction key.
 	 * @return object
 	 */
-	private function handle_transcation_key( $transaction_key ) {
-		$payment = \get_pronamic_payment_by_meta( '_pronamic_payment_buckaroo_transaction_key', $transaction_key );
+	private function handle_transaction_key( $transaction_key ) {
+		$payment = \get_pronamic_payment_by_transaction_id( $transaction_key );
 
 		if ( null === $payment ) {
 			return new \WP_Error(
 				'rest_buckaroo_unknown_transaction',
 				\sprintf(
 					/* translators: %s: Buckaroo transaction key. */
-					\__( 'Unable to found payment for transaction key: %s.', 'pronamic_ideal ' ),
+					\__( 'Unable to find payment for transaction key: %s.', 'pronamic_ideal ' ),
 					$transaction_key
 				),
 				array(

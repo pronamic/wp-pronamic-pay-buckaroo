@@ -45,4 +45,24 @@ class Util {
 
 		return $invoice_number;
 	}
+
+	/**
+	 * Get first service name from transaction.
+	 *
+	 * @param object $transaction Transaction object.
+	 * @return string|null
+	 */
+	public static function get_transaction_service( $transaction ) {
+		if ( \property_exists( $transaction, 'Services' ) ) {
+			foreach ( $transaction->Services as $service ) {
+				if ( ! \property_exists( $service, 'Name' ) ) {
+					continue;
+				}
+
+				return $service->Name;
+			}
+		}
+
+		return null;
+	}
 }
