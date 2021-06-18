@@ -9,6 +9,7 @@
 
 	<arg name="colors"/>
 	<arg name="extensions" value="php" />
+	<arg name="parallel" value="8" />
 	<arg value="sp" />
 
 	<exclude-pattern>node_modules/*</exclude-pattern>
@@ -25,6 +26,8 @@
 
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+
+		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
 	</rule>
 
 	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_key">
