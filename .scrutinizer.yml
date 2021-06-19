@@ -12,6 +12,8 @@ build:
   dependencies:
     override:
       - composer install --ignore-platform-reqs --no-interaction
+  services:
+    mariadb: 10
   nodes:
     coverage:
       tests:
