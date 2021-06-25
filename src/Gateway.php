@@ -383,6 +383,19 @@ class Gateway extends Core_Gateway {
 		$object = $this->request( 'POST', 'Transaction', $data );
 
 		/**
+		 * Buckaroo keys.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
+		 */
+		if ( \property_exists( $object, 'Key' ) ) {
+			$payment->set_transaction_id( $object->Key );
+		}
+
+		if ( \property_exists( $object, 'PaymentKey' ) ) {
+			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+		}
+
+		/**
 		 * Request Errors.
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
@@ -405,28 +418,36 @@ class Gateway extends Core_Gateway {
 		/**
 		 * Required Action.
 		 */
-		if ( 'Redirect' !== $object->RequiredAction->Name ) {
-			throw new \Exception(
-				\sprintf(
-					'Unsupported Buckaroo action: %s',
-					$object->RequiredAction->Name
-				)
-			);
+		if ( null !== $object->RequiredAction ) {
+			if ( 'Redirect' !== $object->RequiredAction->Name ) {
+				throw new \Exception(
+					\sprintf(
+						'Unsupported Buckaroo action: %s',
+						$object->RequiredAction->Name
+					)
+				);
+			}
+
+			// Set action URL.
+			if ( \property_exists( $object->RequiredAction, 'RedirectURL' ) ) {
+				$payment->set_action_url( $object->RequiredAction->RedirectURL );
+			}
 		}
 
-		$payment->set_action_url( $object->RequiredAction->RedirectURL );
+		// Failure.
+		if ( \property_exists( $object, 'Status' ) && \property_exists( $object->Status, 'Code' ) ) {
+			$status = Statuses::transform( (string) $object->Status->Code->Code );
 
-		/**
-		 * Buckaroo keys.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
-		 */
-		if ( \property_exists( $object, 'Key' ) ) {
-			$payment->set_transaction_id( $object->Key );
-		}
-
-		if ( \property_exists( $object, 'PaymentKey' ) ) {
-			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+			if ( PaymentStatus::FAILURE === $status ) {
+				throw new \Exception(
+					\sprintf(
+						/* translators: 1: payment provider name, 2: status message, 3: status sub message*/
+						__( 'Unable to create payment at gateway: %1$s%2$s', 'pronamic_ideal' ),
+						$object->Status->Code->Description,
+						\property_exists( $object->Status, 'SubCode' ) ? ' – ' . $object->Status->SubCode->Description : ''
+					)
+				);
+			}
 		}
 	}
 
