@@ -579,7 +579,7 @@ class Gateway extends Core_Gateway {
 				}
 
 				if ( 'consumerBIC' === $parameter->Name ) {
-					$consumer_bank_details->set_iban( $parameter->Value );
+					$consumer_bank_details->set_bic( $parameter->Value );
 				}
 			}
 		}
