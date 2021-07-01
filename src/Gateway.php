@@ -138,7 +138,17 @@ class Gateway extends Core_Gateway {
 		 */
 		$data = (object) array(
 			'Currency'                  => $currency_code,
-			'AmountDebit'               => $payment->get_total_amount()->get_value(),
+			/**
+			 * The debit amount for the request. This is in decimal format,
+			 * with a point as the decimal separator. For example, if the
+			 * currency is specified as EUR, sending “1” will mean that 1 euro
+			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
+			 * Please note, a transaction must have either a debit amount or a
+			 * credit amount and it cannot have both.
+			 * 
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'AmountDebit'               => $payment->get_total_amount()->number_format( null, '.', '' ),
 			'Description'               => $payment->get_description(),
 			'Invoice'                   => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
 			'ReturnURL'                 => $payment->get_return_url(),
@@ -634,7 +644,17 @@ class Gateway extends Core_Gateway {
 		$data = (object) array(
 			'Channel'                => 'Web',
 			'Currency'               => $amount->get_currency()->get_alphabetic_code(),
-			'AmountCredit'           => (float) $amount->get_value(),
+			/**
+			 * The credit amount for the request. This is in decimal format,
+			 * with a point as the decimal separator. For example, if the
+			 * currency is specified as EUR, sending “1” will mean that 1 euro
+			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
+			 * Please note, a transaction must have either a debit amount or a
+			 * credit amount and it cannot have both.
+			 * 
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'AmountCredit'           => $amount->format( null, '.', '' ),
 			'Invoice'                => $invoice,
 			'OriginalTransactionKey' => $transaction_id,
 			'Services'               => array(
