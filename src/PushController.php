@@ -75,7 +75,7 @@ class PushController {
 			'pronamic_pay_buckaroo_push_unknown_content_type',
 			\sprintf(
 				'Unknown Buckaroo push request content type: %s.',
-				$request->get_header( 'Content-Type' )
+				(string) $request->get_header( 'Content-Type' )
 			),
 			array( 'status' => 500 )
 		);
@@ -86,11 +86,14 @@ class PushController {
 	 *
 	 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
 	 * @param \WP_REST_Request $request Request.
+	 * @return object|\WP_Error
 	 */
 	private function handle_json_push( \WP_REST_Request $request ) {
 		$json = $request->get_body();
 
 		$data = \json_decode( $json );
+
+		$transaction_key = $data->Transaction->Key;
 
 		/**
 		 * Process Refunds.
@@ -100,11 +103,9 @@ class PushController {
 		 */
 		foreach ( $data->Transaction->RelatedTransactions as $related_transaction ) {
 			if ( 'refund' === $related_transaction->RelationType ) {
-				$key = $related_transaction->RelatedTransactionKey;
+				$transaction_key = $related_transaction->RelatedTransactionKey;
 			}
 		}
-
-		$transaction_key = $data->Transaction->Key;
 
 		return $this->handle_transaction_key( $transaction_key );
 	}
@@ -113,7 +114,7 @@ class PushController {
 	 * Handle HTTP POST push.
 	 *
 	 * @param \WP_REST_Request $request Request.
-	 * @return object
+	 * @return object|\WP_Error
 	 */
 	public function handle_http_post_push( \WP_REST_Request $request ) {
 		$parameters = $request->get_params();
@@ -145,7 +146,7 @@ class PushController {
 	 * Handle JSON request for specified transaction key.
 	 *
 	 * @param string $transaction_key Transaction key.
-	 * @return object
+	 * @return object|\WP_Error
 	 */
 	private function handle_transaction_key( $transaction_key ) {
 		$payment = \get_pronamic_payment_by_transaction_id( $transaction_key );
@@ -158,10 +159,7 @@ class PushController {
 					\__( 'Unable to find payment for transaction key: %s.', 'pronamic_ideal ' ),
 					$transaction_key
 				),
-				array(
-					'status' => 400,
-					'data'   => $data,
-				)
+				array( 'status' => 400 )
 			);
 		}
 

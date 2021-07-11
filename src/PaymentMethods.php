@@ -116,7 +116,7 @@ class PaymentMethods {
 	/**
 	 * Payments methods map.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	private static $map = array(
 		Core_PaymentMethods::BANK_TRANSFER => self::TRANSFER,

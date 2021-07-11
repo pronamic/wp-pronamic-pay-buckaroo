@@ -22,13 +22,6 @@ use Pronamic\WordPress\Pay\Payments\PaymentStatus;
  */
 class Gateway extends Core_Gateway {
 	/**
-	 * Client.
-	 *
-	 * @var Client
-	 */
-	protected $client;
-
-	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
 	 * @param Config $config Config.
@@ -145,7 +138,7 @@ class Gateway extends Core_Gateway {
 			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
 			 * Please note, a transaction must have either a debit amount or a
 			 * credit amount and it cannot have both.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
 			'AmountDebit'               => $payment->get_total_amount()->number_format( null, '.', '' ),
@@ -498,9 +491,8 @@ class Gateway extends Core_Gateway {
 				\strtolower( \rawurlencode( $request_uri ) ),
 				$request_timestamp,
 				$nonce,
-				\
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-				null === $data ? '' : \base64_encode( \md5( $request_content, true ) ),
+				null === $data ? '' : \base64_encode( \md5( (string) $request_content, true ) ),
 			)
 		);
 
@@ -604,7 +596,7 @@ class Gateway extends Core_Gateway {
 	 * @param string $transaction_id Transaction ID.
 	 * @param Money  $amount         Amount to refund.
 	 * @param string $description    Refund reason.
-	 * @return string
+	 * @return null|string
 	 */
 	public function create_refund( $transaction_id, Money $amount, $description = null ) {
 		$original_transaction = $this->request( 'GET', 'Transaction/Status/' . $transaction_id );
@@ -651,7 +643,7 @@ class Gateway extends Core_Gateway {
 			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
 			 * Please note, a transaction must have either a debit amount or a
 			 * credit amount and it cannot have both.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
 			'AmountCredit'           => $amount->format( null, '.', '' ),
