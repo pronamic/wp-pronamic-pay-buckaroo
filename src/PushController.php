@@ -10,6 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
+use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
@@ -168,7 +169,11 @@ class PushController {
 
 		$payment->add_note( $note );
 
-		// Log webhook request.
+		/**
+		 * Log Buckaroo push URL request for payment.
+		 *
+		 * @param Payment $payment Payment.
+		 */
 		\do_action( 'pronamic_pay_webhook_log_payment', $payment );
 
 		// Update payment.
