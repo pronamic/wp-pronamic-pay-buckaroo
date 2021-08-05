@@ -22,13 +22,6 @@ use Pronamic\WordPress\Pay\Payments\PaymentStatus;
  */
 class Gateway extends Core_Gateway {
 	/**
-	 * Client.
-	 *
-	 * @var Client
-	 */
-	protected $client;
-
-	/**
 	 * Constructs and initializes an Buckaroo gateway
 	 *
 	 * @param Config $config Config.
@@ -52,7 +45,7 @@ class Gateway extends Core_Gateway {
 	 * Get issuers.
 	 *
 	 * @since 1.2.4
-	 * @see Pronamic_WP_Pay_Gateway::get_issuers()
+	 * @see Core_Gateway::get_issuers()
 	 */
 	public function get_issuers() {
 		$groups = array();
@@ -84,7 +77,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Get supported payment methods
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
+	 * @see Core_Gateway::get_supported_payment_methods()
 	 */
 	public function get_supported_payment_methods() {
 		return array(
@@ -138,7 +131,17 @@ class Gateway extends Core_Gateway {
 		 */
 		$data = (object) array(
 			'Currency'                  => $currency_code,
-			'AmountDebit'               => $payment->get_total_amount()->get_value(),
+			/**
+			 * The debit amount for the request. This is in decimal format,
+			 * with a point as the decimal separator. For example, if the
+			 * currency is specified as EUR, sending “1” will mean that 1 euro
+			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
+			 * Please note, a transaction must have either a debit amount or a
+			 * credit amount and it cannot have both.
+			 *
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'AmountDebit'               => $payment->get_total_amount()->number_format( null, '.', '' ),
 			'Description'               => $payment->get_description(),
 			'Invoice'                   => Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment ),
 			'ReturnURL'                 => $payment->get_return_url(),
@@ -383,6 +386,19 @@ class Gateway extends Core_Gateway {
 		$object = $this->request( 'POST', 'Transaction', $data );
 
 		/**
+		 * Buckaroo keys.
+		 *
+		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
+		 */
+		if ( \property_exists( $object, 'Key' ) ) {
+			$payment->set_transaction_id( $object->Key );
+		}
+
+		if ( \property_exists( $object, 'PaymentKey' ) ) {
+			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+		}
+
+		/**
 		 * Request Errors.
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
@@ -405,28 +421,36 @@ class Gateway extends Core_Gateway {
 		/**
 		 * Required Action.
 		 */
-		if ( 'Redirect' !== $object->RequiredAction->Name ) {
-			throw new \Exception(
-				\sprintf(
-					'Unsupported Buckaroo action: %s',
-					$object->RequiredAction->Name
-				)
-			);
+		if ( null !== $object->RequiredAction ) {
+			if ( 'Redirect' !== $object->RequiredAction->Name ) {
+				throw new \Exception(
+					\sprintf(
+						'Unsupported Buckaroo action: %s',
+						$object->RequiredAction->Name
+					)
+				);
+			}
+
+			// Set action URL.
+			if ( \property_exists( $object->RequiredAction, 'RedirectURL' ) ) {
+				$payment->set_action_url( $object->RequiredAction->RedirectURL );
+			}
 		}
 
-		$payment->set_action_url( $object->RequiredAction->RedirectURL );
+		// Failure.
+		if ( \property_exists( $object, 'Status' ) && \property_exists( $object->Status, 'Code' ) ) {
+			$status = Statuses::transform( (string) $object->Status->Code->Code );
 
-		/**
-		 * Buckaroo keys.
-		 *
-		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=TransactionResponse
-		 */
-		if ( \property_exists( $object, 'Key' ) ) {
-			$payment->set_transaction_id( $object->Key );
-		}
-
-		if ( \property_exists( $object, 'PaymentKey' ) ) {
-			$payment->set_meta( 'buckaroo_transaction_payment_key', $object->PaymentKey );
+			if ( PaymentStatus::FAILURE === $status ) {
+				throw new \Exception(
+					\sprintf(
+						/* translators: 1: payment provider name, 2: status message, 3: status sub message*/
+						__( 'Unable to create payment at gateway: %1$s%2$s', 'pronamic_ideal' ),
+						$object->Status->Code->Description,
+						\property_exists( $object->Status, 'SubCode' ) ? ' – ' . $object->Status->SubCode->Description : ''
+					)
+				);
+			}
 		}
 	}
 
@@ -467,9 +491,8 @@ class Gateway extends Core_Gateway {
 				\strtolower( \rawurlencode( $request_uri ) ),
 				$request_timestamp,
 				$nonce,
-				\
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-				null === $data ? '' : \base64_encode( \md5( $request_content, true ) ),
+				null === $data ? '' : \base64_encode( \md5( (string) $request_content, true ) ),
 			)
 		);
 
@@ -548,7 +571,7 @@ class Gateway extends Core_Gateway {
 				}
 
 				if ( 'consumerBIC' === $parameter->Name ) {
-					$consumer_bank_details->set_iban( $parameter->Value );
+					$consumer_bank_details->set_bic( $parameter->Value );
 				}
 			}
 		}
@@ -573,7 +596,7 @@ class Gateway extends Core_Gateway {
 	 * @param string $transaction_id Transaction ID.
 	 * @param Money  $amount         Amount to refund.
 	 * @param string $description    Refund reason.
-	 * @return string
+	 * @return null|string
 	 */
 	public function create_refund( $transaction_id, Money $amount, $description = null ) {
 		$original_transaction = $this->request( 'GET', 'Transaction/Status/' . $transaction_id );
@@ -613,7 +636,17 @@ class Gateway extends Core_Gateway {
 		$data = (object) array(
 			'Channel'                => 'Web',
 			'Currency'               => $amount->get_currency()->get_alphabetic_code(),
-			'AmountCredit'           => (float) $amount->get_value(),
+			/**
+			 * The credit amount for the request. This is in decimal format,
+			 * with a point as the decimal separator. For example, if the
+			 * currency is specified as EUR, sending “1” will mean that 1 euro
+			 * will be paid. “1.00” is also 1 euro. “0.01” means 1 cent.
+			 * Please note, a transaction must have either a debit amount or a
+			 * credit amount and it cannot have both.
+			 *
+			 * @link https://dev.buckaroo.nl/Apis
+			 */
+			'AmountCredit'           => $amount->format( null, '.', '' ),
 			'Invoice'                => $invoice,
 			'OriginalTransactionKey' => $transaction_id,
 			'Services'               => array(

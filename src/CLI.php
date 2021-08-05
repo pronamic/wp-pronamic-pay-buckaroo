@@ -23,10 +23,25 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
  */
 class CLI {
 	/**
+	 * Gateway integration.
+	 *
+	 * @var Integration
+	 */
+	private $integration;
+
+	/**
 	 * Construct CLI.
+	 *
+	 * @param Integration $integration Integration.
+	 * @retrun void
 	 */
 	public function __construct( $integration ) {
 		$this->integration = $integration;
+
+		// Check WP-CLI.
+		if ( ! \class_exists( '\WP_CLI' ) ) {
+			return;
+		}
 
 		\WP_CLI::add_command(
 			'pronamic-pay buckaroo transaction status',
@@ -58,7 +73,7 @@ class CLI {
 	 * @return void
 	 */
 	public function wp_cli_transaction_status( $args, $assoc_args ) {
-		$gateway = $this->integration->get_gateway( $assoc_args['config_id'] );
+		$gateway = $this->integration->get_gateway( (int) $assoc_args['config_id'] );
 
 		foreach ( $args as $transaction_key ) {
 			$result = $gateway->request( 'GET', 'Transaction/Status/' . $transaction_key );
@@ -76,7 +91,7 @@ class CLI {
 	 * @return void
 	 */
 	public function wp_cli_transaction_refund_info( $args, $assoc_args ) {
-		$gateway = $this->integration->get_gateway( $assoc_args['config_id'] );
+		$gateway = $this->integration->get_gateway( (int) $assoc_args['config_id'] );
 
 		foreach ( $args as $transaction_key ) {
 			$result = $gateway->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
