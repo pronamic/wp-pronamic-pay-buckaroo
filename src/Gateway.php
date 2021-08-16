@@ -81,13 +81,18 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
+			Core_PaymentMethods::AMERICAN_EXPRESS,
 			Core_PaymentMethods::BANK_TRANSFER,
 			Core_PaymentMethods::BANCONTACT,
 			Core_PaymentMethods::CREDIT_CARD,
 			Core_PaymentMethods::GIROPAY,
 			Core_PaymentMethods::IDEAL,
+			Core_PaymentMethods::MAESTRO,
+			Core_PaymentMethods::MASTERCARD,
 			Core_PaymentMethods::PAYPAL,
 			Core_PaymentMethods::SOFORT,
+			Core_PaymentMethods::V_PAY,
+			Core_PaymentMethods::VISA,
 		);
 	}
 
@@ -103,10 +108,6 @@ class Gateway extends Core_Gateway {
 		 * Currency.
 		 */
 		$currency_code = $payment->get_total_amount()->get_currency()->get_alphabetic_code();
-
-		if ( null === $currency_code ) {
-			throw new \InvalidArgumentException( 'Can not start payment with empty currency code.' );
-		}
 
 		/**
 		 * Push URL.
@@ -273,6 +274,18 @@ class Gateway extends Core_Gateway {
 
 		switch ( $payment_method ) {
 			/**
+			 * Paymet method American Express.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::AMERICAN_EXPRESS:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
+				);
+
+				break;
+			/**
 			 * Payment method creditcard.
 			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
@@ -343,6 +356,30 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
+			 * Paymet method Maestro.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::MAESTRO:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MAESTRO,
+				);
+
+				break;
+			/**
+			 * Paymet method Mastercard.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::MASTERCARD:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MASTERCARD,
+				);
+
+				break;
+			/**
 			 * Payment method Giropay.
 			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/giropay#pay
@@ -375,6 +412,30 @@ class Gateway extends Core_Gateway {
 				$data->Services->ServiceList[] = (object) array(
 					'Action' => 'Pay',
 					'Name'   => 'sofortueberweisung',
+				);
+
+				break;
+			/**
+			 * Paymet method V PAY.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
+			 */
+			case Core_PaymentMethods::V_PAY:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::V_PAY,
+				);
+
+				break;
+			/**
+			 * Paymet method Visa.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
+			 */
+			case Core_PaymentMethods::VISA:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::VISA,
 				);
 
 				break;
@@ -566,11 +627,45 @@ class Gateway extends Core_Gateway {
 					$consumer_bank_details->set_name( $parameter->Value );
 				}
 
-				if ( 'consumerIBAN' === $parameter->Name ) {
+				if ( \in_array(
+					$parameter->Name,
+					array(
+						/**
+						 * Payment method iDEAL.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+						 */
+						'consumerIBAN',
+						/**
+						 * Payment method Sofort.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+						 */
+						'CustomerIBAN',
+					),
+					true
+				) ) {
 					$consumer_bank_details->set_iban( $parameter->Value );
 				}
 
-				if ( 'consumerBIC' === $parameter->Name ) {
+				if ( \in_array(
+					$parameter->Name,
+					array(
+						/**
+						 * Payment method iDEAL.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+						 */
+						'consumerName',
+						/**
+						 * Payment method Sofort.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+						 */
+						'CustomerBIC',
+					),
+					true
+				) ) {
 					$consumer_bank_details->set_bic( $parameter->Value );
 				}
 			}

@@ -1,6 +1,6 @@
 {
   "name": "buckaroo",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Buckaroo driver for the WordPress payment processing library.",
   "repository": {
     "type": "git",
