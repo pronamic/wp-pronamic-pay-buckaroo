@@ -81,13 +81,18 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
+			Core_PaymentMethods::AMERICAN_EXPRESS,
 			Core_PaymentMethods::BANK_TRANSFER,
 			Core_PaymentMethods::BANCONTACT,
 			Core_PaymentMethods::CREDIT_CARD,
 			Core_PaymentMethods::GIROPAY,
 			Core_PaymentMethods::IDEAL,
+			Core_PaymentMethods::MAESTRO,
+			Core_PaymentMethods::MASTERCARD,
 			Core_PaymentMethods::PAYPAL,
 			Core_PaymentMethods::SOFORT,
+			Core_PaymentMethods::V_PAY,
+			Core_PaymentMethods::VISA,
 		);
 	}
 
@@ -269,6 +274,18 @@ class Gateway extends Core_Gateway {
 
 		switch ( $payment_method ) {
 			/**
+			 * Paymet method American Express.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::AMERICAN_EXPRESS:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
+				);
+
+				break;
+			/**
 			 * Payment method creditcard.
 			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
@@ -339,6 +356,30 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
+			 * Paymet method Maestro.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::MAESTRO:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MAESTRO,
+				);
+
+				break;
+			/**
+			 * Paymet method Mastercard.
+			 * 
+			 * @link 
+			 */
+			case Core_PaymentMethods::MASTERCARD:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::MASTERCARD,
+				);
+
+				break;
+			/**
 			 * Payment method Giropay.
 			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/giropay#pay
@@ -371,6 +412,30 @@ class Gateway extends Core_Gateway {
 				$data->Services->ServiceList[] = (object) array(
 					'Action' => 'Pay',
 					'Name'   => 'sofortueberweisung',
+				);
+
+				break;
+			/**
+			 * Paymet method V PAY.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
+			 */
+			case Core_PaymentMethods::V_PAY:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::V_PAY,
+				);
+
+				break;
+			/**
+			 * Paymet method Visa.
+			 * 
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
+			 */
+			case Core_PaymentMethods::VISA:
+				$data->Services->ServiceList[] = (object) array(
+					'Action' => 'Pay',
+					'Name'   => PaymentMethods::VISA,
 				);
 
 				break;
