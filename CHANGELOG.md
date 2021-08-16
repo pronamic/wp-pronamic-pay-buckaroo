@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
-- 
+- Added support for American Express, Maestro, Mastercard, V PAY and Visa.
+- Save `CustomerIBAN` and `CustomerBIC` for Sofort payments.
 
 ## [3.0.0] - 2021-08-05
 - Updated to `pronamic/wp-pay-core`  version `3.0.0`.

@@ -627,11 +627,45 @@ class Gateway extends Core_Gateway {
 					$consumer_bank_details->set_name( $parameter->Value );
 				}
 
-				if ( 'consumerIBAN' === $parameter->Name ) {
+				if ( \in_array(
+					$parameter->Name,
+					array(
+						/**
+						 * Payment method iDEAL.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+						 */
+						'consumerIBAN',
+						/**
+						 * Payment method Sofort.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+						 */
+						'CustomerIBAN',
+					),
+					true
+				) ) {
 					$consumer_bank_details->set_iban( $parameter->Value );
 				}
 
-				if ( 'consumerBIC' === $parameter->Name ) {
+				if ( \in_array(
+					$parameter->Name,
+					array(
+						/**
+						 * Payment method iDEAL.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+						 */
+						'consumerName',
+						/**
+						 * Payment method Sofort.
+						 * 
+						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+						 */
+						'CustomerBIC',
+					),
+					true
+				) ) {
 					$consumer_bank_details->set_bic( $parameter->Value );
 				}
 			}
