@@ -104,10 +104,6 @@ class Gateway extends Core_Gateway {
 		 */
 		$currency_code = $payment->get_total_amount()->get_currency()->get_alphabetic_code();
 
-		if ( null === $currency_code ) {
-			throw new \InvalidArgumentException( 'Can not start payment with empty currency code.' );
-		}
-
 		/**
 		 * Push URL.
 		 */
