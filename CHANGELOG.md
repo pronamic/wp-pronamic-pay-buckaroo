@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.0.2] - 2021-08-18
+- Fix "Fatal error: Uncaught Error: Undefined class constant 'V_PAY'".
+
 ## [3.0.1] - 2021-08-16
 - Added support for American Express, Maestro, Mastercard, V PAY and Visa.
 - Save `CustomerIBAN` and `CustomerBIC` for Sofort payments.
@@ -101,7 +104,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.1...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.2...HEAD
+[3.0.2]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/wp-pay-gateways/buckaroo/compare/2.2.0...3.0.0
 [2.2.0]: https://github.com/wp-pay-gateways/buckaroo/compare/2.1.2...2.2.0
