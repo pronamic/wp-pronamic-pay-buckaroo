@@ -11,7 +11,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 2.0.0
+ * @version 3.0.2
  * @since 1.0.0
  */
 class PaymentMethods {
@@ -114,18 +114,30 @@ class PaymentMethods {
 	const VISA = 'visa';
 
 	/**
+	 * Indicator for the 'V PAY' payment method.
+	 *
+	 * @var string
+	 */
+	const V_PAY = 'vpay';
+
+	/**
 	 * Payments methods map.
 	 *
 	 * @var array<string, string>
 	 */
 	private static $map = array(
-		Core_PaymentMethods::BANK_TRANSFER => self::TRANSFER,
-		Core_PaymentMethods::BANCONTACT    => self::BANCONTACT_MISTER_CASH,
-		Core_PaymentMethods::MISTER_CASH   => self::BANCONTACT_MISTER_CASH,
-		Core_PaymentMethods::GIROPAY       => self::GIROPAY,
-		Core_PaymentMethods::IDEAL         => self::IDEAL,
-		Core_PaymentMethods::PAYPAL        => self::PAYPAL,
-		Core_PaymentMethods::SOFORT        => self::SOFORTUEBERWEISING,
+		Core_PaymentMethods::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
+		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
+		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::MISTER_CASH      => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::GIROPAY          => self::GIROPAY,
+		Core_PaymentMethods::IDEAL            => self::IDEAL,
+		Core_PaymentMethods::MAESTRO          => self::MAESTRO,
+		Core_PaymentMethods::MASTERCARD       => self::MASTERCARD,
+		Core_PaymentMethods::PAYPAL           => self::PAYPAL,
+		Core_PaymentMethods::SOFORT           => self::SOFORTUEBERWEISING,
+		Core_PaymentMethods::V_PAY            => self::V_PAY,
+		Core_PaymentMethods::VISA             => self::VISA,
 	);
 
 	/**
