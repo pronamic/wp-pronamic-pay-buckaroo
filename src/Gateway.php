@@ -324,7 +324,7 @@ class Gateway extends Core_Gateway {
 					'Parameters' => array(
 						array(
 							'Name'  => 'issuer',
-							'Value' => $payment->get_issuer(),
+							'Value' => $payment->get_meta( 'issuer' ),
 						),
 					),
 				);
