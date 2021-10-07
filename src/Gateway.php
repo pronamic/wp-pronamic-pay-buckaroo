@@ -270,11 +270,9 @@ class Gateway extends Core_Gateway {
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServicesRequest
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServiceRequest
 		 */
-		$payment_method = $payment->get_method();
-
-		switch ( $payment_method ) {
+		switch ( $payment->get_payment_method() ) {
 			/**
-			 * Paymet method American Express.
+			 * Payment method American Express.
 			 * 
 			 * @link 
 			 */
@@ -356,7 +354,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Maestro.
+			 * Payment method Maestro.
 			 * 
 			 * @link 
 			 */
@@ -368,7 +366,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Mastercard.
+			 * Payment method Mastercard.
 			 * 
 			 * @link 
 			 */
@@ -416,7 +414,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method V PAY.
+			 * Payment method V PAY.
 			 * 
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
@@ -428,7 +426,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Visa.
+			 * Payment method Visa.
 			 * 
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
