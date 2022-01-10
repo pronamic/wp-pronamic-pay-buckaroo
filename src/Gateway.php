@@ -64,29 +64,31 @@ class Gateway extends Core_Gateway {
 			return $groups;
 		}
 
-		foreach ( $object->Actions as $action ) {
-			// Check action name.
-			if ( 'Pay' !== $action->Name ) {
-				continue;
-			}
-
-			foreach ( $action->RequestParameters as $request_parameter ) {
-				// Check request parameter name.
-				if ( 'issuer' !== $request_parameter->Name ) {
+		if ( \property_exists( $object, 'Actions' ) ) {
+			foreach ( $object->Actions as $action ) {
+				// Check action name.
+				if ( 'Pay' !== $action->Name ) {
 					continue;
 				}
 
-				foreach ( $request_parameter->ListItemDescriptions as $item ) {
-					// Make sure to add group.
-					if ( ! array_key_exists( $item->GroupName, $groups ) ) {
-						$groups[ $item->GroupName ] = array(
-							'name'    => $item->GroupName,
-							'options' => array(),
-						);
+				foreach ( $action->RequestParameters as $request_parameter ) {
+					// Check request parameter name.
+					if ( 'issuer' !== $request_parameter->Name ) {
+						continue;
 					}
 
-					// Add issuer to group.
-					$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
+					foreach ( $request_parameter->ListItemDescriptions as $item ) {
+						// Make sure to add group.
+						if ( ! array_key_exists( $item->GroupName, $groups ) ) {
+							$groups[ $item->GroupName ] = array(
+								'name'    => $item->GroupName,
+								'options' => array(),
+							);
+						}
+
+						// Add issuer to group.
+						$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
+					}
 				}
 			}
 		}
