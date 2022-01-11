@@ -7,6 +7,13 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.0.0] - 2022-01-11
+### Changed
+- Updated to https://github.com/pronamic/wp-pay-core/releases/tag/4.0.0.
+
+### Fixed
+- Fix "Fatal error: Uncaught Exception: Could not JSON decode response, HTTP response: "400 Bad Request", HTTP body length: "67", JSON error: "Syntax error"." when getting issuers with invalid configuration.
+
 ## [3.0.2] - 2021-08-18
 - Fix "Fatal error: Uncaught Error: Undefined class constant 'V_PAY'".
 
@@ -104,7 +111,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.2...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.2...4.0.0
 [3.0.2]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/wp-pay-gateways/buckaroo/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/wp-pay-gateways/buckaroo/compare/2.2.0...3.0.0

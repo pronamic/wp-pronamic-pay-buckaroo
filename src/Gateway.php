@@ -6,14 +6,14 @@ use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Server;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
+use WP_Error;
 
 /**
  * Title: Buckaroo gateway
  * Description:
- * Copyright: 2005-2021 Pronamic
+ * Copyright: 2005-2022 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -50,22 +50,44 @@ class Gateway extends Core_Gateway {
 	public function get_issuers() {
 		$groups = array();
 
-		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
+		// Check non-empty keys in configuration.
+		if ( empty( $this->config->website_key ) || empty( $this->config->secret_key ) ) {
+			return $groups;
+		}
 
-		foreach ( $object->Actions as $action ) {
-			if ( 'Pay' === $action->Name ) {
+		// Get iDEAL issuers.
+		try {
+			$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
+		} catch ( \Exception $e ) {
+			$this->set_error( new WP_Error( 'buckaroo_error', $e->getMessage() ) );
+
+			return $groups;
+		}
+
+		if ( \property_exists( $object, 'Actions' ) ) {
+			foreach ( $object->Actions as $action ) {
+				// Check action name.
+				if ( 'Pay' !== $action->Name ) {
+					continue;
+				}
+
 				foreach ( $action->RequestParameters as $request_parameter ) {
-					if ( 'issuer' === $request_parameter->Name ) {
-						foreach ( $request_parameter->ListItemDescriptions as $item ) {
-							if ( ! array_key_exists( $item->GroupName, $groups ) ) {
-								$groups[ $item->GroupName ] = array(
-									'name'    => $item->GroupName,
-									'options' => array(),
-								);
-							}
+					// Check request parameter name.
+					if ( 'issuer' !== $request_parameter->Name ) {
+						continue;
+					}
 
-							$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
+					foreach ( $request_parameter->ListItemDescriptions as $item ) {
+						// Make sure to add group.
+						if ( ! array_key_exists( $item->GroupName, $groups ) ) {
+							$groups[ $item->GroupName ] = array(
+								'name'    => $item->GroupName,
+								'options' => array(),
+							);
 						}
+
+						// Add issuer to group.
+						$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
 					}
 				}
 			}
@@ -270,11 +292,9 @@ class Gateway extends Core_Gateway {
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServicesRequest
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/ResourceModel?modelName=ServiceRequest
 		 */
-		$payment_method = $payment->get_method();
-
-		switch ( $payment_method ) {
+		switch ( $payment->get_payment_method() ) {
 			/**
-			 * Paymet method American Express.
+			 * Payment method American Express.
 			 * 
 			 * @link 
 			 */
@@ -324,7 +344,7 @@ class Gateway extends Core_Gateway {
 					'Parameters' => array(
 						array(
 							'Name'  => 'issuer',
-							'Value' => $payment->get_issuer(),
+							'Value' => $payment->get_meta( 'issuer' ),
 						),
 					),
 				);
@@ -356,7 +376,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Maestro.
+			 * Payment method Maestro.
 			 * 
 			 * @link 
 			 */
@@ -368,7 +388,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Mastercard.
+			 * Payment method Mastercard.
 			 * 
 			 * @link 
 			 */
@@ -416,7 +436,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method V PAY.
+			 * Payment method V PAY.
 			 * 
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
@@ -428,7 +448,7 @@ class Gateway extends Core_Gateway {
 
 				break;
 			/**
-			 * Paymet method Visa.
+			 * Payment method Visa.
 			 * 
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
@@ -521,6 +541,7 @@ class Gateway extends Core_Gateway {
 	 * @param string      $method   HTTP request method.
 	 * @param string      $endpoint JSON API endpoint.
 	 * @param object|null $data     Data.
+	 * @return object
 	 */
 	public function request( $method, $endpoint, $data = null ) {
 		$host = 'checkout.buckaroo.nl';
@@ -582,7 +603,20 @@ class Gateway extends Core_Gateway {
 			)
 		);
 
-		$object = $response->json();
+		try {
+			$object = $response->json();
+		} catch ( \Exception $e ) {
+			// JSON error.
+			$json_error = \json_last_error();
+
+			// Check authorization error.
+			if ( \JSON_ERROR_NONE !== $json_error && 400 === $response->status() ) {
+				throw new \Exception( $response->body() );
+			}
+
+			// Re-throw original response exception.
+			throw $e;
+		}
 
 		/**
 		 * OK.
