@@ -25,7 +25,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Construct Buckaroo integration.
 	 *
-	 * @param array $args Arguments.
+	 * @param array<string, array<string>> $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(

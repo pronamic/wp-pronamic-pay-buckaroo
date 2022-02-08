@@ -22,7 +22,14 @@ use WP_Error;
  */
 class Gateway extends Core_Gateway {
 	/**
-	 * Constructs and initializes an Buckaroo gateway
+	 * Config
+	 *
+	 * @var Config
+	 */
+	protected $config;
+
+	/**
+	 * Constructs and initializes a Buckaroo gateway
 	 *
 	 * @param Config $config Config.
 	 */
@@ -46,6 +53,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @since 1.2.4
 	 * @see Core_Gateway::get_issuers()
+	 * @return array<int|string, array<string, array<string>>>
 	 */
 	public function get_issuers() {
 		$groups = array();
@@ -100,6 +108,7 @@ class Gateway extends Core_Gateway {
 	 * Get supported payment methods
 	 *
 	 * @see Core_Gateway::get_supported_payment_methods()
+	 * @return string[]
 	 */
 	public function get_supported_payment_methods() {
 		return array(
@@ -502,7 +511,11 @@ class Gateway extends Core_Gateway {
 		/**
 		 * Required Action.
 		 */
-		if ( null !== $object->RequiredAction ) {
+		if (
+			\property_exists( $object, 'RequiredAction' )
+				&&
+			null !== $object->RequiredAction
+		) {
 			if ( 'Redirect' !== $object->RequiredAction->Name ) {
 				throw new \Exception(
 					\sprintf(
@@ -578,7 +591,7 @@ class Gateway extends Core_Gateway {
 			)
 		);
 
-		$hash = \hash_hmac( 'sha256', $values, $this->config->secret_key, true );
+		$hash = \hash_hmac( 'sha256', $values, (string) $this->config->secret_key, true );
 
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		$hmac = \base64_encode( $hash );
@@ -639,7 +652,15 @@ class Gateway extends Core_Gateway {
 
 		$result = $this->request( 'GET', 'Transaction/Status/' . $transaction_key );
 
-		$payment->set_status( Statuses::transform( \strval( $result->Status->Code->Code ) ) );
+		if (
+			\property_exists( $result, 'Status' )
+				&&
+			\property_exists( $result->Status, 'Code' )
+				&&
+			\property_exists( $result->Status->Code, 'Code' )
+		) {
+			$payment->set_status( Statuses::transform( \strval( $result->Status->Code->Code ) ) );
+		}
 
 		/**
 		 * Consumer bank details.
@@ -655,52 +676,54 @@ class Gateway extends Core_Gateway {
 		/**
 		 * Services.
 		 */
-		foreach ( $result->Services as $service ) {
-			foreach ( $service->Parameters as $parameter ) {
-				if ( 'consumerName' === $parameter->Name ) {
-					$consumer_bank_details->set_name( $parameter->Value );
-				}
+		if ( \property_exists( $result, 'Services' ) ) {
+			foreach ( $result->Services as $service ) {
+				foreach ( $service->Parameters as $parameter ) {
+					if ( 'consumerName' === $parameter->Name ) {
+						$consumer_bank_details->set_name( $parameter->Value );
+					}
 
-				if ( \in_array(
-					$parameter->Name,
-					array(
-						/**
-						 * Payment method iDEAL.
-						 * 
-						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
-						 */
-						'consumerIBAN',
-						/**
-						 * Payment method Sofort.
-						 * 
-						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
-						 */
-						'CustomerIBAN',
-					),
-					true
-				) ) {
-					$consumer_bank_details->set_iban( $parameter->Value );
-				}
+					if ( \in_array(
+						$parameter->Name,
+						array(
+							/**
+							 * Payment method iDEAL.
+							 *
+							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+							 */
+							'consumerIBAN',
+							/**
+							 * Payment method Sofort.
+							 *
+							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+							 */
+							'CustomerIBAN',
+						),
+						true
+					) ) {
+						$consumer_bank_details->set_iban( $parameter->Value );
+					}
 
-				if ( \in_array(
-					$parameter->Name,
-					array(
-						/**
-						 * Payment method iDEAL.
-						 * 
-						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
-						 */
-						'consumerName',
-						/**
-						 * Payment method Sofort.
-						 * 
-						 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
-						 */
-						'CustomerBIC',
-					),
-					true
-				) ) {
-					$consumer_bank_details->set_bic( $parameter->Value );
+					if ( \in_array(
+						$parameter->Name,
+						array(
+							/**
+							 * Payment method iDEAL.
+							 *
+							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+							 */
+							'consumerName',
+							/**
+							 * Payment method Sofort.
+							 *
+							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+							 */
+							'CustomerBIC',
+						),
+						true
+					) ) {
+						$consumer_bank_details->set_bic( $parameter->Value );
+					}
 				}
 			}
 		}
@@ -712,7 +735,13 @@ class Gateway extends Core_Gateway {
 		 */
 		$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
-		if ( \property_exists( $result, 'RefundedAmount' ) && ! empty( $result->RefundedAmount ) ) {
+		if (
+			\property_exists( $result, 'RefundedAmount' )
+				&&
+			\property_exists( $result, 'RefundCurrency' )
+				&&
+			! empty( $result->RefundedAmount )
+		) {
 			$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
 
 			$payment->set_refunded_amount( $refunded_amount );
@@ -775,7 +804,7 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'AmountCredit'           => $amount->format( null, '.', '' ),
+			'AmountCredit'           => $amount->number_format( null, '.', '' ),
 			'Invoice'                => $invoice,
 			'OriginalTransactionKey' => $transaction_id,
 			'Services'               => array(
@@ -816,7 +845,13 @@ class Gateway extends Core_Gateway {
 		if ( null !== $payment ) {
 			$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_id );
 
-			if ( \property_exists( $result, 'RefundedAmount' ) && ! empty( $result->RefundedAmount ) ) {
+			if (
+				\property_exists( $result, 'RefundedAmount' )
+					&&
+				\property_exists( $result, 'RefundCurrency' )
+					&&
+				! empty( $result->RefundedAmount )
+			) {
 				$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
 
 				$payment->set_refunded_amount( $refunded_amount );

@@ -78,7 +78,7 @@ class CLI {
 		foreach ( $args as $transaction_key ) {
 			$result = $gateway->request( 'GET', 'Transaction/Status/' . $transaction_key );
 
-			\WP_CLI::line( \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
+			\WP_CLI::line( (string) \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
 		}
 	}
 
@@ -96,7 +96,7 @@ class CLI {
 		foreach ( $args as $transaction_key ) {
 			$result = $gateway->request( 'GET', 'Transaction/RefundInfo/' . $transaction_key );
 
-			\WP_CLI::line( \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
+			\WP_CLI::line( (string) \wp_json_encode( $result, \JSON_PRETTY_PRINT ) );
 		}
 	}
 }
