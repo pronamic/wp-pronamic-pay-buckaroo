@@ -64,13 +64,7 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Get iDEAL issuers.
-		try {
-			$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
-		} catch ( \Exception $e ) {
-			$this->set_error( new WP_Error( 'buckaroo_error', $e->getMessage() ) );
-
-			return $groups;
-		}
+		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
 		if ( \property_exists( $object, 'Actions' ) ) {
 			foreach ( $object->Actions as $action ) {
