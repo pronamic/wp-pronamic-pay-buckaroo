@@ -557,11 +557,7 @@ class Gateway extends Core_Gateway {
 	 * @return object
 	 */
 	public function request( $method, $endpoint, $data = null ) {
-		$host = 'checkout.buckaroo.nl';
-
-		if ( self::MODE_TEST === $this->config->mode ) {
-			$host = 'testcheckout.buckaroo.nl';
-		}
+		$host = $this->config->get_host();
 
 		/**
 		 * Authentication.
