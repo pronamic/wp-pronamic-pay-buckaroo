@@ -23,9 +23,16 @@ class Integration extends AbstractGatewayIntegration {
 	const REST_ROUTE_NAMESPACE = 'pronamic-pay/buckaroo/v1';
 
 	/**
+	 * Host.
+	 * 
+	 * @var string
+	 */
+	private $host;
+
+	/**
 	 * Construct Buckaroo integration.
 	 *
-	 * @param array $args Arguments.
+	 * @param array<string, array<string>> $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(
@@ -33,6 +40,7 @@ class Integration extends AbstractGatewayIntegration {
 			array(
 				'id'            => 'buckaroo',
 				'name'          => 'Buckaroo',
+				'host'          => 'checkout.buckaroo.nl',
 				'url'           => 'https://plaza.buckaroo.nl/',
 				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
 				'dashboard_url' => 'https://plaza.buckaroo.nl/',
@@ -49,6 +57,8 @@ class Integration extends AbstractGatewayIntegration {
 		);
 
 		parent::__construct( $args );
+
+		$this->host = $args['host'];
 
 		/**
 		 * CLI.
@@ -181,11 +191,12 @@ class Integration extends AbstractGatewayIntegration {
 	public function get_config( $post_id ) {
 		$config = new Config();
 
+		$config->set_host( $this->host );
+
 		$config->website_key       = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_website_key', true );
 		$config->secret_key        = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_secret_key', true );
 		$config->excluded_services = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_excluded_services', true );
 		$config->invoice_number    = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_invoice_number', true );
-		$config->mode              = get_post_meta( $post_id, '_pronamic_gateway_mode', true );
 
 		return $config;
 	}
@@ -197,6 +208,10 @@ class Integration extends AbstractGatewayIntegration {
 	 * @return Gateway
 	 */
 	public function get_gateway( $post_id ) {
-		return new Gateway( $this->get_config( $post_id ) );
+		$gateway = new Gateway( $this->get_config( $post_id ) );
+
+		$gateway->set_mode( $this->get_mode() );
+
+		return $gateway;
 	}
 }

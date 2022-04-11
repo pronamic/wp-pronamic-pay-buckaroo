@@ -16,6 +16,13 @@ use Pronamic\WordPress\Pay\Core\GatewayConfig;
  */
 class Config extends GatewayConfig {
 	/**
+	 * Host.
+	 * 
+	 * @var string
+	 */
+	private $host;
+
+	/**
 	 * Website key.
 	 *
 	 * @var string|null
@@ -42,6 +49,31 @@ class Config extends GatewayConfig {
 	 * @var string|null
 	 */
 	public $invoice_number;
+
+	/**
+	 * Construct config.
+	 */
+	public function __construct() {
+		$this->host = 'checkout.buckaroo.nl';
+	}
+
+	/**
+	 * Get host.
+	 * 
+	 * @return string
+	 */
+	public function get_host() {
+		return $this->host;
+	}
+
+	/**
+	 * Set host.
+	 * 
+	 * @param string $host Host.
+	 */
+	public function set_host( $host ) {
+		$this->host = $host;
+	}
 
 	/**
 	 * Get website key.
