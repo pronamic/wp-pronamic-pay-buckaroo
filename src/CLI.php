@@ -33,7 +33,7 @@ class CLI {
 	 * Construct CLI.
 	 *
 	 * @param Integration $integration Integration.
-	 * @retrun void
+	 * @return void
 	 */
 	public function __construct( $integration ) {
 		$this->integration = $integration;
