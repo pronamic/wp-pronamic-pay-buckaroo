@@ -5,7 +5,11 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethod;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use WP_Error;
@@ -48,16 +52,39 @@ class Gateway extends Core_Gateway {
 			'webhook_log',
 			'webhook_no_config',
 		);
+
+		// Methods.
+		$ideal_payment_method = new PaymentMethod( PaymentMethods::IDEAL );
+
+		$ideal_issuer_field = new SelectField( 'ideal-issuer' );
+		$ideal_issuer_field->set_required( true );
+		$ideal_issuer_field->set_options_callback( function() {
+			return $this->get_issuers();
+		} );
+
+		$ideal_payment_method->add_field( $ideal_issuer_field );
+
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
+		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MAESTRO ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::SOFORT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::V_PAY ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::VISA ) );
 	}
 
 	/**
 	 * Get issuers.
 	 *
 	 * @since 1.2.4
-	 * @see Core_Gateway::get_issuers()
 	 * @return array<int|string, array<string, array<string>>>
 	 */
-	public function get_issuers() {
+	private function get_issuers() {
 		$groups = array();
 
 		// Check non-empty keys in configuration.
@@ -98,29 +125,6 @@ class Gateway extends Core_Gateway {
 		}
 
 		return $groups;
-	}
-
-	/**
-	 * Get supported payment methods
-	 *
-	 * @see Core_Gateway::get_supported_payment_methods()
-	 * @return string[]
-	 */
-	public function get_supported_payment_methods() {
-		return array(
-			Core_PaymentMethods::AMERICAN_EXPRESS,
-			Core_PaymentMethods::BANK_TRANSFER,
-			Core_PaymentMethods::BANCONTACT,
-			Core_PaymentMethods::CREDIT_CARD,
-			Core_PaymentMethods::GIROPAY,
-			Core_PaymentMethods::IDEAL,
-			Core_PaymentMethods::MAESTRO,
-			Core_PaymentMethods::MASTERCARD,
-			Core_PaymentMethods::PAYPAL,
-			Core_PaymentMethods::SOFORT,
-			Core_PaymentMethods::V_PAY,
-			Core_PaymentMethods::VISA,
-		);
 	}
 
 	/**
