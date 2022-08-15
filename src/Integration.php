@@ -30,6 +30,20 @@ class Integration extends AbstractGatewayIntegration {
 	private $host;
 
 	/**
+	 * Meta key website key.
+	 *
+	 * @var string
+	 */
+	private $meta_key_website_key;
+
+	/**
+	 * Meta key secret key.
+	 *
+	 * @var string
+	 */
+	private $meta_key_secret_key;
+
+	/**
 	 * Construct Buckaroo integration.
 	 *
 	 * @param array<string, array<string>> $args Arguments.
@@ -37,28 +51,32 @@ class Integration extends AbstractGatewayIntegration {
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(
 			$args,
-			array(
-				'id'            => 'buckaroo',
-				'name'          => 'Buckaroo',
-				'host'          => 'checkout.buckaroo.nl',
-				'url'           => 'https://plaza.buckaroo.nl/',
-				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
-				'dashboard_url' => 'https://plaza.buckaroo.nl/',
-				'provider'      => 'buckaroo',
-				'supports'      => array(
+			[
+				'id'                   => 'buckaroo',
+				'name'                 => 'Buckaroo',
+				'host'                 => 'checkout.buckaroo.nl',
+				'url'                  => 'https://plaza.buckaroo.nl/',
+				'product_url'          => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
+				'dashboard_url'        => 'https://plaza.buckaroo.nl/',
+				'provider'             => 'buckaroo',
+				'supports'             => [
 					'payment_status_request',
 					'refunds',
 					'webhook',
 					'webhook_log',
 					'webhook_no_config',
-				),
-				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
-			)
+				],
+				'manual_url'           => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
+				'meta_key_website_key' => 'buckaroo_website_key',
+				'meta_key_secret_key'  => 'buckaroo_secret_key',
+			]
 		);
 
 		parent::__construct( $args );
 
-		$this->host = $args['host'];
+		$this->host                 = $args['host'];
+		$this->meta_key_website_key = $args['meta_key_website_key'];
+		$this->meta_key_secret_key  = $args['meta_key_secret_key'];
 
 		/**
 		 * CLI.
@@ -112,7 +130,7 @@ class Integration extends AbstractGatewayIntegration {
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_buckaroo_website_key',
+			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'code' ),
@@ -123,7 +141,7 @@ class Integration extends AbstractGatewayIntegration {
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_buckaroo_secret_key',
+			'meta_key' => '_pronamic_gateway_'. $this->meta_key_secret_key,
 			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
@@ -191,12 +209,27 @@ class Integration extends AbstractGatewayIntegration {
 	public function get_config( $post_id ) {
 		$config = new Config();
 
+		// Backwards compatibility for Sisow test mode setting.
+		if ( 'sisow-ideal' === $this->id ) {
+			$test_mode = $this->get_meta( $post_id, 'sisow_test_mode' );
+
+			if ( '' === $test_mode ) {
+				$test_mode = ( 'test' === $this->get_meta( $post_id, 'mode' ) );
+			}
+
+			if ( $test_mode ) {
+				$this->host = 'testcheckout.buckaroo.nl';
+
+				$this->set_mode( 'test' );
+			}
+		}
+
 		$config->set_host( $this->host );
 
-		$config->website_key       = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_website_key', true );
-		$config->secret_key        = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_secret_key', true );
-		$config->excluded_services = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_excluded_services', true );
-		$config->invoice_number    = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_invoice_number', true );
+		$config->website_key       = $this->get_meta( $post_id, $this->meta_key_website_key );
+		$config->secret_key        = $this->get_meta( $post_id, $this->meta_key_secret_key );
+		$config->excluded_services = $this->get_meta( $post_id, 'buckaroo_excluded_services' );
+		$config->invoice_number    = $this->get_meta( $post_id, 'buckaroo_invoice_number' );
 
 		return $config;
 	}
