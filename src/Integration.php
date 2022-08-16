@@ -191,21 +191,6 @@ class Integration extends AbstractGatewayIntegration {
 	public function get_config( $post_id ) {
 		$config = new Config();
 
-		// Backwards compatibility for Sisow test mode setting.
-		if ( 'sisow-ideal' === $this->id ) {
-			$test_mode = $this->get_meta( $post_id, 'sisow_test_mode' );
-
-			if ( '' === $test_mode ) {
-				$test_mode = ( 'test' === $this->get_meta( $post_id, 'mode' ) );
-			}
-
-			if ( $test_mode ) {
-				$this->host = 'testcheckout.buckaroo.nl';
-
-				$this->set_mode( 'test' );
-			}
-		}
-
 		$config->set_host( $this->host );
 
 		$config->website_key       = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_website_key', true );
