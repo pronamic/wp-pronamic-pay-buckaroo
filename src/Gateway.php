@@ -10,6 +10,8 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
 use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOptionGroup;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use WP_Error;
@@ -88,49 +90,44 @@ class Gateway extends Core_Gateway {
 	 * Get iDEAL issuers.
 	 *
 	 * @since 1.2.4
-	 * @return array<int|string, array<string, array<string>>>
+	 * @return iterable<SelectFieldOption|SelectFieldOptionGroup>
 	 */
 	private function get_ideal_issuers() {
-		$groups = array();
-
 		// Check non-empty keys in configuration.
 		if ( empty( $this->config->website_key ) || empty( $this->config->secret_key ) ) {
-			return $groups;
+			return [];
 		}
 
 		// Get iDEAL issuers.
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-		if ( \property_exists( $object, 'Actions' ) ) {
-			foreach ( $object->Actions as $action ) {
-				// Check action name.
-				if ( 'Pay' !== $action->Name ) {
-					continue;
-				}
+		if ( ! \property_exists( $object, 'Actions' ) ) {
+			return [];
+		}
 
-				foreach ( $action->RequestParameters as $request_parameter ) {
-					// Check request parameter name.
-					if ( 'issuer' !== $request_parameter->Name ) {
-						continue;
+		$groups = [];
+
+		$actions_pay = \array_filter( $object->Actions, function( $action ) {
+			return 'Pay' === $action->Name;
+		} );
+
+		foreach ( $actions_pay as $action ) {
+			$request_parameters = \array_filter( $action->RequestParameters, function( $request_parameter ) {
+				return 'issuer' === $request_parameter->Name;
+			} );
+
+			foreach ( $request_parameters as $request_parameter ) {
+				foreach ( $request_parameter->ListItemDescriptions as $item ) {
+					if ( ! \array_key_exists( $item->GroupName, $groups ) ) {
+						$groups[ $item->GroupName ] = new SelectFieldOptionGroup( $item->GroupName );
 					}
 
-					foreach ( $request_parameter->ListItemDescriptions as $item ) {
-						// Make sure to add group.
-						if ( ! array_key_exists( $item->GroupName, $groups ) ) {
-							$groups[ $item->GroupName ] = array(
-								'name'    => $item->GroupName,
-								'options' => array(),
-							);
-						}
-
-						// Add issuer to group.
-						$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
-					}
+					$groups[ $item->GroupName ]->options[] = new SelectFieldOption( $item->Value, $item->Description );
 				}
 			}
 		}
 
-		return $groups;
+		return array_values( $groups );
 	}
 
 	/**
