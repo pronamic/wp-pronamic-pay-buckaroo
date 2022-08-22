@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
+use JsonSerializable;
 use Pronamic\WordPress\Pay\Core\GatewayConfig;
 
 /**
@@ -14,7 +15,7 @@ use Pronamic\WordPress\Pay\Core\GatewayConfig;
  * @version 2.0.0
  * @since 1.0.0
  */
-class Config extends GatewayConfig {
+class Config extends GatewayConfig implements JsonSerializable {
 	/**
 	 * Host.
 	 * 
@@ -109,5 +110,20 @@ class Config extends GatewayConfig {
 	 */
 	public function get_invoice_number() {
 		return $this->invoice_number;
+	}
+
+	/**
+	 * Serialize to JSON.
+	 *
+	 * @link https://www.w3.org/TR/json-ld11/#specifying-the-type
+	 * @return mixed|void
+	 */
+	public function jsonSerialize() {
+		return [
+			'@type'       => __CLASS__,
+			'host'        => $this->host,
+			'website_key' => (string) $this->website_key,
+			'secret_key'  => (string) $this->secret_key,
+		];
 	}
 }
