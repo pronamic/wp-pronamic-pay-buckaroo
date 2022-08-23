@@ -53,12 +53,21 @@ class Integration extends AbstractGatewayIntegration {
 					'webhook_no_config',
 				],
 				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
+				'callback_website_key' => function( $post_id ) {
+					return $this->get_meta( $post_id, 'buckaroo_website_key' );
+				},
+				'callback_secret_key' => function( $post_id ) {
+					return $this->get_meta( $post_id, 'buckaroo_secret_key' );
+				},
 			]
 		);
 
 		parent::__construct( $args );
 
 		$this->host = $args['host'];
+
+		$this->callback_website_key = $args['callback_website_key'];
+		$this->callback_secret_key  = $args['callback_secret_key'];
 
 		/**
 		 * CLI.
@@ -199,22 +208,10 @@ class Integration extends AbstractGatewayIntegration {
 
 		$config->set_host( $this->host );
 
-		$config->website_key       = $this->get_meta( $post_id, 'buckaroo_website_key' );
-		$config->secret_key        = $this->get_meta( $post_id, 'buckaroo_secret_key' );
+		$config->website_key       = \call_user_func( $this->callback_website_key, $post_id );
+		$config->secret_key        = \call_user_func( $this->callback_secret_key, $post_id );
 		$config->excluded_services = $this->get_meta( $post_id, 'buckaroo_excluded_services' );
 		$config->invoice_number    = $this->get_meta( $post_id, 'buckaroo_invoice_number' );
-
-		// Legacy Sisow integration meta.
-		$meta = get_post_meta( $post_id );
-
-		if (
-			\array_key_exists( '_pronamic_gateway_id', $meta )
-				&&
-			'sisow-ideal' === reset( $meta['_pronamic_gateway_id'] )
-		) {
-			$config->website_key = $this->get_meta( $post_id, 'sisow_merchant_id' );
-			$config->secret_key  = $this->get_meta( $post_id, 'sisow_merchant_key' );
-		}
 
 		return $config;
 	}
