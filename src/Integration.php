@@ -37,7 +37,7 @@ class Integration extends AbstractGatewayIntegration {
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(
 			$args,
-			array(
+			[
 				'id'            => 'buckaroo',
 				'name'          => 'Buckaroo',
 				'host'          => 'checkout.buckaroo.nl',
@@ -45,20 +45,29 @@ class Integration extends AbstractGatewayIntegration {
 				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
 				'dashboard_url' => 'https://plaza.buckaroo.nl/',
 				'provider'      => 'buckaroo',
-				'supports'      => array(
+				'supports'      => [
 					'payment_status_request',
 					'refunds',
 					'webhook',
 					'webhook_log',
 					'webhook_no_config',
-				),
+				],
 				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
-			)
+				'callback_website_key' => function( $post_id ) {
+					return $this->get_meta( $post_id, 'buckaroo_website_key' );
+				},
+				'callback_secret_key' => function( $post_id ) {
+					return $this->get_meta( $post_id, 'buckaroo_secret_key' );
+				},
+			]
 		);
 
 		parent::__construct( $args );
 
 		$this->host = $args['host'];
+
+		$this->callback_website_key = $args['callback_website_key'];
+		$this->callback_secret_key  = $args['callback_secret_key'];
 
 		/**
 		 * CLI.
@@ -106,17 +115,22 @@ class Integration extends AbstractGatewayIntegration {
 	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
 	 */
 	public function get_settings_fields() {
+		global $post;
+
+		$config = $this->get_config( $post->ID );
+
 		$fields = array();
 
 		// Website Key.
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_buckaroo_website_key',
+			'meta_key' => '_pronamic_gateway_buckaroo_merchant_key',
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'code' ),
 			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
+			'default'  => $config->get_website_key(),
 		);
 
 		// Secret Key.
@@ -128,6 +142,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
 			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboard on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+			'default'  => $config->get_secret_key(),
 		);
 
 		// Excluded services.
@@ -193,10 +208,10 @@ class Integration extends AbstractGatewayIntegration {
 
 		$config->set_host( $this->host );
 
-		$config->website_key       = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_website_key', true );
-		$config->secret_key        = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_secret_key', true );
-		$config->excluded_services = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_excluded_services', true );
-		$config->invoice_number    = get_post_meta( $post_id, '_pronamic_gateway_buckaroo_invoice_number', true );
+		$config->website_key       = \call_user_func( $this->callback_website_key, $post_id );
+		$config->secret_key        = \call_user_func( $this->callback_secret_key, $post_id );
+		$config->excluded_services = $this->get_meta( $post_id, 'buckaroo_excluded_services' );
+		$config->invoice_number    = $this->get_meta( $post_id, 'buckaroo_invoice_number' );
 
 		return $config;
 	}
