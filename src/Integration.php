@@ -30,20 +30,6 @@ class Integration extends AbstractGatewayIntegration {
 	private $host;
 
 	/**
-	 * Meta key website key.
-	 *
-	 * @var string
-	 */
-	private $meta_key_website_key;
-
-	/**
-	 * Meta key secret key.
-	 *
-	 * @var string
-	 */
-	private $meta_key_secret_key;
-
-	/**
 	 * Construct Buckaroo integration.
 	 *
 	 * @param array<string, array<string>> $args Arguments.
@@ -52,31 +38,27 @@ class Integration extends AbstractGatewayIntegration {
 		$args = wp_parse_args(
 			$args,
 			[
-				'id'                   => 'buckaroo',
-				'name'                 => 'Buckaroo',
-				'host'                 => 'checkout.buckaroo.nl',
-				'url'                  => 'https://plaza.buckaroo.nl/',
-				'product_url'          => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
-				'dashboard_url'        => 'https://plaza.buckaroo.nl/',
-				'provider'             => 'buckaroo',
-				'supports'             => [
+				'id'            => 'buckaroo',
+				'name'          => 'Buckaroo',
+				'host'          => 'checkout.buckaroo.nl',
+				'url'           => 'https://plaza.buckaroo.nl/',
+				'product_url'   => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
+				'dashboard_url' => 'https://plaza.buckaroo.nl/',
+				'provider'      => 'buckaroo',
+				'supports'      => [
 					'payment_status_request',
 					'refunds',
 					'webhook',
 					'webhook_log',
 					'webhook_no_config',
 				],
-				'manual_url'           => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
-				'meta_key_website_key' => 'buckaroo_website_key',
-				'meta_key_secret_key'  => 'buckaroo_secret_key',
+				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
 			]
 		);
 
 		parent::__construct( $args );
 
-		$this->host                 = $args['host'];
-		$this->meta_key_website_key = $args['meta_key_website_key'];
-		$this->meta_key_secret_key  = $args['meta_key_secret_key'];
+		$this->host = $args['host'];
 
 		/**
 		 * CLI.
@@ -124,28 +106,34 @@ class Integration extends AbstractGatewayIntegration {
 	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
 	 */
 	public function get_settings_fields() {
+		global $post;
+
+		$config = $this->get_config( $post->ID );
+
 		$fields = array();
 
 		// Website Key.
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
+			'meta_key' => '_pronamic_gateway_buckaroo_merchant_key',
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'code' ),
 			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
+			'default'  => $config->get_website_key(),
 		);
 
 		// Secret Key.
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_'. $this->meta_key_secret_key,
+			'meta_key' => '_pronamic_gateway_buckaroo_secret_key',
 			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
 			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboard on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
+			'default'  => $config->get_secret_key(),
 		);
 
 		// Excluded services.
@@ -209,27 +197,24 @@ class Integration extends AbstractGatewayIntegration {
 	public function get_config( $post_id ) {
 		$config = new Config();
 
-		// Backwards compatibility for Sisow test mode setting.
-		if ( 'sisow-ideal' === $this->id ) {
-			$test_mode = $this->get_meta( $post_id, 'sisow_test_mode' );
-
-			if ( '' === $test_mode ) {
-				$test_mode = ( 'test' === $this->get_meta( $post_id, 'mode' ) );
-			}
-
-			if ( $test_mode ) {
-				$this->host = 'testcheckout.buckaroo.nl';
-
-				$this->set_mode( 'test' );
-			}
-		}
-
 		$config->set_host( $this->host );
 
-		$config->website_key       = $this->get_meta( $post_id, $this->meta_key_website_key );
-		$config->secret_key        = $this->get_meta( $post_id, $this->meta_key_secret_key );
+		$config->website_key       = $this->get_meta( $post_id, 'buckaroo_website_key' );
+		$config->secret_key        = $this->get_meta( $post_id, 'buckaroo_secret_key' );
 		$config->excluded_services = $this->get_meta( $post_id, 'buckaroo_excluded_services' );
 		$config->invoice_number    = $this->get_meta( $post_id, 'buckaroo_invoice_number' );
+
+		// Legacy Sisow integration meta.
+		$meta = get_post_meta( $post_id );
+
+		if (
+			\array_key_exists( '_pronamic_gateway_id', $meta )
+				&&
+			'sisow-ideal' === reset( $meta['_pronamic_gateway_id'] )
+		) {
+			$config->website_key = $this->get_meta( $post_id, 'sisow_merchant_id' );
+			$config->secret_key  = $this->get_meta( $post_id, 'sisow_merchant_key' );
+		}
 
 		return $config;
 	}
