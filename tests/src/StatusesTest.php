@@ -43,24 +43,24 @@ class StatusesTest extends \WP_UnitTestCase {
 	 * @return array
 	 */
 	public function transform_provider() {
-		return array(
+		return [
 			// Success.
-			array( Statuses::PAYMENT_SUCCESS, Core_Statuses::SUCCESS ),
+			[ Statuses::PAYMENT_SUCCESS, Core_Statuses::SUCCESS ],
 			// Failure.
-			array( Statuses::PAYMENT_FAILURE, Core_Statuses::FAILURE ),
-			array( Statuses::VALIDATION_FAILURE, Core_Statuses::FAILURE ),
-			array( Statuses::TECHNICAL_ERROR, Core_Statuses::FAILURE ),
-			array( Statuses::PAYMENT_REJECTED, Core_Statuses::FAILURE ),
+			[ Statuses::PAYMENT_FAILURE, Core_Statuses::FAILURE ],
+			[ Statuses::VALIDATION_FAILURE, Core_Statuses::FAILURE ],
+			[ Statuses::TECHNICAL_ERROR, Core_Statuses::FAILURE ],
+			[ Statuses::PAYMENT_REJECTED, Core_Statuses::FAILURE ],
 			// Open.
-			array( Statuses::WAITING_FOR_USER_INPUT, Core_Statuses::OPEN ),
-			array( Statuses::WAITING_FOR_PROCESSOR, Core_Statuses::OPEN ),
-			array( Statuses::WAITING_ON_CONSUMER_ACTION, Core_Statuses::OPEN ),
-			array( Statuses::PAYMENT_ON_HOLD, Core_Statuses::OPEN ),
+			[ Statuses::WAITING_FOR_USER_INPUT, Core_Statuses::OPEN ],
+			[ Statuses::WAITING_FOR_PROCESSOR, Core_Statuses::OPEN ],
+			[ Statuses::WAITING_ON_CONSUMER_ACTION, Core_Statuses::OPEN ],
+			[ Statuses::PAYMENT_ON_HOLD, Core_Statuses::OPEN ],
 			// Cancelled.
-			array( Statuses::CANCELLED_BY_CONSUMER, Core_Statuses::CANCELLED ),
-			array( Statuses::CANCELLED_BY_MERCHANT, Core_Statuses::CANCELLED ),
+			[ Statuses::CANCELLED_BY_CONSUMER, Core_Statuses::CANCELLED ],
+			[ Statuses::CANCELLED_BY_MERCHANT, Core_Statuses::CANCELLED ],
 			// Other.
-			array( 'not existing status', null ),
-		);
+			[ 'not existing status', null ],
+		];
 	}
 }

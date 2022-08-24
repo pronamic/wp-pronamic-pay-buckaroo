@@ -25,10 +25,10 @@ class Util {
 	 */
 	public static function get_invoice_number( $invoice_number, Payment $payment ) {
 		// Replacements definition
-		$replacements = array(
+		$replacements = [
 			'{order_id}'   => $payment->get_order_id(),
 			'{payment_id}' => $payment->get_id(),
-		);
+		];
 
 		// Find and replace
 		$invoice_number = str_replace(

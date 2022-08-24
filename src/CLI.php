@@ -48,9 +48,9 @@ class CLI {
 			function( $args, $assoc_args ) {
 				$this->wp_cli_transaction_status( $args, $assoc_args );
 			},
-			array(
+			[
 				'shortdesc' => 'This returns the status for the provided transaction',
-			)
+			]
 		);
 
 		\WP_CLI::add_command(
@@ -58,9 +58,9 @@ class CLI {
 			function( $args, $assoc_args ) {
 				$this->wp_cli_transaction_refund_info( $args, $assoc_args );
 			},
-			array(
+			[
 				'shortdesc' => 'This returns the refund info',
-			)
+			]
 		);
 	}
 
