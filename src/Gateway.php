@@ -58,7 +58,7 @@ class Gateway extends Core_Gateway {
 		// Methods.
 		$ideal_payment_method = new PaymentMethod( Core_PaymentMethods::IDEAL );
 
-		$ideal_issuer_field = new IDealIssuerSelectField( 'buckaroo_ideal_issuer' );
+		$ideal_issuer_field = new IDealIssuerSelectField( 'ideal-issuer' );
 
 		$ideal_issuer_field->set_required( true );
 
@@ -356,7 +356,7 @@ class Gateway extends Core_Gateway {
 					'Parameters' => array(
 						array(
 							'Name'  => 'issuer',
-							'Value' => $payment->get_meta( 'buckaroo_ideal_issuer' ),
+							'Value' => $payment->get_meta( 'issuer' ),
 						),
 					),
 				);
