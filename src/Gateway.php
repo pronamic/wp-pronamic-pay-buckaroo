@@ -5,7 +5,13 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Core\SelectField;
+use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
+use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOptionGroup;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use WP_Error;
@@ -48,79 +54,80 @@ class Gateway extends Core_Gateway {
 			'webhook_log',
 			'webhook_no_config',
 		);
+
+		// Methods.
+		$ideal_payment_method = new PaymentMethod( Core_PaymentMethods::IDEAL );
+
+		$ideal_issuer_field = new IDealIssuerSelectField( 'ideal-issuer' );
+
+		$ideal_issuer_field->set_required( true );
+
+		$ideal_issuer_field->set_options( new CachedCallbackOptions(
+			function() {
+				return $this->get_ideal_issuers();
+			},
+			'pronamic_pay_ideal_issuers_' . \md5( \wp_json_encode( $config ) )
+		) );
+
+		$ideal_payment_method->add_field( $ideal_issuer_field );
+
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
+		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MAESTRO ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::SOFORT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::V_PAY ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::VISA ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::VOID ) );
 	}
 
 	/**
-	 * Get issuers.
+	 * Get iDEAL issuers.
 	 *
 	 * @since 1.2.4
-	 * @see Core_Gateway::get_issuers()
-	 * @return array<int|string, array<string, array<string>>>
+	 * @return iterable<SelectFieldOption|SelectFieldOptionGroup>
 	 */
-	public function get_issuers() {
-		$groups = array();
-
+	private function get_ideal_issuers() {
 		// Check non-empty keys in configuration.
 		if ( empty( $this->config->website_key ) || empty( $this->config->secret_key ) ) {
-			return $groups;
+			return [];
 		}
 
 		// Get iDEAL issuers.
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-		if ( \property_exists( $object, 'Actions' ) ) {
-			foreach ( $object->Actions as $action ) {
-				// Check action name.
-				if ( 'Pay' !== $action->Name ) {
-					continue;
-				}
+		if ( ! \property_exists( $object, 'Actions' ) ) {
+			return [];
+		}
 
-				foreach ( $action->RequestParameters as $request_parameter ) {
-					// Check request parameter name.
-					if ( 'issuer' !== $request_parameter->Name ) {
-						continue;
+		$groups = [];
+
+		$actions_pay = \array_filter( $object->Actions, function( $action ) {
+			return 'Pay' === $action->Name;
+		} );
+
+		foreach ( $actions_pay as $action ) {
+			$request_parameters = \array_filter( $action->RequestParameters, function( $request_parameter ) {
+				return 'issuer' === $request_parameter->Name;
+			} );
+
+			foreach ( $request_parameters as $request_parameter ) {
+				foreach ( $request_parameter->ListItemDescriptions as $item ) {
+					if ( ! \array_key_exists( $item->GroupName, $groups ) ) {
+						$groups[ $item->GroupName ] = new SelectFieldOptionGroup( $item->GroupName );
 					}
 
-					foreach ( $request_parameter->ListItemDescriptions as $item ) {
-						// Make sure to add group.
-						if ( ! array_key_exists( $item->GroupName, $groups ) ) {
-							$groups[ $item->GroupName ] = array(
-								'name'    => $item->GroupName,
-								'options' => array(),
-							);
-						}
-
-						// Add issuer to group.
-						$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
-					}
+					$groups[ $item->GroupName ]->options[] = new SelectFieldOption( $item->Value, $item->Description );
 				}
 			}
 		}
 
-		return $groups;
-	}
-
-	/**
-	 * Get supported payment methods
-	 *
-	 * @see Core_Gateway::get_supported_payment_methods()
-	 * @return string[]
-	 */
-	public function get_supported_payment_methods() {
-		return array(
-			Core_PaymentMethods::AMERICAN_EXPRESS,
-			Core_PaymentMethods::BANK_TRANSFER,
-			Core_PaymentMethods::BANCONTACT,
-			Core_PaymentMethods::CREDIT_CARD,
-			Core_PaymentMethods::GIROPAY,
-			Core_PaymentMethods::IDEAL,
-			Core_PaymentMethods::MAESTRO,
-			Core_PaymentMethods::MASTERCARD,
-			Core_PaymentMethods::PAYPAL,
-			Core_PaymentMethods::SOFORT,
-			Core_PaymentMethods::V_PAY,
-			Core_PaymentMethods::VISA,
-		);
+		return array_values( $groups );
 	}
 
 	/**
