@@ -53,12 +53,8 @@ class Integration extends AbstractGatewayIntegration {
 					'webhook_no_config',
 				],
 				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-buckaroo-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
-				'callback_website_key' => function( $post_id ) {
-					return $this->get_meta( $post_id, 'buckaroo_website_key' );
-				},
-				'callback_secret_key' => function( $post_id ) {
-					return $this->get_meta( $post_id, 'buckaroo_secret_key' );
-				},
+				'meta_key_website_key' => 'buckaroo_website_key',
+				'meta_key_secret_key'  => 'buckaroo_secret_key',
 			]
 		);
 
@@ -66,8 +62,8 @@ class Integration extends AbstractGatewayIntegration {
 
 		$this->host = $args['host'];
 
-		$this->callback_website_key = $args['callback_website_key'];
-		$this->callback_secret_key  = $args['callback_secret_key'];
+		$this->meta_key_website_key = $args['meta_key_website_key'];
+		$this->meta_key_secret_key  = $args['meta_key_secret_key'];
 
 		/**
 		 * CLI.
@@ -125,6 +121,7 @@ class Integration extends AbstractGatewayIntegration {
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
+			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
 			'meta_key' => '_pronamic_gateway_buckaroo_merchant_key',
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
@@ -137,7 +134,7 @@ class Integration extends AbstractGatewayIntegration {
 		$fields[] = array(
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
-			'meta_key' => '_pronamic_gateway_buckaroo_secret_key',
+			'meta_key' => '_pronamic_gateway_' . $this->meta_key_secret_key,
 			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'regular-text', 'code' ),
@@ -208,8 +205,8 @@ class Integration extends AbstractGatewayIntegration {
 
 		$config->set_host( $this->host );
 
-		$config->website_key       = \call_user_func( $this->callback_website_key, $post_id );
-		$config->secret_key        = \call_user_func( $this->callback_secret_key, $post_id );
+		$config->website_key       = $this->get_meta( $post_id, $this->meta_key_website_key );
+		$config->secret_key        = $this->get_meta( $post_id, $this->meta_key_secret_key );
 		$config->excluded_services = $this->get_meta( $post_id, 'buckaroo_excluded_services' );
 		$config->invoice_number    = $this->get_meta( $post_id, 'buckaroo_invoice_number' );
 
