@@ -122,7 +122,6 @@ class Integration extends AbstractGatewayIntegration {
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
-			'meta_key' => '_pronamic_gateway_buckaroo_merchant_key',
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
 			'classes'  => array( 'code' ),
