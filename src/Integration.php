@@ -128,6 +128,7 @@ class Integration extends AbstractGatewayIntegration {
 			'classes'  => [ 'code' ],
 			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
 			'default'  => null === $config ? '' : $config->get_website_key(),
+			'required' => true,
 		];
 
 		// Secret Key.
@@ -140,6 +141,7 @@ class Integration extends AbstractGatewayIntegration {
 			'classes'  => [ 'regular-text', 'code' ],
 			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboard on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
 			'default'  => null === $config ? '' : $config->get_secret_key(),
+			'required' => true,
 		];
 
 		// Excluded services.
