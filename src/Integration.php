@@ -3,6 +3,7 @@
 namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 
 use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
+use WP_Post;
 
 /**
  * Title: Buckaroo integration
@@ -113,12 +114,12 @@ class Integration extends AbstractGatewayIntegration {
 	public function get_settings_fields() {
 		global $post;
 
-		$config = $this->get_config( $post->ID );
+		$config = ( $post instanceof WP_Post ) ? $this->get_config( $post->ID ) : null;
 
 		$fields = [];
 
 		// Website Key.
-		$fields[] = [
+		$fields[]      = [
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
@@ -126,7 +127,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'text',
 			'classes'  => [ 'code' ],
 			'tooltip'  => __( 'Website key as mentioned in the Buckaroo dashboard on the page "Profile » Website".', 'pronamic_ideal' ),
-			'default'  => $config->get_website_key(),
+			'default'  => null === $config ? '' : $config->get_website_key(),
 		];
 
 		// Secret Key.
@@ -138,7 +139,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'text',
 			'classes'  => [ 'regular-text', 'code' ],
 			'tooltip'  => __( 'Secret key as mentioned in the Buckaroo dashboard on the page "Configuration » Secret Key for Digital Signature".', 'pronamic_ideal' ),
-			'default'  => $config->get_secret_key(),
+			'default'  => null === $config ? '' : $config->get_secret_key(),
 		];
 
 		// Excluded services.
