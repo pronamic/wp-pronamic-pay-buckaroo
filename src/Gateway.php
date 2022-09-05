@@ -90,20 +90,22 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Get iDEAL issuers.
 	 *
+	 * @link https://dev.buckaroo.nl/Playground
 	 * @since 1.2.4
 	 * @return iterable<SelectFieldOption|SelectFieldOptionGroup>
 	 */
 	private function get_ideal_issuers() {
-		// Check non-empty keys in configuration.
-		if ( empty( $this->config->website_key ) || empty( $this->config->secret_key ) ) {
-			return [];
-		}
-
 		// Get iDEAL issuers.
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-		if ( ! \property_exists( $object, 'Actions' ) ) {
-			return [];
+		if ( 0 === $object->Version ) {
+			throw new \Exception( 
+				\sprintf(
+					'No versioned specification found for iDEAL payment method: version: "%s", name: "%s".',
+					$object->Version, 
+					$object->Name
+				)
+			);
 		}
 
 		$groups = [];
