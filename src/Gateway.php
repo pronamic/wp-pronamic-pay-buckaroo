@@ -105,6 +105,20 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
+	 * Get credit card payment methods.
+	 * 
+	 * @return string[]
+	 */
+	private function get_credit_card_payment_methods() {
+		return [
+			Core_PaymentMethods::AMERICAN_EXPRESS,
+			Core_PaymentMethods::MAESTRO,
+			Core_PaymentMethods::MASTERCARD,
+			Core_PaymentMethods::VISA,
+		];
+	}
+
+	/**
 	 * Maybe enrich payment methods.
 	 *
 	 * @return void
@@ -138,6 +152,24 @@ class Gateway extends Core_Gateway {
 			}
 
 			$payment_method->set_status( 'active' );
+		}
+
+		/**
+		 * Credit card.
+		 */
+		$credit_card_payment_methods = parent::get_payment_methods(
+			[
+				'id'     => $this->get_credit_card_payment_methods(),
+				'status' => 'active',
+			]
+		);
+
+		if ( count( $credit_card_payment_methods ) > 0 ) {
+			$payment_method = $this->get_payment_method( Core_PaymentMethods::CREDIT_CARD );
+
+			if ( null !== $payment_method ) {
+				$payment_method->set_status( 'active' );
+			}
 		}
 	}
 
@@ -401,12 +433,7 @@ class Gateway extends Core_Gateway {
 			case Core_PaymentMethods::CREDIT_CARD:
 				$payment_methods = $this->get_payment_methods(
 					[
-						'id'     => [
-							PaymentMethods::AMERICAN_EXPRESS,
-							PaymentMethods::MAESTRO,
-							PaymentMethods::MASTERCARD,
-							PaymentMethods::VISA,
-						],
+						'id'     => $this->get_credit_card_payment_methods(),
 						'status' => 'active',
 					]
 				);
