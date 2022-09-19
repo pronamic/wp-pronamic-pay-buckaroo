@@ -161,4 +161,20 @@ class PaymentMethods {
 
 		return $default;
 	}
+
+	/**
+	 * Convert method from Buckaroo indicator to a Pronamic indicator.
+	 * 
+	 * @param string $method Method.
+	 * @return string|null
+	 */
+	public static function from_buckaroo_to_pronamic( $method ) {
+		$key = \array_search( $method, self::$map );
+
+		if ( false === $key ) {
+			return null;
+		}
+
+		return $key;
+	}
 }
