@@ -7,6 +7,7 @@ use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Core\PaymentMethodsCollection;
 use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
 use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
@@ -88,6 +89,59 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
+	 * Get payment methods.
+	 *
+	 * @param array $args Query arguments.
+	 * @return PaymentMethodsCollection
+	 */
+	public function get_payment_methods( array $args = [] ) : PaymentMethodsCollection {
+		try {
+			$this->maybe_enrich_payment_methods();
+		} catch ( \Exception $e ) {
+			// No problem.
+		}
+
+		return parent::get_payment_methods( $args );
+	}
+
+	/**
+	 * Maybe enrich payment methods.
+	 *
+	 * @return void
+	 */
+	private function maybe_enrich_payment_methods() {
+		$cache_key = 'pronamic_pay_buckaroo_transaction_specifications_' . \md5( \wp_json_encode( $this->config ) );
+
+		$buckaroo_transaction_specifications = \get_transient( $cache_key );
+
+		if ( false === $buckaroo_transaction_specifications ) {
+			$buckaroo_transaction_specifications = $this->request_transaction_specifications();
+
+			\set_transient( $cache_key, $buckaroo_transaction_specifications, \DAY_IN_SECONDS );
+		}
+
+		foreach ( $this->payment_methods as $payment_method ) {
+			$payment_method->set_status( 'inactive' );
+		}
+
+		foreach ( $buckaroo_transaction_specifications->Services as $service ) {
+			$payment_method_id = PaymentMethods::from_buckaroo_to_pronamic( $service->Name );
+
+			if ( null === $payment_method_id ) {
+				continue;
+			}
+
+			$payment_method = $this->get_payment_method( $payment_method_id );
+
+			if ( null === $payment_method ) {
+				continue;
+			}
+
+			$payment_method->set_status( 'active' );
+		}
+	}
+
+	/**
 	 * Get iDEAL issuers.
 	 *
 	 * @link https://dev.buckaroo.nl/Playground
@@ -137,6 +191,19 @@ class Gateway extends Core_Gateway {
 		}
 
 		return array_values( $groups );
+	}
+
+	/**
+	 * Request transaction specifications.
+	 * 
+	 * @link https://github.com/search?q=org%3Abuckaroo-it+specifications&type=code
+	 * @link https://dev.buckaroo.nl/Playground
+	 * @return object
+	 */
+	private function request_transaction_specifications() {
+		$object = $this->request( 'POST', 'Transaction/Specifications', (object) [] );
+
+		return $object;
 	}
 
 	/**
@@ -332,25 +399,24 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
 			 */
 			case Core_PaymentMethods::CREDIT_CARD:
-				$data->Services->ServiceList[] = (object) [
-					'Action' => 'Pay',
-					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
-				];
+				$payment_methods = $this->get_payment_methods(
+					[
+						'id'     => [
+							PaymentMethods::AMERICAN_EXPRESS,
+							PaymentMethods::MAESTRO,
+							PaymentMethods::MASTERCARD,
+							PaymentMethods::VISA,
+						],
+						'status' => 'active',
+					]
+				);
 
-				$data->Services->ServiceList[] = (object) [
-					'Action' => 'Pay',
-					'Name'   => PaymentMethods::MAESTRO,
-				];
-
-				$data->Services->ServiceList[] = (object) [
-					'Action' => 'Pay',
-					'Name'   => PaymentMethods::MASTERCARD,
-				];
-
-				$data->Services->ServiceList[] = (object) [
-					'Action' => 'Pay',
-					'Name'   => PaymentMethods::VISA,
-				];
+				foreach ( $payment_methods as $payment_method ) {
+					$data->Services->ServiceList[] = (object) [
+						'Action' => 'Pay',
+						'Name'   => PaymentMethods::transform( $payment_method->get_id() ),
+					];
+				}
 
 				break;
 			/**
