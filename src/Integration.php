@@ -119,7 +119,7 @@ class Integration extends AbstractGatewayIntegration {
 		$fields = [];
 
 		// Website Key.
-		$fields[]      = [
+		$fields[] = [
 			'section'  => 'general',
 			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
