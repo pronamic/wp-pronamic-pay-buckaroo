@@ -160,7 +160,7 @@ class Gateway extends Core_Gateway {
 		$credit_card_payment_methods = parent::get_payment_methods(
 			[
 				'id'     => $this->get_credit_card_payment_methods(),
-				'status' => 'active',
+				'status' => [ '', 'active' ],
 			]
 		);
 
@@ -434,7 +434,7 @@ class Gateway extends Core_Gateway {
 				$payment_methods = $this->get_payment_methods(
 					[
 						'id'     => $this->get_credit_card_payment_methods(),
-						'status' => 'active',
+						'status' => [ '', 'active' ],
 					]
 				);
 
