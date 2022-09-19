@@ -32,6 +32,7 @@
   },
   "homepage": "http://www.wp-pay.org/gateways/buckaroo/",
   "devDependencies": {
+    "@wordpress/env": "^5.2.0",
     "grunt": "^1.0.4",
     "grunt-contrib-jshint": "^2.1.0",
     "grunt-phpcs": "^0.4.0",
@@ -39,5 +40,12 @@
     "grunt-phpmd": "^0.1.1",
     "grunt-phpunit": "^0.3.6",
     "load-grunt-tasks": "^5.1.0"
+  },
+  "scripts": {
+    "start": "wp-env start && npm run setup && npm run login",
+    "setup": "npm-run-all setup-*",
+    "setup-buckaroo-website-key": "wp-env run cli wp config set BUCKAROO_WEBSITE_KEY $BUCKAROO_WEBSITE_KEY",
+    "setup-buckaroo-secret-key": "wp-env run cli wp config set BUCKAROO_SECRET_KEY $BUCKAROO_SECRET_KEY",
+    "login": "wp-env run cli wp user one-time-login admin"
   }
 }
