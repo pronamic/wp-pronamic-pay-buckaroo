@@ -125,7 +125,7 @@ class PaymentMethods {
 	 *
 	 * @var array<string, string>
 	 */
-	private static $map = array(
+	private static $map = [
 		Core_PaymentMethods::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
 		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
 		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
@@ -138,7 +138,7 @@ class PaymentMethods {
 		Core_PaymentMethods::SOFORT           => self::SOFORTUEBERWEISING,
 		Core_PaymentMethods::V_PAY            => self::V_PAY,
 		Core_PaymentMethods::VISA             => self::VISA,
-	);
+	];
 
 	/**
 	 * Transform WordPress payment method to Buckaroo method.

@@ -27,9 +27,9 @@ class PushController {
 	 * @return void
 	 */
 	public function setup() {
-		\add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
+		\add_action( 'rest_api_init', [ $this, 'rest_api_init' ] );
 
-		\add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
+		\add_action( 'wp_loaded', [ $this, 'wp_loaded' ] );
 	}
 
 	/**
@@ -43,14 +43,14 @@ class PushController {
 		\register_rest_route(
 			Integration::REST_ROUTE_NAMESPACE,
 			'/push',
-			array(
-				'methods'             => array(
+			[
+				'methods'             => [
 					'GET',
 					'POST',
-				),
-				'callback'            => array( $this, 'rest_api_buckaroo_push' ),
+				],
+				'callback'            => [ $this, 'rest_api_buckaroo_push' ],
 				'permission_callback' => '__return_true',
-			)
+			]
 		);
 	}
 
@@ -78,7 +78,7 @@ class PushController {
 				'Unknown Buckaroo push request content type: %s.',
 				(string) $request->get_header( 'Content-Type' )
 			),
-			array( 'status' => 500 )
+			[ 'status' => 500 ]
 		);
 	}
 
@@ -160,7 +160,7 @@ class PushController {
 					\__( 'Unable to find payment for transaction key: %s.', 'pronamic_ideal ' ),
 					$transaction_key
 				),
-				array( 'status' => 400 )
+				[ 'status' => 400 ]
 			);
 		}
 
@@ -180,10 +180,10 @@ class PushController {
 		Plugin::update_payment( $payment, false );
 
 		return \rest_ensure_response(
-			array(
+			[
 				'success'         => true,
 				'transaction_key' => $transaction_key,
-			)
+			]
 		);
 	}
 

@@ -34,14 +34,14 @@ class UtilTest extends TestCase {
 	 * @return array[]
 	 */
 	public function invoice_number_provider() {
-		return array(
-			array( 99, 12345, 'invoice', 'invoice99' ),
-			array( 99, 12345, '{payment_id}', '99' ),
-			array( 99, null, '{order_id}', '' ),
-			array( 99, 12345, '{order_id}', '12345' ),
-			array( 99, 12345, 'INV{order_id}', 'INV12345' ),
-			array( 99, 12345, '{payment_id}-{order_id}', '99-12345' ),
-		);
+		return [
+			[ 99, 12345, 'invoice', 'invoice99' ],
+			[ 99, 12345, '{payment_id}', '99' ],
+			[ 99, null, '{order_id}', '' ],
+			[ 99, 12345, '{order_id}', '12345' ],
+			[ 99, 12345, 'INV{order_id}', 'INV12345' ],
+			[ 99, 12345, '{payment_id}-{order_id}', '99-12345' ],
+		];
 	}
 
 	/**
@@ -52,15 +52,15 @@ class UtilTest extends TestCase {
 	 */
 	public function test_get_transaction_service( $service ) {
 		// Build transaction.
-		$services = array( (object) array() );
+		$services = [ (object) [] ];
 
 		if ( null !== $service ) {
-			$services[] = (object) array( 'Name' => $service );
+			$services[] = (object) [ 'Name' => $service ];
 		}
 
-		$transaction = (object) array(
+		$transaction = (object) [
 			'Services' => $services,
-		);
+		];
 
 		// Assertion.
 		$this->assertEquals( $service, Util::get_transaction_service( $transaction ) );
@@ -72,9 +72,9 @@ class UtilTest extends TestCase {
 	 * @return array[]
 	 */
 	public function transaction_service_provider() {
-		return array(
-			array( 'ideal' ),
-			array( null ),
-		);
+		return [
+			[ 'ideal' ],
+			[ null ],
+		];
 	}
 }

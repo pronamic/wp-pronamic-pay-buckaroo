@@ -5,7 +5,13 @@ namespace Pronamic\WordPress\Pay\Gateways\Buckaroo;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
+use Pronamic\WordPress\Pay\Core\SelectField;
+use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
+use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
+use Pronamic\WordPress\Pay\Fields\SelectFieldOptionGroup;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use WP_Error;
@@ -34,93 +40,103 @@ class Gateway extends Core_Gateway {
 	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
-		parent::__construct( $config );
+		parent::__construct();
 
 		$this->config = $config;
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
 		// Supported features.
-		$this->supports = array(
+		$this->supports = [
 			'payment_status_request',
 			'refunds',
 			'webhook',
 			'webhook_log',
 			'webhook_no_config',
+		];
+
+		// Methods.
+		$ideal_payment_method = new PaymentMethod( Core_PaymentMethods::IDEAL );
+
+		$ideal_issuer_field = new IDealIssuerSelectField( 'ideal-issuer' );
+
+		$ideal_issuer_field->set_required( true );
+
+		$ideal_issuer_field->set_options(
+			new CachedCallbackOptions(
+				function() {
+					return $this->get_ideal_issuers();
+				},
+				'pronamic_pay_ideal_issuers_' . \md5( \wp_json_encode( $config ) )
+			) 
 		);
+
+		$ideal_payment_method->add_field( $ideal_issuer_field );
+
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
+		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MAESTRO ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::SOFORT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::V_PAY ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::VISA ) );
 	}
 
 	/**
-	 * Get issuers.
+	 * Get iDEAL issuers.
 	 *
+	 * @link https://dev.buckaroo.nl/Playground
 	 * @since 1.2.4
-	 * @see Core_Gateway::get_issuers()
-	 * @return array<int|string, array<string, array<string>>>
+	 * @return iterable<SelectFieldOption|SelectFieldOptionGroup>
 	 */
-	public function get_issuers() {
-		$groups = array();
-
-		// Check non-empty keys in configuration.
-		if ( empty( $this->config->website_key ) || empty( $this->config->secret_key ) ) {
-			return $groups;
-		}
-
+	private function get_ideal_issuers() {
 		// Get iDEAL issuers.
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-		if ( \property_exists( $object, 'Actions' ) ) {
-			foreach ( $object->Actions as $action ) {
-				// Check action name.
-				if ( 'Pay' !== $action->Name ) {
-					continue;
-				}
+		if ( 0 === $object->Version ) {
+			throw new \Exception( 
+				\sprintf(
+					'No versioned specification found for iDEAL payment method: version: "%s", name: "%s".',
+					$object->Version, 
+					$object->Name
+				)
+			);
+		}
 
-				foreach ( $action->RequestParameters as $request_parameter ) {
-					// Check request parameter name.
-					if ( 'issuer' !== $request_parameter->Name ) {
-						continue;
+		$groups = [];
+
+		$actions_pay = \array_filter(
+			$object->Actions,
+			function( $action ) {
+				return 'Pay' === $action->Name;
+			} 
+		);
+
+		foreach ( $actions_pay as $action ) {
+			$request_parameters = \array_filter(
+				$action->RequestParameters,
+				function( $request_parameter ) {
+					return 'issuer' === $request_parameter->Name;
+				} 
+			);
+
+			foreach ( $request_parameters as $request_parameter ) {
+				foreach ( $request_parameter->ListItemDescriptions as $item ) {
+					if ( ! \array_key_exists( $item->GroupName, $groups ) ) {
+						$groups[ $item->GroupName ] = new SelectFieldOptionGroup( $item->GroupName );
 					}
 
-					foreach ( $request_parameter->ListItemDescriptions as $item ) {
-						// Make sure to add group.
-						if ( ! array_key_exists( $item->GroupName, $groups ) ) {
-							$groups[ $item->GroupName ] = array(
-								'name'    => $item->GroupName,
-								'options' => array(),
-							);
-						}
-
-						// Add issuer to group.
-						$groups[ $item->GroupName ]['options'][ $item->Value ] = $item->Description;
-					}
+					$groups[ $item->GroupName ]->options[] = new SelectFieldOption( $item->Value, $item->Description );
 				}
 			}
 		}
 
-		return $groups;
-	}
-
-	/**
-	 * Get supported payment methods
-	 *
-	 * @see Core_Gateway::get_supported_payment_methods()
-	 * @return string[]
-	 */
-	public function get_supported_payment_methods() {
-		return array(
-			Core_PaymentMethods::AMERICAN_EXPRESS,
-			Core_PaymentMethods::BANK_TRANSFER,
-			Core_PaymentMethods::BANCONTACT,
-			Core_PaymentMethods::CREDIT_CARD,
-			Core_PaymentMethods::GIROPAY,
-			Core_PaymentMethods::IDEAL,
-			Core_PaymentMethods::MAESTRO,
-			Core_PaymentMethods::MASTERCARD,
-			Core_PaymentMethods::PAYPAL,
-			Core_PaymentMethods::SOFORT,
-			Core_PaymentMethods::V_PAY,
-			Core_PaymentMethods::VISA,
-		);
+		return array_values( $groups );
 	}
 
 	/**
@@ -157,7 +173,7 @@ class Gateway extends Core_Gateway {
 		 *
 		 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 		 */
-		$data = (object) array(
+		$data = (object) [
 			'Currency'                  => $currency_code,
 			/**
 			 * The debit amount for the request. This is in decimal format,
@@ -211,9 +227,9 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://dev.buckaroo.nl/Apis
 			 */
-			'Services'                  => (object) array(
-				'ServiceList' => array(),
-			),
+			'Services'                  => (object) [
+				'ServiceList' => [],
+			],
 			/**
 			 * Continue On Incomplete.
 			 *
@@ -253,13 +269,13 @@ class Gateway extends Core_Gateway {
 			 *
 			 * @link https://testcheckout.buckaroo.nl/json/Docs/Api/POST-json-Transaction
 			 */
-			'CustomParameters'          => array(
-				(object) array(
+			'CustomParameters'          => [
+				(object) [
 					'Name'  => 'pronamic_payment_id',
 					'Value' => $payment->get_id(),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		/**
 		 * Client IP.
@@ -283,10 +299,10 @@ class Gateway extends Core_Gateway {
 			$ip_address = $customer->get_ip_address();
 
 			if ( null !== $ip_address ) {
-				$data->ClientIP = (object) array(
+				$data->ClientIP = (object) [
 					'Type'    => false === \strpos( $ip_address, ':' ) ? 0 : 1,
 					'Address' => $ip_address,
-				);
+				];
 			}
 		}
 
@@ -304,10 +320,10 @@ class Gateway extends Core_Gateway {
 			 * @link 
 			 */
 			case Core_PaymentMethods::AMERICAN_EXPRESS:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
-				);
+				];
 
 				break;
 			/**
@@ -316,25 +332,25 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#pay
 			 */
 			case Core_PaymentMethods::CREDIT_CARD:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::AMERICAN_EXPRESS,
-				);
+				];
 
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::MAESTRO,
-				);
+				];
 
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::MASTERCARD,
-				);
+				];
 
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::VISA,
-				);
+				];
 
 				break;
 			/**
@@ -343,16 +359,16 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal#pay
 			 */
 			case Core_PaymentMethods::IDEAL:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action'     => 'Pay',
 					'Name'       => 'ideal',
-					'Parameters' => array(
-						array(
+					'Parameters' => [
+						[
 							'Name'  => 'issuer',
 							'Value' => $payment->get_meta( 'issuer' ),
-						),
-					),
-				);
+						],
+					],
+				];
 
 				break;
 			/**
@@ -361,10 +377,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/transfer#pay
 			 */
 			case Core_PaymentMethods::BANK_TRANSFER:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'transfer',
-				);
+				];
 
 				break;
 			/**
@@ -374,10 +390,10 @@ class Gateway extends Core_Gateway {
 			 */
 			case Core_PaymentMethods::BANCONTACT:
 			case Core_PaymentMethods::MISTER_CASH:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'bancontactmrcash',
-				);
+				];
 
 				break;
 			/**
@@ -386,10 +402,10 @@ class Gateway extends Core_Gateway {
 			 * @link 
 			 */
 			case Core_PaymentMethods::MAESTRO:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::MAESTRO,
-				);
+				];
 
 				break;
 			/**
@@ -398,10 +414,10 @@ class Gateway extends Core_Gateway {
 			 * @link 
 			 */
 			case Core_PaymentMethods::MASTERCARD:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::MASTERCARD,
-				);
+				];
 
 				break;
 			/**
@@ -410,10 +426,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/giropay#pay
 			 */
 			case Core_PaymentMethods::GIROPAY:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'giropay',
-				);
+				];
 
 				break;
 			/**
@@ -422,10 +438,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/paypal#pay
 			 */
 			case Core_PaymentMethods::PAYPAL:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'paypal',
-				);
+				];
 
 				break;
 			/**
@@ -434,10 +450,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort#pay
 			 */
 			case Core_PaymentMethods::SOFORT:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'sofortueberweisung',
-				);
+				];
 
 				break;
 			/**
@@ -446,10 +462,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
 			case Core_PaymentMethods::V_PAY:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::V_PAY,
-				);
+				];
 
 				break;
 			/**
@@ -458,10 +474,10 @@ class Gateway extends Core_Gateway {
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
 			case Core_PaymentMethods::VISA:
-				$data->Services->ServiceList[] = (object) array(
+				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::VISA,
-				);
+				];
 
 				break;
 		}
@@ -572,7 +588,7 @@ class Gateway extends Core_Gateway {
 
 		$values = \implode(
 			'',
-			array(
+			[
 				$website_key,
 				$request_http_method,
 				\strtolower( \rawurlencode( $request_uri ) ),
@@ -580,7 +596,7 @@ class Gateway extends Core_Gateway {
 				$nonce,
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 				null === $data ? '' : \base64_encode( \md5( (string) $request_content, true ) ),
-			)
+			]
 		);
 
 		$hash = \hash_hmac( 'sha256', $values, (string) $this->config->secret_key, true );
@@ -598,14 +614,14 @@ class Gateway extends Core_Gateway {
 
 		$response = \Pronamic\WordPress\Http\Facades\Http::request(
 			'https://' . $request_uri,
-			array(
+			[
 				'method'  => $request_http_method,
-				'headers' => array(
+				'headers' => [
 					'Authorization' => $authorization,
 					'Content-Type'  => 'application/json',
-				),
+				],
 				'body'    => $request_content,
-			)
+			]
 		);
 
 		try {
@@ -677,7 +693,7 @@ class Gateway extends Core_Gateway {
 
 					if ( \in_array(
 						$parameter->Name,
-						array(
+						[
 							/**
 							 * Payment method iDEAL.
 							 *
@@ -690,7 +706,7 @@ class Gateway extends Core_Gateway {
 							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
 							 */
 							'CustomerIBAN',
-						),
+						],
 						true
 					) ) {
 						$consumer_bank_details->set_iban( $parameter->Value );
@@ -698,7 +714,7 @@ class Gateway extends Core_Gateway {
 
 					if ( \in_array(
 						$parameter->Name,
-						array(
+						[
 							/**
 							 * Payment method iDEAL.
 							 *
@@ -711,7 +727,7 @@ class Gateway extends Core_Gateway {
 							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
 							 */
 							'CustomerBIC',
-						),
+						],
 						true
 					) ) {
 						$consumer_bank_details->set_bic( $parameter->Value );
@@ -783,7 +799,7 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Refund request.
-		$data = (object) array(
+		$data = (object) [
 			'Channel'                => 'Web',
 			'Currency'               => $amount->get_currency()->get_alphabetic_code(),
 			/**
@@ -799,15 +815,15 @@ class Gateway extends Core_Gateway {
 			'AmountCredit'           => $amount->number_format( null, '.', '' ),
 			'Invoice'                => $invoice,
 			'OriginalTransactionKey' => $transaction_id,
-			'Services'               => array(
-				'ServiceList' => array(
-					array(
+			'Services'               => [
+				'ServiceList' => [
+					[
 						'Name'   => $service_name,
 						'Action' => 'Refund',
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 
 		$refund = $this->request( 'POST', 'Transaction', $data );
 
