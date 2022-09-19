@@ -778,52 +778,56 @@ class Gateway extends Core_Gateway {
 		 * Services.
 		 */
 		if ( \property_exists( $result, 'Services' ) ) {
-			foreach ( $result->Services as $service ) {
-				foreach ( $service->Parameters as $parameter ) {
-					if ( 'consumerName' === $parameter->Name ) {
-						$consumer_bank_details->set_name( $parameter->Value );
-					}
+			$services = $result->Services;
 
-					if ( \in_array(
-						$parameter->Name,
-						[
-							/**
-							 * Payment method iDEAL.
-							 *
-							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
-							 */
-							'consumerIBAN',
-							/**
-							 * Payment method Sofort.
-							 *
-							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
-							 */
-							'CustomerIBAN',
-						],
-						true
-					) ) {
-						$consumer_bank_details->set_iban( $parameter->Value );
-					}
+			if ( null !== $services ) {
+				foreach ( $services as $service ) {
+					foreach ( $service->Parameters as $parameter ) {
+						if ( 'consumerName' === $parameter->Name ) {
+							$consumer_bank_details->set_name( $parameter->Value );
+						}
 
-					if ( \in_array(
-						$parameter->Name,
-						[
-							/**
-							 * Payment method iDEAL.
-							 *
-							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
-							 */
-							'consumerName',
-							/**
-							 * Payment method Sofort.
-							 *
-							 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
-							 */
-							'CustomerBIC',
-						],
-						true
-					) ) {
-						$consumer_bank_details->set_bic( $parameter->Value );
+						if ( \in_array(
+							$parameter->Name,
+							[
+								/**
+								 * Payment method iDEAL.
+								 *
+								 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+								 */
+								'consumerIBAN',
+								/**
+								 * Payment method Sofort.
+								 *
+								 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+								 */
+								'CustomerIBAN',
+							],
+							true
+						) ) {
+							$consumer_bank_details->set_iban( $parameter->Value );
+						}
+
+						if ( \in_array(
+							$parameter->Name,
+							[
+								/**
+								 * Payment method iDEAL.
+								 *
+								 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
+								 */
+								'consumerName',
+								/**
+								 * Payment method Sofort.
+								 *
+								 * @link https://dev.buckaroo.nl/PaymentMethods/Description/sofort
+								 */
+								'CustomerBIC',
+							],
+							true
+						) ) {
+							$consumer_bank_details->set_bic( $parameter->Value );
+						}
 					}
 				}
 			}
