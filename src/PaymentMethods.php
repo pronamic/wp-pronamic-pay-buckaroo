@@ -125,7 +125,7 @@ class PaymentMethods {
 	 *
 	 * @var array<string, string>
 	 */
-	private static $map = array(
+	private static $map = [
 		Core_PaymentMethods::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
 		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
 		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
@@ -138,7 +138,7 @@ class PaymentMethods {
 		Core_PaymentMethods::SOFORT           => self::SOFORTUEBERWEISING,
 		Core_PaymentMethods::V_PAY            => self::V_PAY,
 		Core_PaymentMethods::VISA             => self::VISA,
-	);
+	];
 
 	/**
 	 * Transform WordPress payment method to Buckaroo method.
@@ -160,5 +160,21 @@ class PaymentMethods {
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Convert method from Buckaroo indicator to a Pronamic indicator.
+	 * 
+	 * @param string $method Method.
+	 * @return string|null
+	 */
+	public static function from_buckaroo_to_pronamic( $method ) {
+		$key = \array_search( $method, self::$map );
+
+		if ( false === $key ) {
+			return null;
+		}
+
+		return $key;
 	}
 }
