@@ -138,20 +138,22 @@ class Gateway extends Core_Gateway {
 			$payment_method->set_status( 'inactive' );
 		}
 
-		foreach ( $buckaroo_transaction_specifications->Services as $service ) {
-			$payment_method_id = PaymentMethods::from_buckaroo_to_pronamic( $service->Name );
+		if ( null !== $buckaroo_transaction_specifications->Services ) {
+			foreach ( $buckaroo_transaction_specifications->Services as $service ) {
+				$payment_method_id = PaymentMethods::from_buckaroo_to_pronamic( $service->Name );
 
-			if ( null === $payment_method_id ) {
-				continue;
+				if ( null === $payment_method_id ) {
+					continue;
+				}
+
+				$payment_method = $this->get_payment_method( $payment_method_id );
+
+				if ( null === $payment_method ) {
+					continue;
+				}
+
+				$payment_method->set_status( 'active' );
 			}
-
-			$payment_method = $this->get_payment_method( $payment_method_id );
-
-			if ( null === $payment_method ) {
-				continue;
-			}
-
-			$payment_method->set_status( 'active' );
 		}
 
 		/**
