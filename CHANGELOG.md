@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.2.2] - 2022-10-11
+- Fixed possible "Warning: Invalid argument supplied for foreach()" when enriching payment methods (pronamic/wp-pronamic-pay-buckaroo#7).
+
 ## [4.2.1] - 2022-09-27
 - Update to `wp-pay/core` version `^4.4`.
 
@@ -122,7 +125,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [1.0.0] - 2015-01-19
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/4.2.1...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/buckaroo/compare/4.2.2...HEAD
+[4.2.2]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/wp-pay-gateways/buckaroo/compare/4.0.0...4.1.0
