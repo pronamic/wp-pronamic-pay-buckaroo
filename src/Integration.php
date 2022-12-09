@@ -25,7 +25,7 @@ class Integration extends AbstractGatewayIntegration {
 
 	/**
 	 * Host.
-	 * 
+	 *
 	 * @var string
 	 */
 	private $host;

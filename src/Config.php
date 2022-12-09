@@ -18,7 +18,7 @@ use Pronamic\WordPress\Pay\Core\GatewayConfig;
 class Config extends GatewayConfig implements JsonSerializable {
 	/**
 	 * Host.
-	 * 
+	 *
 	 * @var string
 	 */
 	private $host;
@@ -60,7 +60,7 @@ class Config extends GatewayConfig implements JsonSerializable {
 
 	/**
 	 * Get host.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_host() {
@@ -69,7 +69,7 @@ class Config extends GatewayConfig implements JsonSerializable {
 
 	/**
 	 * Set host.
-	 * 
+	 *
 	 * @param string $host Host.
 	 */
 	public function set_host( $host ) {

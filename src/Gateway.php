@@ -69,7 +69,7 @@ class Gateway extends Core_Gateway {
 					return $this->get_ideal_issuers();
 				},
 				'pronamic_pay_ideal_issuers_' . \md5( \wp_json_encode( $config ) )
-			) 
+			)
 		);
 
 		$ideal_payment_method->add_field( $ideal_issuer_field );
@@ -106,7 +106,7 @@ class Gateway extends Core_Gateway {
 
 	/**
 	 * Get credit card payment methods.
-	 * 
+	 *
 	 * @return string[]
 	 */
 	private function get_credit_card_payment_methods() {
@@ -187,10 +187,10 @@ class Gateway extends Core_Gateway {
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
 		if ( 0 === $object->Version ) {
-			throw new \Exception( 
+			throw new \Exception(
 				\sprintf(
 					'No versioned specification found for iDEAL payment method: version: "%s", name: "%s".',
-					$object->Version, 
+					$object->Version,
 					$object->Name
 				)
 			);
@@ -202,7 +202,7 @@ class Gateway extends Core_Gateway {
 			$object->Actions,
 			function( $action ) {
 				return 'Pay' === $action->Name;
-			} 
+			}
 		);
 
 		foreach ( $actions_pay as $action ) {
@@ -210,7 +210,7 @@ class Gateway extends Core_Gateway {
 				$action->RequestParameters,
 				function( $request_parameter ) {
 					return 'issuer' === $request_parameter->Name;
-				} 
+				}
 			);
 
 			foreach ( $request_parameters as $request_parameter ) {
@@ -229,7 +229,7 @@ class Gateway extends Core_Gateway {
 
 	/**
 	 * Request transaction specifications.
-	 * 
+	 *
 	 * @link https://github.com/search?q=org%3Abuckaroo-it+specifications&type=code
 	 * @link https://dev.buckaroo.nl/Playground
 	 * @return object
@@ -417,8 +417,8 @@ class Gateway extends Core_Gateway {
 		switch ( $payment->get_payment_method() ) {
 			/**
 			 * Payment method American Express.
-			 * 
-			 * @link 
+			 *
+			 * @link
 			 */
 			case Core_PaymentMethods::AMERICAN_EXPRESS:
 				$data->Services->ServiceList[] = (object) [
@@ -493,8 +493,8 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method Maestro.
-			 * 
-			 * @link 
+			 *
+			 * @link
 			 */
 			case Core_PaymentMethods::MAESTRO:
 				$data->Services->ServiceList[] = (object) [
@@ -505,8 +505,8 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method Mastercard.
-			 * 
-			 * @link 
+			 *
+			 * @link
 			 */
 			case Core_PaymentMethods::MASTERCARD:
 				$data->Services->ServiceList[] = (object) [
@@ -553,7 +553,7 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method V PAY.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
 			case Core_PaymentMethods::V_PAY:
@@ -565,7 +565,7 @@ class Gateway extends Core_Gateway {
 				break;
 			/**
 			 * Payment method Visa.
-			 * 
+			 *
 			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/creditcards#top
 			 */
 			case Core_PaymentMethods::VISA:

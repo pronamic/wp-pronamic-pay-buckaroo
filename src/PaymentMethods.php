@@ -164,7 +164,7 @@ class PaymentMethods {
 
 	/**
 	 * Convert method from Buckaroo indicator to a Pronamic indicator.
-	 * 
+	 *
 	 * @param string $method Method.
 	 * @return string|null
 	 */

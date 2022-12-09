@@ -18,7 +18,7 @@ class Util {
 	/**
 	 * Get invoice number.
 	 *
-	 * @param string $invoice_number
+	 * @param string  $invoice_number
 	 * @param Payment $payment
 	 *
 	 * @return string
