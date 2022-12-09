@@ -121,7 +121,6 @@ class Integration extends AbstractGatewayIntegration {
 		// Website Key.
 		$fields[] = [
 			'section'  => 'general',
-			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_' . $this->meta_key_website_key,
 			'title'    => __( 'Website Key', 'pronamic_ideal' ),
 			'type'     => 'text',
@@ -134,7 +133,6 @@ class Integration extends AbstractGatewayIntegration {
 		// Secret Key.
 		$fields[] = [
 			'section'  => 'general',
-			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_' . $this->meta_key_secret_key,
 			'title'    => __( 'Secret Key', 'pronamic_ideal' ),
 			'type'     => 'text',
@@ -147,7 +145,6 @@ class Integration extends AbstractGatewayIntegration {
 		// Excluded services.
 		$fields[] = [
 			'section'  => 'advanced',
-			'filter'   => FILTER_SANITIZE_STRING,
 			'meta_key' => '_pronamic_gateway_buckaroo_excluded_services',
 			'title'    => __( 'Excluded services', 'pronamic_ideal' ),
 			'type'     => 'text',
@@ -162,7 +159,6 @@ class Integration extends AbstractGatewayIntegration {
 		// Invoice number.
 		$fields[] = [
 			'section'     => 'advanced',
-			'filter'      => FILTER_SANITIZE_STRING,
 			'meta_key'    => '_pronamic_gateway_buckaroo_invoice_number',
 			'title'       => __( 'Invoice number', 'pronamic_ideal' ),
 			'type'        => 'text',
