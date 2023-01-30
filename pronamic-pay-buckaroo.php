@@ -4,7 +4,7 @@
  * Plugin URI: https://www.pronamic.eu/plugins/pronamic-pay-buckaroo/
  * Description: Extend the Pronamic Pay plugin with the Buckaroo gateway to receive payments through a variety of WordPress plugins.
  *
- * Version: 4.2.2
+ * Version: 4.3.0
  * Requires at least: 4.7
  * Requires PHP: 8.0
  *
@@ -22,7 +22,7 @@
  * GitHub URI: https://github.com/pronamic/wp-pronamic-pay-buckaroo
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2022 Pronamic
+ * @copyright 2005-2023 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Gateways\Buckaroo
  */

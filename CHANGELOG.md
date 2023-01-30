@@ -7,6 +7,22 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.0] - 2022-12-29
+
+### Commits
+
+- Added support for https://github.com/WordPress/wp-plugin-dependencies. ([cd40f86](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/cd40f86abde9f1168a32ea8e8c2f882d2cd76424))
+- No longer use deprecated `FILTER_SANITIZE_STRING`. ([1736713](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/1736713b97f14954cc174967a1334224ae6991ba))
+
+### Composer
+
+- Changed `php` from `>=5.6.20` to `>=8.0`.
+- Changed `wp-pay/core` from `^4.4` to `v4.6.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.6.0
+Full set of changes: [`4.2.2...4.3.0`][4.3.0]
+
+[4.3.0]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.2.2...v4.3.0
+
 ## [4.2.2] - 2022-10-11
 - Fixed possible "Warning: Invalid argument supplied for foreach()" when enriching payment methods (pronamic/wp-pronamic-pay-buckaroo#7).
 
