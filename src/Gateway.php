@@ -714,6 +714,7 @@ class Gateway extends Core_Gateway {
 				'headers' => [
 					'Authorization' => $authorization,
 					'Content-Type'  => 'application/json',
+					'Software'      => $this->get_software_header(),
 				],
 				'body'    => $request_content,
 			]
@@ -738,6 +739,25 @@ class Gateway extends Core_Gateway {
 		 * OK.
 		 */
 		return $object;
+	}
+
+	/**
+	 * Get software header.
+	 * 
+	 * @link https://docs.buckaroo.io/docs/authentication
+	 * @link https://github.com/pronamic/wp-pronamic-pay-buckaroo/issues/9
+	 * @return string
+	 */
+	private function get_software_header() {
+		return \wp_json_encode(
+			[
+				'PlatformName'    => 'WordPress',
+				'PlatformVersion' => \get_bloginfo( 'version' ),
+				'ModuleSupplier'  => 'Pronamic',
+				'ModuleName'      => 'PronamicPay',
+				'ModuleVersion'   => \pronamic_pay_plugin()->get_version(),
+			]
+		);
 	}
 
 	/**
