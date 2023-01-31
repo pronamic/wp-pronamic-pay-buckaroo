@@ -7,6 +7,18 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.1] - 2023-01-31
+### Added
+
+- Added `Software` HTTP header to all remote Buckaroo requests for partnership.
+
+### Composer
+
+- Changed `php` from `>=8.0` to `>=7.4`.
+Full set of changes: [`4.3.0...4.3.1`][4.3.1]
+
+[4.3.1]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.0...v4.3.1
+
 ## [4.3.0] - 2022-12-29
 
 ### Commits
