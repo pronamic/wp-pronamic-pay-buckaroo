@@ -751,8 +751,11 @@ class Gateway extends Core_Gateway {
 	private function get_software_header() {
 		return \wp_json_encode(
 			[
-				'WordPress'   => \get_bloginfo( 'version' ),
-				'PronamicPay' => \pronamic_pay_plugin()->get_version(),
+				'PlatformName'    => 'WordPress',
+				'PlatformVersion' => \get_bloginfo( 'version' ),
+				'ModuleSupplier'  => 'Pronamic',
+				'ModuleName'      => 'PronamicPay',
+				'ModuleVersion'   => \pronamic_pay_plugin()->get_version(),
 			]
 		);
 	}
