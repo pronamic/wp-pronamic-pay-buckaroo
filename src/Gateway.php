@@ -15,6 +15,7 @@ use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
 use Pronamic\WordPress\Pay\Fields\SelectFieldOptionGroup;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
+use Pronamic\WordPress\Pay\Refunds\Refund;
 use WP_Error;
 
 /**
@@ -878,12 +879,15 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Create refund.
 	 *
-	 * @param string $transaction_id Transaction ID.
-	 * @param Money  $amount         Amount to refund.
-	 * @param string $description    Refund reason.
+	 * @param Refund $refund Refund.
 	 * @return null|string
 	 */
-	public function create_refund( $transaction_id, Money $amount, $description = null ) {
+	public function create_refund( Refund $refund ) {
+		$payment = $refund->get_payment();
+		$amount  = $refund->get_amount();
+
+		$transaction_id = $payment->get_transaction_id();
+
 		$original_transaction = $this->request( 'GET', 'Transaction/Status/' . $transaction_id );
 
 		if ( ! \is_object( $original_transaction ) ) {
@@ -909,13 +913,7 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Invoice.
-		$payment = \get_pronamic_payment_by_transaction_id( $transaction_id );
-
-		$invoice = null;
-
-		if ( null !== $payment ) {
-			$invoice = Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment );
-		}
+		$invoice = Util::get_invoice_number( (string) $this->config->get_invoice_number(), $payment );
 
 		// Refund request.
 		$data = (object) [
@@ -944,16 +942,16 @@ class Gateway extends Core_Gateway {
 			],
 		];
 
-		$refund = $this->request( 'POST', 'Transaction', $data );
+		$result = $this->request( 'POST', 'Transaction', $data );
 
 		// Check refund object.
-		if ( ! \is_object( $refund ) ) {
-			return null;
+		if ( ! \is_object( $result ) ) {
+			throw new \Exception( 'Unexpceted response from Buckaroo.' );
 		}
 
 		// Check refund status.
-		if ( \property_exists( $refund, 'Status' ) && \property_exists( $refund->Status, 'Code' ) ) {
-			$status = Statuses::transform( (string) $refund->Status->Code->Code );
+		if ( \property_exists( $result, 'Status' ) && \property_exists( $result->Status, 'Code' ) ) {
+			$status = Statuses::transform( (string) $result->Status->Code->Code );
 
 			if ( PaymentStatus::SUCCESS !== $status ) {
 				throw new \Exception(
@@ -961,33 +959,30 @@ class Gateway extends Core_Gateway {
 						/* translators: 1: payment provider name, 2: status message, 3: status sub message*/
 						__( 'Unable to create refund at %1$s gateway: %2$s%3$s', 'pronamic_ideal' ),
 						__( 'Buckaroo', 'pronamic_ideal' ),
-						$refund->Status->Code->Description,
-						\property_exists( $refund->Status, 'SubCode' ) ? ' – ' . $refund->Status->SubCode->Description : ''
+						$result->Status->Code->Description,
+						\property_exists( $result->Status, 'SubCode' ) ? ' – ' . $result->Status->SubCode->Description : ''
 					)
 				);
 			}
 		}
 
-		// Update payment refunded amount.
-		if ( null !== $payment ) {
-			$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_id );
-
-			if (
-				\property_exists( $result, 'RefundedAmount' )
-					&&
-				\property_exists( $result, 'RefundCurrency' )
-					&&
-				! empty( $result->RefundedAmount )
-			) {
-				$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
-
-				$payment->set_refunded_amount( $refunded_amount );
-			}
+		if ( \property_exists( $result, 'Key' ) ) {
+			$refund->psp_id = $result->Key;
 		}
 
-		// Return.
-		$refund_id = \property_exists( $refund, 'Key' ) ? $refund->Key : null;
+		// Update payment refunded amount.
+		$result = $this->request( 'GET', 'Transaction/RefundInfo/' . $transaction_id );
 
-		return $refund_id;
+		if (
+			\property_exists( $result, 'RefundedAmount' )
+				&&
+			\property_exists( $result, 'RefundCurrency' )
+				&&
+			! empty( $result->RefundedAmount )
+		) {
+			$refunded_amount = new Money( $result->RefundedAmount, $result->RefundCurrency );
+
+			$payment->set_refunded_amount( $refunded_amount );
+		}
 	}
 }
