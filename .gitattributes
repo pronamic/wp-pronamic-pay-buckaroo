@@ -3,9 +3,9 @@
 /bin               export-ignore
 /tests             export-ignore
 /.gitattributes    export-ignore
-/.github/          export-ignore
+/.github           export-ignore
 /.gitignore        export-ignore
-/phplint.yml       export-ignore
+/.phplint.yml      export-ignore
 /.travis.yml       export-ignore
 /Gruntfile.js      export-ignore
 /package.json      export-ignore
@@ -14,4 +14,4 @@
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist  export-ignore
 /psalm.xml.dist    export-ignore
-/vendor-bin/       export-ignore
+/vendor-bin        export-ignore
