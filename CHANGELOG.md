@@ -7,6 +7,22 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.2] - 2023-03-29
+### Commits
+
+- Set Composer type to `wordpress-plugin`. ([5014877](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/5014877fdcb7be2d285340292ade4040e47edd80))
+- Change refund function signature. ([c2d2732](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/c2d2732b1b95d65215711d30e948851c7345015d))
+- Updated .gitattributes ([0e5fa4c](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/0e5fa4c37c78dcfce675e1e340887dbe81812820))
+- Requires PHP: 7.4. ([3bb5d4a](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/3bb5d4ad9b38c46f00d9667ae7686cb829dcd0fb))
+
+### Composer
+
+- Changed `wp-pay/core` from `^4.6` to `v4.9.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.9.0
+Full set of changes: [`4.3.1...4.3.2`][4.3.2]
+
+[4.3.2]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.1...v4.3.2
+
 ## [4.3.1] - 2023-01-31
 ### Added
 
