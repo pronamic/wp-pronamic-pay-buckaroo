@@ -71,6 +71,7 @@ class Config extends GatewayConfig implements JsonSerializable {
 	 * Set host.
 	 *
 	 * @param string $host Host.
+	 * @return void
 	 */
 	public function set_host( $host ) {
 		$this->host = $host;

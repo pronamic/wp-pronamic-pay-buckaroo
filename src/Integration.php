@@ -31,6 +31,20 @@ class Integration extends AbstractGatewayIntegration {
 	private $host;
 
 	/**
+	 * Website key meta key.
+	 *
+	 * @var string
+	 */
+	private $meta_key_website_key;
+
+	/**
+	 * Secret key meta key.
+	 *
+	 * @var string
+	 */
+	private $meta_key_secret_key;
+
+	/**
 	 * Construct Buckaroo integration.
 	 *
 	 * @param array<string, array<string>> $args Arguments.
@@ -109,7 +123,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Get settings fields.
 	 *
-	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
+	 * @return array<int, mixed>
 	 */
 	public function get_settings_fields() {
 		global $post;
