@@ -8,7 +8,6 @@ use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\PaymentMethodsCollection;
-use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
 use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
 use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
@@ -69,7 +68,7 @@ class Gateway extends Core_Gateway {
 				function() {
 					return $this->get_ideal_issuers();
 				},
-				'pronamic_pay_ideal_issuers_' . \md5( \wp_json_encode( $config ) )
+				'pronamic_pay_ideal_issuers_' . \md5( (string) \wp_json_encode( $config ) )
 			)
 		);
 
@@ -92,7 +91,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Get payment methods.
 	 *
-	 * @param array $args Query arguments.
+	 * @param array<string, mixed> $args Query arguments.
 	 * @return PaymentMethodsCollection
 	 */
 	public function get_payment_methods( array $args = [] ): PaymentMethodsCollection {
@@ -125,7 +124,7 @@ class Gateway extends Core_Gateway {
 	 * @return void
 	 */
 	private function maybe_enrich_payment_methods() {
-		$cache_key = 'pronamic_pay_buckaroo_transaction_specifications_' . \md5( \wp_json_encode( $this->config ) );
+		$cache_key = 'pronamic_pay_buckaroo_transaction_specifications_' . \md5( (string) \wp_json_encode( $this->config ) );
 
 		$buckaroo_transaction_specifications = \get_transient( $cache_key );
 
@@ -187,24 +186,28 @@ class Gateway extends Core_Gateway {
 		// Get iDEAL issuers.
 		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
 
-		if ( 0 === $object->Version ) {
+		if ( \property_exists( $object, 'Version' ) && 0 === $object->Version ) {
 			throw new \Exception(
 				\sprintf(
 					'No versioned specification found for iDEAL payment method: version: "%s", name: "%s".',
 					$object->Version,
-					$object->Name
+					\property_exists( $object, 'Name' ) ? $object->Name : ''
 				)
 			);
 		}
 
 		$groups = [];
 
-		$actions_pay = \array_filter(
-			$object->Actions,
-			function( $action ) {
-				return 'Pay' === $action->Name;
-			}
-		);
+		$actions_pay = [];
+
+		if ( \property_exists( $object, 'Actions' ) ) {
+			$actions_pay = \array_filter(
+				$object->Actions,
+				function ( $action ) {
+					return 'Pay' === $action->Name;
+				}
+			);
+		}
 
 		foreach ( $actions_pay as $action ) {
 			$request_parameters = \array_filter(
@@ -750,7 +753,7 @@ class Gateway extends Core_Gateway {
 	 * @return string
 	 */
 	private function get_software_header() {
-		return \wp_json_encode(
+		return (string) \wp_json_encode(
 			[
 				'PlatformName'    => 'WordPress',
 				'PlatformVersion' => \get_bloginfo( 'version' ),
@@ -880,7 +883,7 @@ class Gateway extends Core_Gateway {
 	 * Create refund.
 	 *
 	 * @param Refund $refund Refund.
-	 * @return null|string
+	 * @return void
 	 */
 	public function create_refund( Refund $refund ) {
 		$payment = $refund->get_payment();
