@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.3] - 2023-06-01
+
+### Commits
+
+- Switch from `pronamic/wp-deployer` to `pronamic/pronamic-cli`. ([b53a9fa](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/b53a9fa0300d83a81754d0a40c24d964ff40235c))
+- Updated .gitattributes ([60718b3](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/60718b3785858d7ff99faa8400e8075fde9b2a80))
+
+Full set of changes: [`4.3.2...4.3.3`][4.3.3]
+
+[4.3.3]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.2...v4.3.3
+
 ## [4.3.2] - 2023-03-29
 ### Commits
 
