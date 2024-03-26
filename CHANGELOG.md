@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.4] - 2024-03-26
+
+### Commits
+
+- ncu -u ([8163933](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/816393344f8fd2cc21fdcf4689e68d8f08c4d19b))
+
+Full set of changes: [`4.3.3...4.3.4`][4.3.4]
+
+[4.3.4]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.3...v4.3.4
+
 ## [4.3.3] - 2023-06-01
 
 ### Commits
