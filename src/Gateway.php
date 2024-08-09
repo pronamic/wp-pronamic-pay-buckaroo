@@ -20,7 +20,7 @@ use WP_Error;
 /**
  * Title: Buckaroo gateway
  * Description:
- * Copyright: 2005-2023 Pronamic
+ * Copyright: 2005-2024 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -747,7 +747,7 @@ class Gateway extends Core_Gateway {
 
 	/**
 	 * Get software header.
-	 * 
+	 *
 	 * @link https://docs.buckaroo.io/docs/authentication
 	 * @link https://github.com/pronamic/wp-pronamic-pay-buckaroo/issues/9
 	 * @return string

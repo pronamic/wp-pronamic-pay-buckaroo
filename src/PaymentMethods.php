@@ -7,7 +7,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 /**
  * Title: Buckaroo payment methods constants
  * Description:
- * Copyright: 2005-2023 Pronamic
+ * Copyright: 2005-2024 Pronamic
  * Company: Pronamic
  *
  * @author Remco Tolsma
