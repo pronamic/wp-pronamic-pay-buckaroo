@@ -94,6 +94,14 @@ class PushController {
 
 		$data = \json_decode( $json );
 
+		if ( ! is_object( $data ) || ! property_exists( $data, 'Transaction' ) ) {
+			return new \WP_Error(
+				'pronamic_pay_buckaroo_push_unknown_transaction',
+				'Unknown Buckaroo push transaction.',
+				[ 'status' => 500 ]
+			);
+		}
+
 		$transaction_key = $data->Transaction->Key;
 
 		/**
@@ -102,9 +110,11 @@ class PushController {
 		 * @link https://support.buckaroo.nl/categorie%C3%ABn/integratie/transactietypes-overzicht
 		 * @link https://dev.buckaroo.nl/PaymentMethods/Description/ideal
 		 */
-		foreach ( $data->Transaction->RelatedTransactions as $related_transaction ) {
-			if ( 'refund' === $related_transaction->RelationType ) {
-				$transaction_key = $related_transaction->RelatedTransactionKey;
+		if ( property_exists( $data->Transaction, 'RelatedTransactions' ) ) {
+			foreach ( $data->Transaction->RelatedTransactions as $related_transaction ) {
+				if ( 'refund' === $related_transaction->RelationType ) {
+					$transaction_key = $related_transaction->RelatedTransactionKey;
+				}
 			}
 		}
 
