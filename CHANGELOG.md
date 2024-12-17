@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.5] - 2024-12-17
+
+### Commits
+
+- Allow automattic/jetpack-autoloader Composer plugin. ([9407541](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/9407541079fac20c526575baa31b4dfb8937a9f0))
+- Happy 2024. ([f1c1f63](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/f1c1f6300bbab2a46db86134e98767f82f3ffa6c))
+
+Full set of changes: [`4.3.4...4.3.5`][4.3.5]
+
+[4.3.5]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.4...v4.3.5
+
 ## [4.3.4] - 2024-03-26
 
 ### Commits
