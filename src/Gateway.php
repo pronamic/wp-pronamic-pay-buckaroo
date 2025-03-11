@@ -8,10 +8,6 @@ use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods as Core_PaymentMethods;
 use Pronamic\WordPress\Pay\Core\PaymentMethodsCollection;
-use Pronamic\WordPress\Pay\Fields\CachedCallbackOptions;
-use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
-use Pronamic\WordPress\Pay\Fields\SelectFieldOption;
-use Pronamic\WordPress\Pay\Fields\SelectFieldOptionGroup;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Refunds\Refund;
@@ -57,29 +53,12 @@ class Gateway extends Core_Gateway {
 		];
 
 		// Methods.
-		$ideal_payment_method = new PaymentMethod( Core_PaymentMethods::IDEAL );
-
-		$ideal_issuer_field = new IDealIssuerSelectField( 'ideal-issuer' );
-
-		$ideal_issuer_field->set_required( true );
-
-		$ideal_issuer_field->set_options(
-			new CachedCallbackOptions(
-				function() {
-					return $this->get_ideal_issuers();
-				},
-				'pronamic_pay_ideal_issuers_' . \md5( (string) \wp_json_encode( $config ) )
-			)
-		);
-
-		$ideal_payment_method->add_field( $ideal_issuer_field );
-
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
-		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::IDEAL ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MAESTRO ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
@@ -175,62 +154,6 @@ class Gateway extends Core_Gateway {
 				$payment_method->set_status( 'active' );
 			}
 		}
-	}
-
-	/**
-	 * Get iDEAL issuers.
-	 *
-	 * @link https://dev.buckaroo.nl/Playground
-	 * @since 1.2.4
-	 * @return iterable<SelectFieldOption|SelectFieldOptionGroup>
-	 */
-	private function get_ideal_issuers() {
-		// Get iDEAL issuers.
-		$object = $this->request( 'GET', 'Transaction/Specification/ideal?serviceVersion=2' );
-
-		if ( \property_exists( $object, 'Version' ) && 0 === $object->Version ) {
-			throw new \Exception(
-				\sprintf(
-					'No versioned specification found for iDEAL payment method: version: "%s", name: "%s".',
-					$object->Version,
-					\property_exists( $object, 'Name' ) ? $object->Name : ''
-				)
-			);
-		}
-
-		$groups = [];
-
-		$actions_pay = [];
-
-		if ( \property_exists( $object, 'Actions' ) ) {
-			$actions_pay = \array_filter(
-				$object->Actions,
-				function ( $action ) {
-					return 'Pay' === $action->Name;
-				}
-			);
-		}
-
-		foreach ( $actions_pay as $action ) {
-			$request_parameters = \array_filter(
-				$action->RequestParameters,
-				function( $request_parameter ) {
-					return 'issuer' === $request_parameter->Name;
-				}
-			);
-
-			foreach ( $request_parameters as $request_parameter ) {
-				foreach ( $request_parameter->ListItemDescriptions as $item ) {
-					if ( ! \array_key_exists( $item->GroupName, $groups ) ) {
-						$groups[ $item->GroupName ] = new SelectFieldOptionGroup( $item->GroupName );
-					}
-
-					$groups[ $item->GroupName ]->options[] = new SelectFieldOption( $item->Value, $item->Description );
-				}
-			}
-		}
-
-		return array_values( $groups );
 	}
 
 	/**
@@ -461,14 +384,8 @@ class Gateway extends Core_Gateway {
 			 */
 			case Core_PaymentMethods::IDEAL:
 				$data->Services->ServiceList[] = (object) [
-					'Action'     => 'Pay',
-					'Name'       => 'ideal',
-					'Parameters' => [
-						[
-							'Name'  => 'issuer',
-							'Value' => $payment->get_meta( 'issuer' ),
-						],
-					],
+					'Action' => 'Pay',
+					'Name'   => 'ideal',
 				];
 
 				break;
