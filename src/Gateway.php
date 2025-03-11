@@ -384,8 +384,8 @@ class Gateway extends Core_Gateway {
 			 */
 			case Core_PaymentMethods::IDEAL:
 				$data->Services->ServiceList[] = (object) [
-					'Action'     => 'Pay',
-					'Name'       => 'ideal',
+					'Action' => 'Pay',
+					'Name'   => 'ideal',
 				];
 
 				break;
