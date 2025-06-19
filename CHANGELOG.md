@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.4.0] - 2025-06-19
+
+### Removed
+
+- Removed issuers field from iDEAL payment method. ([615ac2e](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/615ac2efed8b6153f26ac3dbb73d1b943b0f02c3))
+
+Full set of changes: [`4.3.5...4.4.0`][4.4.0]
+
+[4.4.0]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.3.5...v4.4.0
+
 ## [4.3.5] - 2024-12-17
 
 ### Commits
