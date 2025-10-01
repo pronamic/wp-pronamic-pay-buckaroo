@@ -57,7 +57,7 @@ class Integration extends AbstractGatewayIntegration {
 				'name'                 => 'Buckaroo',
 				'host'                 => 'checkout.buckaroo.nl',
 				'url'                  => 'https://plaza.buckaroo.nl/',
-				'product_url'          => \__( 'http://www.buckaroo-payments.com', 'pronamic_ideal' ),
+				'product_url'          => 'https://www.buckaroo.eu/',
 				'dashboard_url'        => 'https://plaza.buckaroo.nl/',
 				'provider'             => 'buckaroo',
 				'supports'             => [
@@ -67,7 +67,7 @@ class Integration extends AbstractGatewayIntegration {
 					'webhook_log',
 					'webhook_no_config',
 				],
-				'manual_url'           => \__( 'https://www.pronamicpay.com/en/manuals/how-to-connect-buckaroo-to-wordpress-with-pronamic-pay/', 'pronamic_ideal' ),
+				'manual_url'           => 'https://www.pronamicpay.com/en/manuals/how-to-connect-buckaroo-to-wordpress-with-pronamic-pay/',
 				'meta_key_website_key' => 'buckaroo_website_key',
 				'meta_key_secret_key'  => 'buckaroo_secret_key',
 			]
