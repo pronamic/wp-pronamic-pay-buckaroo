@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.4.1] - 2025-11-11
+
+### Commits
+
+- Added this point we shoud not use translation functions. ([5ecc474](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/5ecc4749818d82b3ad866246a3b694129fd7b718))
+
+Full set of changes: [`4.4.0...4.4.1`][4.4.1]
+
+[4.4.1]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.4.0...v4.4.1
+
 ## [4.4.0] - 2025-06-19
 
 ### Removed
