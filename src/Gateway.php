@@ -63,6 +63,7 @@ class Gateway extends Core_Gateway {
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::SOFORT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::TRUSTLY ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::V_PAY ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::VISA ) );
 	}
@@ -471,6 +472,36 @@ class Gateway extends Core_Gateway {
 				$data->Services->ServiceList[] = (object) [
 					'Action' => 'Pay',
 					'Name'   => 'sofortueberweisung',
+				];
+
+				break;
+			/**
+			 * Payment method Trustly.
+			 *
+			 * @link https://dev.buckaroo.nl/PaymentMethods/Description/trustly#pay
+			 */
+			case Core_PaymentMethods::TRUSTLY:
+				$data->Services->ServiceList[] = (object) [
+					'Action' => 'Pay',
+					'Name'   => 'Trustly',
+					'Parameters' => [
+						(object) [
+							'Name'  => 'CustomerFirstName',
+							'Value' => $customer?->get_name()->get_first_name(),
+						],
+						(object) [
+							'Name'  => 'CustomerLastName',
+							'Value' => $customer?->get_name()->get_last_name(),
+						],
+						(object) [
+							'Name'  => 'CustomerCountryCode',
+							'Value' => $payment?->get_billing_address()->get_country()->get_code(),
+						],
+						(object) [
+							'Name'  => 'consumeremail',
+							'Value' => $customer?->get_email()
+						],
+					],
 				];
 
 				break;
