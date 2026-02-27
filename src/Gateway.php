@@ -482,8 +482,8 @@ class Gateway extends Core_Gateway {
 			 */
 			case Core_PaymentMethods::TRUSTLY:
 				$data->Services->ServiceList[] = (object) [
-					'Action' => 'Pay',
-					'Name'   => 'Trustly',
+					'Action'     => 'Pay',
+					'Name'       => 'Trustly',
 					'Parameters' => [
 						(object) [
 							'Name'  => 'CustomerFirstName',
@@ -499,7 +499,7 @@ class Gateway extends Core_Gateway {
 						],
 						(object) [
 							'Name'  => 'consumeremail',
-							'Value' => $customer?->get_email()
+							'Value' => $customer?->get_email(),
 						],
 					],
 				];
