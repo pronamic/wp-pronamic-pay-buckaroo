@@ -495,7 +495,7 @@ class Gateway extends Core_Gateway {
 						],
 						(object) [
 							'Name'  => 'CustomerCountryCode',
-							'Value' => $payment?->get_billing_address()?->get_country()?->get_code(),
+							'Value' => $payment->get_billing_address()?->get_country()?->get_code(),
 						],
 						(object) [
 							'Name'  => 'consumeremail',
