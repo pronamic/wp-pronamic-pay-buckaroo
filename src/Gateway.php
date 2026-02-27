@@ -487,15 +487,15 @@ class Gateway extends Core_Gateway {
 					'Parameters' => [
 						(object) [
 							'Name'  => 'CustomerFirstName',
-							'Value' => $customer?->get_name()->get_first_name(),
+							'Value' => $customer?->get_name()?->get_first_name(),
 						],
 						(object) [
 							'Name'  => 'CustomerLastName',
-							'Value' => $customer?->get_name()->get_last_name(),
+							'Value' => $customer?->get_name()?->get_last_name(),
 						],
 						(object) [
 							'Name'  => 'CustomerCountryCode',
-							'Value' => $payment?->get_billing_address()->get_country()->get_code(),
+							'Value' => $payment?->get_billing_address()?->get_country()?->get_code(),
 						],
 						(object) [
 							'Name'  => 'consumeremail',
