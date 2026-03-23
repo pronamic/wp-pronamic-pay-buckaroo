@@ -7,6 +7,20 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.5.0] - 2026-03-23
+
+### Added
+
+- Added support for the Trustly payment method. ([a261b64](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/a261b64a830b3350d895351e741f3bcd0a20427f))
+
+### Fixed
+
+- Fixed null-safe chained method calls in the gateway. ([31f43db](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/31f43dba73961457e0af92348642e5c47edf90b1))
+
+Full set of changes: [`4.4.1...4.5.0`][4.5.0]
+
+[4.5.0]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.4.1...v4.5.0
+
 ## [4.4.1] - 2025-11-11
 
 ### Commits
