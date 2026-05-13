@@ -135,7 +135,7 @@ class PushController {
 		if ( ! \array_key_exists( 'brq_transactions', $parameters ) ) {
 			return new \WP_Error(
 				'rest_buckaroo_no_transactions_parameter',
-				\__( 'The BRQ_TRANSACTIONS parameter is missing from the Buckaroo push request.', 'pronamic_ideal ' )
+				\__( 'The BRQ_TRANSACTIONS parameter is missing from the Buckaroo push request.', 'pronamic_ideal' )
 			);
 		}
 
@@ -167,7 +167,7 @@ class PushController {
 				'rest_buckaroo_unknown_transaction',
 				\sprintf(
 					/* translators: %s: Buckaroo transaction key. */
-					\__( 'Unable to find payment for transaction key: %s.', 'pronamic_ideal ' ),
+					\__( 'Unable to find payment for transaction key: %s.', 'pronamic_ideal' ),
 					$transaction_key
 				),
 				[ 'status' => 400 ]
