@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.5.1] - 2026-05-13
+
+### Fixed
+
+- Fixed translation text domain spacing by removing trailing space from the 'pronamic_ideal' text domain in PushController.php. ([6828b7a](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/6828b7a99ee5b4f8d61947088ac41e106ba635e3))
+
+Full set of changes: [`4.5.0...4.5.1`][4.5.1]
+
+[4.5.1]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.5.0...v4.5.1
+
 ## [4.5.0] - 2026-03-23
 
 ### Added
