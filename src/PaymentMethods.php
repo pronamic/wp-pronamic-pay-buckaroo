@@ -72,6 +72,13 @@ class PaymentMethods {
 	const IDEAL = 'ideal';
 
 	/**
+	 * Indicator for the 'KBC/CBC Payment Button' payment method
+	 *
+	 * @var string
+	 */
+	const KBC = 'KBCPaymentButton';
+
+	/**
 	 * Indicator for the 'Maestro' payment method
 	 *
 	 * @var string
@@ -148,6 +155,7 @@ class PaymentMethods {
 		Core_PaymentMethods::MISTER_CASH      => self::BANCONTACT_MISTER_CASH,
 		Core_PaymentMethods::GIROPAY          => self::GIROPAY,
 		Core_PaymentMethods::IDEAL            => self::IDEAL,
+		Core_PaymentMethods::KBC              => self::KBC,
 		Core_PaymentMethods::MAESTRO          => self::MAESTRO,
 		Core_PaymentMethods::MASTERCARD       => self::MASTERCARD,
 		Core_PaymentMethods::PAYPAL           => self::PAYPAL,
