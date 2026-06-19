@@ -533,6 +533,24 @@ class Gateway extends Core_Gateway {
 				];
 
 				break;
+			/**
+			 * Payment method Pay by Bank.
+			 *
+			 * @link https://docs.buckaroo.io/docs/pay-by-bank
+			 */
+			case Core_PaymentMethods::PAY_BY_BANK:
+				$data->Services->ServiceList[] = (object) [
+					'Action'     => 'Pay',
+					'Name'       => PaymentMethods::PAY_BY_BANK,
+					'Parameters' => [
+						(object) [
+							'Name'  => 'CountryCode',
+							'Value' => $payment->get_billing_address()?->get_country()?->get_code(),
+						],
+					],
+				];
+
+				break;
 			default:
 				$buckaroo_method = PaymentMethods::transform( $payment->get_payment_method() );
 
