@@ -552,13 +552,17 @@ class Gateway extends Core_Gateway {
 
 				break;
 			default:
-				$buckaroo_method = PaymentMethods::transform( $payment->get_payment_method() );
+				$payment_method = $payment->get_payment_method();
 
-				if ( null !== $buckaroo_method ) {
-					$data->Services->ServiceList[] = (object) [
-						'Action' => 'Pay',
-						'Name'   => $buckaroo_method,
-					];
+				if ( null !== $payment_method ) {
+					$buckaroo_method = PaymentMethods::transform( $payment_method );
+
+					if ( null !== $buckaroo_method ) {
+						$data->Services->ServiceList[] = (object) [
+							'Action' => 'Pay',
+							'Name'   => $buckaroo_method,
+						];
+					}
 				}
 
 				break;
