@@ -56,11 +56,15 @@ class Gateway extends Core_Gateway {
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BELFIUS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::EPS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::IDEAL ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::KBC ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MAESTRO ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::MASTERCARD ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAY_BY_BANK ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::PAYPAL ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::SOFORT ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::TRUSTLY ) );
@@ -527,6 +531,39 @@ class Gateway extends Core_Gateway {
 					'Action' => 'Pay',
 					'Name'   => PaymentMethods::VISA,
 				];
+
+				break;
+			/**
+			 * Payment method Pay by Bank.
+			 *
+			 * @link https://docs.buckaroo.io/docs/pay-by-bank
+			 */
+			case Core_PaymentMethods::PAY_BY_BANK:
+				$data->Services->ServiceList[] = (object) [
+					'Action'     => 'Pay',
+					'Name'       => PaymentMethods::PAY_BY_BANK,
+					'Parameters' => [
+						(object) [
+							'Name'  => 'CountryCode',
+							'Value' => $payment->get_billing_address()?->get_country()?->get_code(),
+						],
+					],
+				];
+
+				break;
+			default:
+				$payment_method = $payment->get_payment_method();
+
+				if ( null !== $payment_method ) {
+					$buckaroo_method = PaymentMethods::transform( $payment_method );
+
+					if ( null !== $buckaroo_method ) {
+						$data->Services->ServiceList[] = (object) [
+							'Action' => 'Pay',
+							'Name'   => $buckaroo_method,
+						];
+					}
+				}
 
 				break;
 		}

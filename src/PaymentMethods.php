@@ -37,11 +37,25 @@ class PaymentMethods {
 	const BANCONTACT_MISTER_CASH = 'bancontactmrcash';
 
 	/**
+	 * Indicator for the 'Belfius' payment method
+	 *
+	 * @var string
+	 */
+	const BELFIUS = 'belfius';
+
+	/**
 	 * Indicator for the 'èM! Payment' payment method
 	 *
 	 * @var string
 	 */
 	const EM_PAYMENT = 'empayment';
+
+	/**
+	 * Indicator for the 'EPS' payment method
+	 *
+	 * @var string
+	 */
+	const EPS = 'eps';
 
 	/**
 	 * Indicator for the 'Giropay' payment method
@@ -58,6 +72,13 @@ class PaymentMethods {
 	const IDEAL = 'ideal';
 
 	/**
+	 * Indicator for the 'KBC/CBC Payment Button' payment method
+	 *
+	 * @var string
+	 */
+	const KBC = 'KBCPaymentButton';
+
+	/**
 	 * Indicator for the 'Maestro' payment method
 	 *
 	 * @var string
@@ -70,6 +91,13 @@ class PaymentMethods {
 	 * @var string
 	 */
 	const MASTERCARD = 'mastercard';
+
+	/**
+	 * Indicator for the 'Pay By Bank' payment method
+	 *
+	 * @var string
+	 */
+	const PAY_BY_BANK = 'PayByBank';
 
 	/**
 	 * Indicator for the 'Overschrijving' payment method
@@ -129,11 +157,15 @@ class PaymentMethods {
 		Core_PaymentMethods::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
 		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
 		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::BELFIUS          => self::BELFIUS,
+		Core_PaymentMethods::EPS              => self::EPS,
 		Core_PaymentMethods::MISTER_CASH      => self::BANCONTACT_MISTER_CASH,
 		Core_PaymentMethods::GIROPAY          => self::GIROPAY,
 		Core_PaymentMethods::IDEAL            => self::IDEAL,
+		Core_PaymentMethods::KBC              => self::KBC,
 		Core_PaymentMethods::MAESTRO          => self::MAESTRO,
 		Core_PaymentMethods::MASTERCARD       => self::MASTERCARD,
+		Core_PaymentMethods::PAY_BY_BANK      => self::PAY_BY_BANK,
 		Core_PaymentMethods::PAYPAL           => self::PAYPAL,
 		Core_PaymentMethods::SOFORT           => self::SOFORTUEBERWEISING,
 		Core_PaymentMethods::V_PAY            => self::V_PAY,
