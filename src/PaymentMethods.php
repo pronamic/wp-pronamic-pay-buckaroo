@@ -51,6 +51,13 @@ class PaymentMethods {
 	const EM_PAYMENT = 'empayment';
 
 	/**
+	 * Indicator for the 'EPS' payment method
+	 *
+	 * @var string
+	 */
+	const EPS = 'eps';
+
+	/**
 	 * Indicator for the 'Giropay' payment method
 	 *
 	 * @var string
@@ -137,6 +144,7 @@ class PaymentMethods {
 		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
 		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
 		Core_PaymentMethods::BELFIUS          => self::BELFIUS,
+		Core_PaymentMethods::EPS              => self::EPS,
 		Core_PaymentMethods::MISTER_CASH      => self::BANCONTACT_MISTER_CASH,
 		Core_PaymentMethods::GIROPAY          => self::GIROPAY,
 		Core_PaymentMethods::IDEAL            => self::IDEAL,
