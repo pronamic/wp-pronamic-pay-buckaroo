@@ -37,6 +37,13 @@ class PaymentMethods {
 	const BANCONTACT_MISTER_CASH = 'bancontactmrcash';
 
 	/**
+	 * Indicator for the 'Belfius' payment method
+	 *
+	 * @var string
+	 */
+	const BELFIUS = 'belfius';
+
+	/**
 	 * Indicator for the 'èM! Payment' payment method
 	 *
 	 * @var string
@@ -129,6 +136,7 @@ class PaymentMethods {
 		Core_PaymentMethods::AMERICAN_EXPRESS => self::AMERICAN_EXPRESS,
 		Core_PaymentMethods::BANK_TRANSFER    => self::TRANSFER,
 		Core_PaymentMethods::BANCONTACT       => self::BANCONTACT_MISTER_CASH,
+		Core_PaymentMethods::BELFIUS          => self::BELFIUS,
 		Core_PaymentMethods::MISTER_CASH      => self::BANCONTACT_MISTER_CASH,
 		Core_PaymentMethods::GIROPAY          => self::GIROPAY,
 		Core_PaymentMethods::IDEAL            => self::IDEAL,

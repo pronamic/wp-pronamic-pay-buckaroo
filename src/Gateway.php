@@ -56,6 +56,7 @@ class Gateway extends Core_Gateway {
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::AMERICAN_EXPRESS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANK_TRANSFER ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::BELFIUS ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::CREDIT_CARD ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::GIROPAY ) );
 		$this->register_payment_method( new PaymentMethod( Core_PaymentMethods::IDEAL ) );
