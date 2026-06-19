@@ -93,6 +93,13 @@ class PaymentMethods {
 	const MASTERCARD = 'mastercard';
 
 	/**
+	 * Indicator for the 'Pay By Bank' payment method
+	 *
+	 * @var string
+	 */
+	const PAY_BY_BANK = 'PayByBank';
+
+	/**
 	 * Indicator for the 'Overschrijving' payment method
 	 *
 	 * @var string
@@ -158,6 +165,7 @@ class PaymentMethods {
 		Core_PaymentMethods::KBC              => self::KBC,
 		Core_PaymentMethods::MAESTRO          => self::MAESTRO,
 		Core_PaymentMethods::MASTERCARD       => self::MASTERCARD,
+		Core_PaymentMethods::PAY_BY_BANK      => self::PAY_BY_BANK,
 		Core_PaymentMethods::PAYPAL           => self::PAYPAL,
 		Core_PaymentMethods::SOFORT           => self::SOFORTUEBERWEISING,
 		Core_PaymentMethods::V_PAY            => self::V_PAY,
