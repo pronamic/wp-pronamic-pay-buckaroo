@@ -7,6 +7,23 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.6.0] - 2026-07-31
+
+### Added
+
+- Added support for the Belfius payment method. ([17a9c2d](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/17a9c2d))
+- Added support for the EPS payment method. ([4149baf](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/4149baf))
+- Added support for the KBC/CBC payment method. ([0bb4cd0](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/0bb4cd0))
+- Added support for the Pay by Bank payment method. ([be5c5ad](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/be5c5ad))
+
+### Changed
+
+- Payment start now falls back to a default `Pay` action for payment methods without specific handling. ([f147b02](https://github.com/pronamic/wp-pronamic-pay-buckaroo/commit/f147b02))
+
+Full set of changes: [`4.5.1...4.6.0`][4.6.0]
+
+[4.6.0]: https://github.com/pronamic/wp-pronamic-pay-buckaroo/compare/v4.5.1...v4.6.0
+
 ## [4.5.1] - 2026-05-13
 
 ### Fixed
